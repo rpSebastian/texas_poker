@@ -1,8 +1,8 @@
 import socket
 import selectors
 
-num = 1
 sel = selectors.DefaultSelector()
+room_id = {}
 
 
 def accept(sock):
@@ -13,18 +13,16 @@ def accept(sock):
 def read(sock):
     data = sock.recv(100).decode()
     if data:
-        print(data)
-        global num
-        num += 1
         sock.send(data.encode())
-        print(num)
     else:
         sel.unregister(sock)
+        sock.send(data.encode())
         sock.close()
 
 
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('127.0.0.1', 12357))
+server.bind(('127.0.0.1', 12360))
 server.listen(20)
 sel.register(server, selectors.EVENT_READ, accept)
 while True:

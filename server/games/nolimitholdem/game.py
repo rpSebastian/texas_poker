@@ -2,7 +2,7 @@ from .dealer import Dealer
 from .player import Player
 from .round import Round
 from .judge import Judge
-
+from datetime import datetime
 
 class Game():
 
@@ -34,7 +34,7 @@ class Game():
         if not self.check_action_valid(action):
             raise Exception("Action invalid!")
         self.action_player, self.current_action = self.pointer, action
-        self.action_history[self.round_counter].append(str(self.pointer) + ':' + str(action))
+        self.action_history[self.round_counter].append(dict(position=self.pointer, action=action, timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]))
         self.pointer = self.cur_round.step(self.players, self.dealer, action)
         if self.is_terminal():
             if self.is_terminal() == 3:
@@ -72,20 +72,29 @@ class Game():
         # 4轮叫牌结束了
         if self.round_counter == 3 and self.cur_round.is_terminal():
             return 2
-        # 所有人all in了
+    # 所有人all in了
         if max(player.remained_chips for player in self.players if player.status == "alive") == 0:
             return 3
         return 0
 
     def get_payoff(self):
         state = {}
-        state["win_money"] = self.judge.get_payoff(self.players, self.dealer, self.stack)
+        win_money = self.judge.get_payoff(self.players, self.dealer, self.stack)
         if self.is_terminal() == 1:
             state['player_card'] = [[] for player in self.players]
         else:
             state['player_card'] = [[str(card) for card in player.hands] if player.status == "alive"
                                     else [] for player in self.players]
         state['public_card'] = [str(card) for card in self.dealer.hands]
+        state['action_history'] = self.action_history
+        state["players"] = []
+        for i, player in enumerate(self.players):
+            player_info = {}
+            player_info["position"] = i
+            player_info["win_money"] = win_money[i]
+            player_info["moneyLeft"] = player.remained_chips
+            player_info["totalMoney"] = self.stack
+            state['players'].append(player_info)
         return state
 
     def get_state(self, player_id):
@@ -95,22 +104,32 @@ class Game():
         state["legal_actions"], state["raise_range"] = self.cur_round.get_legal_actions(self.players)
         state["private_card"] = [str(card) for card in self.players[player_id].hands]
         state["public_card"] = [str(card) for card in self.dealer.hands]
-        # state["remained_chips"] = [player.remained_chips for player in self.players]
-        # state["pot"] = self.dealer.pot
+        state["players"] = []
+        for i, player in enumerate(self.players):
+            player_info = {}
+            player_info["position"] = i
+            player_info["money_left"] = player.remained_chips
+            player_info["total_money"] = self.stack
+            state['players'].append(player_info)
         state['action_history'] = self.action_history
         return state
 
     def get_public_state(self):
         state = {}
+        state["action_position"] = self.pointer
         state["player_card"] = [[str(card) for card in player.hands] for player in self.players]
-        state["money"] = [player.remained_chips for player in self.players]
-        state["round_raise"] = self.cur_round.raised_counter
         state["public_card"] = [str(card) for card in self.dealer.hands]
-        state["desktop_money"] = 20000 * len(self.players) - sum(state["money"])
+        state["round_raise"] = self.cur_round.raised_counter
         state["current_action"] = self.current_action
         state["action_player"] = self.action_player
         state["action_history"] = self.action_history
-        state["action_position"] = self.pointer
+        state["players"] = []
+        for i, player in enumerate(self.players):
+            player_info = {}
+            player_info["position"] = i
+            player_info["money_left"] = player.remained_chips
+            player_info["total_money"] = self.stack
+            state['players'].append(player_info)
         return state
 
     def get_save_data(self):

@@ -10,16 +10,15 @@ class main(multiprocessing.Process):
 
     def run(self):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(('127.0.0.1', 1234))
+        client.connect(('127.0.0.1', 8123))
 
-        client.send(('call' + str(self.i)).encode())
+        client.send('xxx' + str(self.i)).encode())
         data = client.recv(100).decode()
-        while True:
-            pass
+
 
 a = time.time()
 processes = []
-for i in range(1):
+for i in range(2):
     p = main(i)
     p.start()
     processes.append(p)

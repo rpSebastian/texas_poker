@@ -43,7 +43,7 @@ class RuleAgent(multiprocessing.Process):
         multiprocessing.Process.__init__(self)
         message = dict(info='connect', room_id=room_id, name=name, room_number=room_number, bots=[])
         self.info = message 
-                
+
     def get_action(self, data):
         position = data['position']
         hand = ''.join(data['private_card'])
@@ -117,8 +117,6 @@ class RuleAgent(multiprocessing.Process):
         client.connect((cfg["server"]["host"], cfg["server"]["port"])) 
         try:
             sendJson(client, self.info) 
-            data = recvJson(client)
-            sendJson(client, {'info': 'start'})
             cnt = 0
             while True:
                 data = recvJson(client)
@@ -131,7 +129,7 @@ class RuleAgent(multiprocessing.Process):
                     # if cnt == 100:
                         # break
                     # print(position, data)
-                    sendJson(client, {'info': 'start'})
+                    sendJson(client, {'info': 'ready', 'status': 'start'})
             client.close()
         except Exception as e:
             # print(e)

@@ -37,8 +37,6 @@ class CallAgent(multiprocessing.Process):
         client.connect((cfg["server"]["host"], cfg["server"]["port"]))
         try:
             sendJson(client, self.info)
-            data = recvJson(client)
-            sendJson(client, {'info': 'start'})
             while True:
                 data = recvJson(client)
                 if data['info'] == 'state' and data['position'] == data['action_position']:
@@ -48,7 +46,7 @@ class CallAgent(multiprocessing.Process):
                         action = 'check'
                     sendJson(client, {'action': action, 'info': 'action'})
                 if data['info'] == 'result':
-                    sendJson(client, {'info': 'start'})
+                    sendJson(client, {'info': 'ready', 'status': 'start'})
         except Exception:
             pass
         finally:
