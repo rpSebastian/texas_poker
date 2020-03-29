@@ -1,0 +1,397 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %} 登录 {% endblock title %} {% block css %}
+<style>
+    body {
+        background: #eee;
+        color: #555;
+        font-family: 'Microsoft YaHei', "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-size: .9em;
+        line-height: 2;
+    }
+    .card-img {
+        margin: 10px;
+        width: 100%;
+        height: 100px;
+        border-width: 0;
+        border-radius: 7px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        background-color: #2D2B29;
+    }
+    .coin {
+        margin: 10px;
+        width: 150%;
+    }
+</style>
+{% endblock css %} {% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 mt-5">
+            <div class="row">
+                <div class="col-sm-2" id="player5">
+                    {% include "player-base.html" %}
+                </div>
+                <div class="col-sm-2 offset-sm-3" id="player6">
+                    {% include "player-base.html" %}
+                </div>
+                <div class="col-sm-2 offset-sm-3" id="player7">
+                    {% include "player-base.html" %}
+                </div>
+            </div>
+            <div class="row mt-3 mb-3">
+                <div class="col-sm-2">
+                    <div class="mb-3" id="player4">
+                        {% include "player-base.html" %}
+                    </div>
+                    <div id="player3">
+                        {% include "player-base.html" %}
+                    </div>
+                </div>
+                <div class="col-sm-6 offset-sm-1">
+                    <div class="row mt-5 mb-5">
+                        <div class="col-sm-1 offset-sm-5">
+                            <img class="coin" id="b1" src="{% static 'images/chip.svg' %}">
+                        </div>
+                        <div class="col-sm-2 pt-2">
+                            <h5 id="desktop-money"></h5>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-sm-2 offset-sm-1">
+                            <img class="card-img" id="d0" src="{% static 'images/poker/NO.svg' %}">
+                        </div>
+                        <div class="col-sm-2">
+                            <img class="card-img" id="d1" src="{% static 'images/poker/NO.svg' %}">
+                        </div>
+                        <div class="col-sm-2">
+                            <img class="card-img" id="d2" src="{% static 'images/poker/NO.svg' %}">
+                        </div>
+                        <div class="col-sm-2">
+                            <img class="card-img" id="d3" src="{% static 'images/poker/NO.svg' %}">
+                        </div>
+                        <div class="col-sm-2">
+                            <img class="card-img" id="d4" src="{% static 'images/poker/NO.svg' %}">
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <button class="btn-action col-sm-2 offset-sm-1 btn btn-sm btn-primary mt-3 mb-3" type="button" id="call">call</button>
+                        <button class="btn-action col-sm-2 offset-sm-1 btn btn-sm btn-primary mt-3 mb-3" type="button" id="fold">fold</button>
+                        <button class="btn-action col-sm-2 offset-sm-1 btn btn-sm btn-primary mt-3 mb-3" type="button" id="raise">raise</button>  
+                        <input class="col-sm-3 mt-3 mb-3" placeholder="money" id="raise-money" required> 
+                    </div>
+                </div>
+                <div class="col-sm-2 offset-sm-1">
+                    <div class="mb-3" id="player8">
+                        {% include "player-base.html" %}
+                    </div>
+                    <div id="player9">
+                        {% include "player-base.html" %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2" id="player2">
+                    {% include "player-base.html" %}
+                </div>
+                <div class="col-sm-2 offset-sm-3" id="player1">
+                    {% include "player-base.html" %}
+                    <row>
+                        <button style="display:none" class="col-sm-12 btn btn-sm btn-primary mt-3 mb-3" type="submit" id="next">next game</button>  
+                    </row>
+                </div>
+                <div class="col-sm-2 offset-sm-3" id="player10">
+                    {% include "player-base.html" %}
+                </div>
+            </div>             
+        </div>
+    </div>
+    <div id="max_people" style="display:none">{{max_people}}</div>
+</div>
+{% endblock content %} {% block js %}
+<script>
+    var personPosition = [[], ['1'], ['1', '6'], ['1', '4', '6'], ['1', '4', '6', '8'], ['1', '3', '4', '6', '8'],
+                           ['1', '3', '4', '6', '8', '9'], ['1', '3', '4', '5', '6', '8', '9'], 
+                           ['1', '3', '4', '5', '6', '7', '8', '9'], ['1', '2', '3', '4', '5', '6', '8', '7', '9'], 
+                           ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']];
+    var maxPeople = Number($("#max_people").text());
+    var socket = new WebSocket("ws://" + window.location.href.split("//")[1] + "ws/");
+    var maxRaise, mySeqId;
+    var have_raised = new Array(12);
+    var low_raise, high_raise;
+    gameReset();
+    socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+        if (data.info == 'name') {
+            mySeqId = Number(data.position);
+            setName(data.name);
+        }
+        if (data.info == 'state' && data.action_history[0].length == 0)
+        { 
+            mySeqId = Number(data.position);
+            gameReset();
+            setPlayerCard(data.private_card, data.position);
+        } 
+        if (data.info == 'state')
+        {
+            if (data.action_history[0].length != 0)
+            {
+                // 解析上一个人的动作
+                setMaxRaise(data.action_history);
+                setLeaveMoney(data.action_history);
+                setCurRaise(data.action_history);
+                setAction(data.action_history);
+            }  
+            setDesktopCard(data.public_card);
+            setDesktopMoney();  
+            setActionStatus(data.action_position);
+            if (data.position == data.action_position)
+            {
+                setActionTag(data.action_position, data.legal_actions, data.raise_range);
+            }
+        }
+        if (data.info == 'state' && data.action_history[data.action_history.length - 1].length == 0 && data.action_history[0].length != 0)
+        {
+            roundReset();
+        }
+        if (data.info == 'result') 
+        {
+            for (var i = 0; i < maxPeople; ++i)
+            {
+                setPlayerCard(data.player_card[i], i);
+                setWinMoney(data.win_money[i], i);
+                setWinner(data.win_money[i], i);
+            }
+            setDesktopCard(data.public_card);
+            $("#next").show();
+            $("#next").attr('disabled', false);
+        }
+    }
+    function roundReset() {
+        for (var i of personPosition[maxPeople])
+        { 
+            if ($("#player" + String(i) + " .status").text() != 'fold' && $("#player" + String(i) + " .status").text() != 'Action')
+            {
+                $("#player" + String(i) + " .status").text('');
+            }
+            $("#player" + String(i) + " .cur-raise").text(0);
+        }
+        for (var i = 0; i < 12; ++i)
+            have_raised[i] = 0;
+        maxRaise = 0;
+    }
+
+    function gameReset() {
+        $("#next").hide();
+        for (var i = 0; i < 12; ++i)
+            have_raised[i] = 0;
+        have_raised[positionToSeat(0)] = 50;
+        have_raised[positionToSeat(1)] = 100;
+        for (var i of personPosition[maxPeople])
+        {
+            $("#player" + String(i) + " .row").css("visibility", "visible");
+            $("#player" + String(i) + " .money").text(20000);
+            $("#player" + String(i) + " .cur-raise").text(0);
+            $("#player" + String(i) + " .status").text('');
+            for (var j = 0; j < 2; ++j)
+            {
+                $("#player" + String(i) + " .card" + String(j)).attr('src', "/static/images/poker/NO.svg");
+            }
+        }
+        $("#player" + String(positionToSeat(0)) + " .money").text(19950);
+        $("#player" + String(positionToSeat(1)) + " .money").text(19900);
+        $("#player" + String(positionToSeat(0)) + " .cur-raise").text(50);
+        $("#player" + String(positionToSeat(1)) + " .cur-raise").text(100);
+        setDesktopMoney();
+        for (var i = 0; i < 5; ++i)
+        {
+            $("#d" + String(i)).attr('src', "/static/images/poker/NO.svg"); 
+        }
+        $(".btn-action").attr('disabled', true);
+        $("#raise-money").attr('disabled', true); 
+        maxRaise = 100;
+    }
+
+    function setDesktopCard(desktopCard) {
+        for (var i = 0; i < desktopCard.length; ++i)
+        {
+            $("#d" + String(i)).attr('src', "/static/images/poker/" + desktopCard[i] + ".svg"); 
+        }
+    }; 
+
+    function setName(names) {
+        for (var i = 0; i < names.length; ++i)
+        {
+            var seat = positionToSeat(i);
+            $("#player" + String(seat) + " .name").text(names[i]);
+        }
+    }
+
+    function setPlayerCard(card, position) {
+        var seat = positionToSeat(position);
+        var line = $("#player" + String(seat));
+        for (var i = 0; i < card.length; ++i)
+        {
+            line.find(".card" + String(i)).attr('src', "/static/images/poker/" + card[i] + ".svg");
+        }
+    }
+   
+    function parseLastAction(actionHistory) {
+        var lastAction;
+        if (actionHistory.slice(-1)[0].length==0)
+            lastAction = actionHistory.slice(-2)[0].slice(-1)[0];
+        else 
+            lastAction = actionHistory.slice(-1)[0].slice(-1)[0];
+        var seat = positionToSeat(Number(lastAction.split(':')[0]));
+        var action = lastAction.split(':')[1];
+        var data = {'seat': seat, 'action': action};
+        console.log(data);
+        return data;
+    }
+
+    function setMaxRaise(actionHistory) {
+        var data = parseLastAction(actionHistory);
+        if (data.action[0]=='r')
+        {
+            maxRaise = Number(data.action.substr(1, data.action.length - 1));
+            console.log("setMaxRaise: " + String(maxRaise));
+        }
+    }
+
+    function setLeaveMoney(actionHistory) {
+        var data = parseLastAction(actionHistory);
+        var leave_money = Number($("#player" + String(data.seat) + " .money").text());
+        console.log(maxRaise, data.seat, have_raised)
+        leave_money -= maxRaise - have_raised[data.seat];
+        console.log("setLeaveMoney -> player" + String(data.seat) + " " + String(leave_money));
+        if (data.action != 'f')
+            $("#player" + String(data.seat) + " .money").text(leave_money);
+    }
+
+    function setAction(actionHistory) {
+        var data = parseLastAction(actionHistory);
+        // if (data.action[0] == 'c')
+        //     data.action = 'call'
+        // else if (data.action[0] == 'f') 
+        //     data.action = 'fold'
+        // else if (data.action[0] == 'r')
+        //     data.action = 'raise '; + data.action.substr(1, data.action.length - 1);
+        $("#player" + String(data.seat) + " .status").text(data.action);
+    }
+
+    function setCurRaise(actionHistory) {
+        var data = parseLastAction(actionHistory);
+        if (data.action != 'f')
+            $("#player" + String(data.seat) + " .cur-raise").text(maxRaise);
+        have_raised[data.seat] = maxRaise;
+    }
+
+    function positionToSeat(position) {
+        var delta = (position - mySeqId + maxPeople) % maxPeople;
+        return personPosition[maxPeople][delta];
+    }
+
+    function setDesktopMoney() {
+        var total = 20000 * maxPeople;
+        for (var i of personPosition[maxPeople])
+        {
+            total -= Number($("#player" + String(i) + " .money").text());
+        }
+        $("#desktop-money").text(String(total));
+    }
+
+    function setWinMoney(win_money, position) {
+        var seat = positionToSeat(position);
+        var line = $("#player" + String(seat) + " .win-money");
+        line.text(Number(line.text()) + win_money);
+    }
+
+    function setActionTag(action_position, legal_actions, raise_range){
+        var seat = positionToSeat(action_position);
+        if (legal_actions.includes("call"))
+        {
+            $("#call").attr("disabled", false);
+            $("#call").text("call");
+        }
+        if (legal_actions.includes("check"))
+        {
+            $("#call").attr("disabled", false);
+            $("#call").text("check");
+        }
+        if (legal_actions.includes("fold"))
+        {
+            $("#fold").attr("disabled", false);
+        }
+        if (legal_actions.includes("raise")) 
+        {
+            $("#raise-money").attr("placeholder", String(raise_range[0]) + "-" + String(raise_range[1])); 
+            $("#raise").attr("disabled", false);
+            $("#raise-money").attr("disabled", false);
+            low_raise = raise_range[0];
+            high_raise = raise_range[1];
+        }
+        
+    }
+
+    function setActionStatus(action_position) {
+        var seat = positionToSeat(action_position);
+        var line = $("#player" + String(seat) + " .status");
+        line.text('Action');
+    }
+    function setWinner(win_money, position) {
+        var seat = positionToSeat(position);
+        var line = $("#player" + String(seat) + " .status");
+        if (win_money > 0)
+            line.text('Win!');
+        else
+            line.text('');
+    }
+
+
+    $(".btn-action").click(function (e) {
+        var action = $(this).attr("id");
+        var money = $("#raise-money").val();
+        if (action == "raise")
+        {
+            if (money == "" || isNaN(money)){//进行数字校验，如果不是数字填出对话框进行提示
+                swal({
+                    title: "Please enter a number",
+                    type: "error",
+                });
+                return;
+            }
+            money = Number(money);
+            leaveMoney = Number($("#player1").find(".money").text());
+            if (money < low_raise || money > high_raise)
+            {
+                swal({
+                    title: "raise money should be in \n" + String(low_raise) + " - " + String(high_raise),
+                    type: "error",
+                });
+                return;
+            }
+        }
+        $(".btn-action").attr('disabled', true);
+        $("#raise-money").attr('disabled', true);        
+        if (action == 'raise')
+            action = 'r' + String(money);
+        else if (action == 'call')
+            action = $(this).text();
+        var data = {
+            'action': action,
+            'info': 'action'
+        };
+        console.log(data);
+        $("#raise-money").val("");
+        socket.send(JSON.stringify(data));
+    });     
+    $("#next").click(function (e) { 
+        $("#next").attr('disabled', true);
+        var data = {
+            'info': 'start'
+        }
+        socket.send(JSON.stringify(data));
+    });
+
+</script>
+
+{% endblock js %}

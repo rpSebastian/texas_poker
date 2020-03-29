@@ -1,0 +1,24 @@
+server:
+  host: "poker.xuhang.ink"
+  port: 18888
+
+bot:
+  RandomAgent:
+    host: "127.0.0.1"
+    port: 10026
+
+  CallAgent:
+    host: "127.0.0.1"
+    port: 10027
+
+  AllinAgent:
+    host: "127.0.0.1"
+    port: 10028
+  
+  LuaStack:
+    host: "a.xuhang.ink"
+    port: 30000
+  
+  RuleAgent:
+    host: "127.0.0.1"
+    port: 10029

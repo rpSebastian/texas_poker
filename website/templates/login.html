@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %} 登录 {% endblock title %} {% block css %}
+<style>
+    body {
+        background: #eee;
+        color: #555;
+        font-family: 'Microsoft YaHei', "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-size: .9em;
+        line-height: 2;
+    }
+</style>
+{% endblock css %} {% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 offset-sm-3 mt-5">
+            <div class="text-center">
+                <i class="fa fa-home fa-5x"></i>
+            </div>
+
+            <input type="username" class="form-control mt-3" placeholder="Username" id="username" required autofocus>
+            <input type="password" class="form-control mt-3" placeholder="Password" id="password" required>
+            <a class="pull-right mt-2 mb-2" href="{% url 'poker:register' %}">
+                Don't have a account? Sign up
+            </a>
+            <button class=" btn btn-lg btn-primary btn-block mt-3 " type="submit" id="submit">Sign In</button>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %}
+
+<script>
+    $("#submit").click(function(e) {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        $.ajax({
+            type: "post",
+            url: "solve/",
+            data: {
+                'username': username,
+                'password': password
+            },
+            dataType: "json",
+            success: function(data) {
+                if (data == "1") {
+                    swal({
+                            title: "Welcome!",
+                            type: "success",
+                        },
+                        function() {
+                            window.location.href = "../";
+                        });
+                }
+                if (data == "2") {
+                    swal({
+                        title: "Incorrect username or password!",
+                        type: "error",
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock js %}

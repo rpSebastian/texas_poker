@@ -1,0 +1,1027 @@
+2020-02-12 11:57:13.607 | DEBUG | 1.py:3 | MainProcess | - {a}
+2020-02-12 11:59:48.146 | DEBUG | 1.py:3 | MainProcess | - 1
+2020-02-12 14:09:06.096 | DEBUG | 1.py:3 | MainProcess | - <r>1</r>
+2020-02-12 14:11:00.004 | DEBUG | 1.py:3 | MainProcess | - [34m1
+2020-02-12 14:11:05.650 | DEBUG | 1.py:3 | MainProcess | - [3451
+2020-02-12 14:11:09.549 | DEBUG | 1.py:3 | MainProcess | - 1
+2020-02-12 14:11:14.599 | INFO | 1.py:3 | MainProcess | - 1
+2020-02-12 14:11:24.242 | WARNING | 1.py:3 | MainProcess | - 1
+2020-02-12 14:11:27.822 | ERROR | 1.py:3 | MainProcess | - 1
+2020-02-12 14:11:37.218 | SUCCESS | 1.py:3 | MainProcess | - 1
+2020-02-12 14:11:47.668 | CRITICAL | 1.py:3 | MainProcess | - 1
+2020-02-13 12:35:05.718 | INFO | log_test.py:10 | MainProcess | - test
+2020-02-13 12:35:15.285 | INFO | log_test.py:10 | MainProcess | - test 1
+2020-02-13 12:36:07.887 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 45128) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 12:36:07.903 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 45132) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 19:42:21.591 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44352) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 19:42:21.597 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44356) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 19:47:27.720 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44508) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 19:47:27.726 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44512) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 19:47:40.469 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44522) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 19:47:40.474 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:29 | Waiter-2 | - recv client from ('127.0.0.1', 44526) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 19:47:50.501 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:42 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f45353688c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f453541d3d0>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f45352f0c20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f4535369910>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f451f9687a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f451f9dfc90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f4535370200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f45346aec20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 40, in run
+    self.handle_player(client, room_id, name, room_number, bots)
+    │    │             │       │        │     │            └ []
+    │    │             │       │        │     └ 2
+    │    │             │       │        └ 'CallAgent0'
+    │    │             │       └ 42553
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f45284be440>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 67, in handle_player
+    kernel = NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id])
+             │                   │    │            │         │    │           └ 42553
+             │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f451f967ad0>}
+             │                   │    │            │         └ <Waiter(Waiter-2, started)>
+             │                   │    │            └ 42553
+             │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7f451f9677d0>, <connect.splayer.SPlayer object at 0...
+             │                   └ <Waiter(Waiter-2, started)>
+             └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f4534dd53b0>
+    └ <pymysql.connections.Connection object at 0x7f451f96ed10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:10:59.758 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45400) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:10:59.759 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - unhashable type: 'list'
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f95ed3f58c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f95ed4a9410>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f95ed37cc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f95ed3f4950>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f95d79f4710>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f95d7a6bc90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f95ed3fc200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f95ec73db90>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f95ed4a7b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+    │    │             └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f95e054d560>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 53, in handle_player
+    room_id, name, room_number, bots = itemgetter(['room_id', 'name', 'room_number', 'bots'])(message)
+                                       │                                                      └ {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+                                       └ <class 'operator.itemgetter'>
+
+TypeError: unhashable type: 'list'
+2020-02-13 20:11:47.973 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45410) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:11:47.979 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45414) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:11:58.009 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7fae0bad38c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7fae0bb883d0>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7fae0ba5bc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7fae0bad4910>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7fadf60d3710>
+    └ <multiprocessing.popen_fork.Popen object at 0x7fadf614ac90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7fae0badb200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7fae0ae1bb90>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7fae0bb86b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7fadfec2c560>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 66, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7fadf60d9710>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7fae00166ed0>, <connect.splayer.SPlayer object at 0...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7fae0b53f320>
+    └ <pymysql.connections.Connection object at 0x7fadf60d9610>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:12:39.553 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45420) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:12:59.063 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45424) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:13:13.698 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45426) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:14:16.741 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45450) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:14:16.747 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45454) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:14:27.710 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f7f22ed58c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f7f22f8a3d0>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f7f22e5dc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f7f22ed6910>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f7f0d4d5710>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f7f0d4ceb10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f7f22edd200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f7f2221cb90>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f7f22f88b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f7f1602d560>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 66, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f7f0d4db510>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7f7f0d4d4a50>, <connect.splayer.SPlayer object at 0...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f7f22941320>
+    └ <pymysql.connections.Connection object at 0x7f7f0d4db650>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:14:27.725 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45458) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:15:42.475 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45472) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:15:42.476 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:71 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:15:42.483 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45476) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:15:52.505 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7fc6135b38c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7fc613667450>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7fc61353ac20>
+           └ <multiprocessing.context.DefaultContext object at 0x7fc6135b2990>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7fc5fdbb27a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7fc5fdc29d90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7fc6135ba200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7fc6128f9c20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7fc613665b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7fc6067095f0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 66, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7fc5fdbb8590>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7fc5fdbb8550>, <connect.splayer.SPlayer object at 0...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7fc61301e3b0>
+    └ <pymysql.connections.Connection object at 0x7fc5fdbb8d10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:15:52.525 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45486) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:19:50.053 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45508) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:19:50.054 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 False
+2020-02-13 20:19:50.055 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:72 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:19:50.059 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45512) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:19:50.059 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-02-13 20:20:00.085 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f9fe8b7e8c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f9fe8c32410>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f9fe8b05c20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f9fe8b7d950>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f9fd317d7a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f9fd31f4e50>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f9fe8b85200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f9fe7ec4c20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f9fe8c30b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f9fdbcd45f0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 67, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f9fd3183b90>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7f9fd317ccd0>, <connect.splayer.SPlayer object at 0...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f9fe85e93b0>
+    └ <pymysql.connections.Connection object at 0x7f9fd31837d0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:20:04.607 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45516) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:20:04.607 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-02-13 20:21:59.567 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45532) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:21:59.567 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 False
+2020-02-13 20:21:59.568 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:74 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:21:59.572 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45536) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:21:59.572 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-02-13 20:21:59.573 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:67 | Waiter-2 | - room 42553 start playing
+2020-02-13 20:22:09.597 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f9276bc68c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f9276c7a410>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f9276b4dc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f9276bc5950>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f92611c57a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f926123ccd0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f9276bcd200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f9275f0ec20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f9276c78b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f9269d1c5f0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 68, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f92611cbcd0>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: [<connect.splayer.SPlayer object at 0x7f92611c4c10>, <connect.splayer.SPlayer object at 0...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f92766323b0>
+    └ <pymysql.connections.Connection object at 0x7f92611cbbd0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:24:23.837 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45568) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:24:23.838 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 False
+2020-02-13 20:24:23.838 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:72 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:24:23.842 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45572) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:24:23.843 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-02-13 20:24:33.865 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f7a73c658c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f7a73d19450>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f7a73becc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f7a73c64950>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f7a5e2647a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f7a5e2dad90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f7a73c6c200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f7a72facc20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f7a73d17b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f7a66dbc5f0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 69, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f7a5e26ad50>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: []})
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f7a736d03b0>
+    └ <pymysql.connections.Connection object at 0x7f7a5e26a650>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:24:34.299 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45576) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:24:34.300 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 False
+2020-02-13 20:24:34.300 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:72 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:24:34.307 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45580) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:24:34.307 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-02-13 20:24:44.328 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f7a73c658c0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f7a73d19450>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f7a73becc20>
+           └ <multiprocessing.context.DefaultContext object at 0x7f7a73c64950>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f7a5e2647a0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f7a5e2dad90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f7a73c6c200>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f7a72facc20>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f7a73d17b00>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=16, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 12345), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f7a66dbc5f0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 69, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 42553
+    │                   │    │            │         │    └ {42553: <multiprocessing.queues.Queue object at 0x7f7a5e26aa50>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 42553
+    │                   │    └ defaultdict(<class 'list'>, {42553: []})
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 18, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:2, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 12, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f7a736d03b0>
+    └ <pymysql.connections.Connection object at 0x7f7a5d9f07d0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+2020-02-13 20:24:47.542 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45584) : {'info': 'connect', 'room_id': 42553, 'name': 'Bot4', 'room_number': 2, 'bots': ['CallAgent']}
+2020-02-13 20:24:47.543 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 False
+2020-02-13 20:24:47.543 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:72 | Waiter-2 | - notify bots ['CallAgent']
+2020-02-13 20:24:47.548 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 45588) : {'info': 'connect', 'room_id': 42553, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-02-13 20:24:47.548 | DEBUG | /home/xh/code/texas_poker/server/connect/waiter.py:60 | Waiter-2 | - 42553 True
+2020-03-16 21:09:59.638 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 60416) : {'info': 'connect', 'room_id': 329, 'name': 'aaa', 'room_number': 2, 'bots': ['CallAgent']}
+2020-03-16 21:09:59.657 | INFO | /home/xh/code/texas_poker/server/connect/waiter.py:35 | Waiter-2 | - recv client from ('127.0.0.1', 60420) : {'info': 'connect', 'room_id': 329, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+2020-03-16 21:10:10.657 | ERROR | /home/xh/code/texas_poker/server/connect/waiter.py:30 | Waiter-2 | - (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+Traceback (most recent call last):
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 583, in connect
+    **kwargs)
+      └ {}
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 728, in create_connection
+    raise err
+          └ None
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/socket.py", line 716, in create_connection
+    sock.connect(sa)
+    │    │       └ ('172.18.40.31', 3306)
+    │    └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+
+socket.timeout: timed out
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "main.py", line 23, in <module>
+    waiter.start()
+    │      └ <function BaseProcess.start at 0x7f6bbbb8acb0>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 112, in start
+    self._popen = self._Popen(self)
+    │    │        │    │      └ <Waiter(Waiter-2, started)>
+    │    │        │    └ <staticmethod object at 0x7f6bbbc03ad0>
+    │    │        └ <Waiter(Waiter-2, started)>
+    │    └ None
+    └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 223, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           │                │                            └ <Waiter(Waiter-2, started)>
+           │                └ <function DefaultContext.get_context at 0x7f6bbbcc3200>
+           └ <multiprocessing.context.DefaultContext object at 0x7f6bbbb8d810>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/context.py", line 277, in _Popen
+    return Popen(process_obj)
+           │     └ <Waiter(Waiter-2, started)>
+           └ <class 'multiprocessing.popen_fork.Popen'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    │    │       └ <Waiter(Waiter-2, started)>
+    │    └ <function Popen._launch at 0x7f6ba60608c0>
+    └ <multiprocessing.popen_fork.Popen object at 0x7f6ba60d8e10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/popen_fork.py", line 74, in _launch
+    code = process_obj._bootstrap()
+           │           └ <function BaseProcess._bootstrap at 0x7f6bbbb135f0>
+           └ <Waiter(Waiter-2, started)>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+    │    └ <function Waiter.run at 0x7f6baea9edd0>
+    └ <Waiter(Waiter-2, started)>
+
+> File "/home/xh/code/texas_poker/server/connect/waiter.py", line 28, in run
+    self.process()
+    │    └ <function Waiter.process at 0x7f6bbd836a70>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 42, in process
+    self.handle_player(client, message)
+    │    │             │       └ {'info': 'connect', 'room_id': 329, 'name': 'CallAgent0', 'room_number': 2, 'bots': []}
+    │    │             └ <socket.socket fd=13, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 18888), raddr=(...
+    │    └ <function Waiter.handle_player at 0x7f6bbbc05200>
+    └ <Waiter(Waiter-2, started)>
+
+  File "/home/xh/code/texas_poker/server/connect/waiter.py", line 66, in handle_player
+    NoLimitHoldemKernel(self.waiting_list[room_id], self.room_queues[room_id]).start()
+    │                   │    │            │         │    │           └ 329
+    │                   │    │            │         │    └ {329: <multiprocessing.queues.Queue object at 0x7f6ba606b790>}
+    │                   │    │            │         └ <Waiter(Waiter-2, started)>
+    │                   │    │            └ 329
+    │                   │    └ defaultdict(<class 'list'>, {329: [<connect.splayer.SPlayer object at 0x7f6ba6067c50>, <connect.splayer.SPlayer object at 0x7...
+    │                   └ <Waiter(Waiter-2, started)>
+    └ <class 'kernel.nolimitholdemkernel.NoLimitHoldemKernel'>
+
+  File "/home/xh/code/texas_poker/server/kernel/nolimitholdemkernel.py", line 21, in __init__
+    self.mysql = Mysql()
+    │            └ <class 'database.mysql.Mysql'>
+    └ <NoLimitHoldemKernel(NoLimitHoldemKernel-2:1, initial)>
+
+  File "/home/xh/code/texas_poker/server/database/mysql.py", line 14, in __init__
+    charset='utf8',  # 字符集
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/__init__.py", line 94, in Connect
+    return Connection(*args, **kwargs)
+           │           │       └ {'host': 'a.xuhang.ink', 'port': 3306, 'user': 'xh', 'passwd': '0', 'db': 'poker2', 'charset': 'utf8'}
+           │           └ ()
+           └ <class 'pymysql.connections.Connection'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 325, in __init__
+    self.connect()
+    │    └ <function Connection.connect at 0x7f6bbb5fad40>
+    └ <pymysql.connections.Connection object at 0x7f6ba606b8d0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pymysql/connections.py", line 630, in connect
+    raise exc
+          └ OperationalError(2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
+
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'a.xuhang.ink' (timed out)")
