@@ -19,17 +19,17 @@ class CallAgentListener(multiprocessing.Process):
         server.listen(20)
         while True:
             client, addr = server.accept()
-            room_id, room_number, name = recvJson(client)
+            room_id, room_number, name, game_number = recvJson(client)
             client.close()
-            agent = CallAgent(room_id, room_number, name)
+            agent = CallAgent(room_id, room_number, name, game_number)
             agent.start()
 
 
 class CallAgent(multiprocessing.Process):
 
-    def __init__(self, room_id, room_number, name):
+    def __init__(self, room_id, room_number, name, game_number):
         multiprocessing.Process.__init__(self)
-        self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, bots=[])
+        self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.seed = random.randint(0, 30)
 
     def run(self):

@@ -7,7 +7,7 @@ server_port = 18888
 room_id = 121
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-
+game_number = 2
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
@@ -24,7 +24,7 @@ def recvJson(request):
 if __name__ == "__main__":
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((server_ip, server_port))
-    message = dict(info='ai_vs_ai', room_id=room_id, room_number=2, bots=bots)
+    message = dict(info='ai_vs_ai', room_id=room_id, room_number=2, bots=bots, game_number=game_number)
     sendJson(client, message)
     while True:
         data = recvJson(client)

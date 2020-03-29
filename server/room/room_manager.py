@@ -9,9 +9,9 @@ class RoomManager():
     def __init__(self):
         self.rooms = {}
 
-    def create_room(self, room_id, room_number):
+    def create_room(self, room_id, room_number, game_number):
         if room_id not in self.rooms:
-            self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id)
+            self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id, game_number)
 
     def add_observer(self, room_id, sock):
         if room_id not in self.rooms:
@@ -36,7 +36,7 @@ class RoomManager():
             if bot not in cfg["bot"]:
                 bot = "CallAgent"
             client.connect((cfg["bot"][bot]["host"], cfg["bot"][bot]["port"]))
-            sendJson(client, [room_id, room.room_number, bot+str(num)])
+            sendJson(client, [room_id, room.room_number, bot+str(num), room.game_number])
             client.close()
             num += 1
         room.notify_bot_flag = True
@@ -59,5 +59,6 @@ class RoomManager():
                     client.sock.transport.loseConnection()
                 del self.rooms[room_id]
         elif sock.identity == 'observer':
-            room = self.rooms[room_id]
-            room.remove_observer(sock)
+            if room_id in self.rooms:
+                room = self.rooms[room_id]
+                room.remove_observer(sock)

@@ -18,10 +18,11 @@ class People():
 
 
 class Room():
-    def __init__(self, room_number, room_id):
+    def __init__(self, room_number, room_id, game_number):
         self.clients = []
         self.observers = []
         self.room_number = room_number
+        self.game_number = game_number
         self.room_id = room_id
         self.notify_bot_flag = False
 

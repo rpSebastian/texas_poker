@@ -33,15 +33,15 @@ class RuleAgentListener(multiprocessing.Process):
         server.listen(20)
         while True:
             client, addr = server.accept()
-            room_id, room_number, name = recvJson(client)
+            room_id, room_number, name, game_number = recvJson(client)
             client.close()
-            agent = RuleAgent(room_id, room_number, name)
+            agent = RuleAgent(room_id, room_number, name, game_number)
             agent.start()
 
 class RuleAgent(multiprocessing.Process):
-    def __init__(self, room_id, room_number, name):
+    def __init__(self, room_id, room_number, name, game_number):
         multiprocessing.Process.__init__(self)
-        message = dict(info='connect', room_id=room_id, name=name, room_number=room_number, bots=[])
+        message = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.info = message 
 
     def get_action(self, data):

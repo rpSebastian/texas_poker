@@ -1,18 +1,17 @@
 import random
 from room import Room
-from utils import sendJson, recvJson
 from games.nolimitholdem.game import Game
-from err import DisconnectException
 from logs import logger
 
 
 class NoLimitHoldemRoom(Room):
-    def __init__(self, room_number, room_id):
-        super().__init__(room_number, room_id)
+    def __init__(self, room_number, room_id, game_number):
+        super().__init__(room_number, room_id, game_number)
 
     def init_game(self):
         random.shuffle(self.clients)
         self.game = Game(self.room_number)
+        self.game_count = 0
         self.ready_count = 0
         self.current_player_id = self.game.game_init()
         self.notify_state()
@@ -46,6 +45,9 @@ class NoLimitHoldemRoom(Room):
             self.notify_state(last=True)
             self.notify_result()
             self.ready_count = 0
+            self.game_count += 1
+            if self.game_count == self.game_number:
+                sock.transport.loseConnection()
             client = self.clients.pop(0)
             self.clients.append(client)
         else:
@@ -73,7 +75,6 @@ class NoLimitHoldemRoom(Room):
     def notify_result(self):
         for i, client in enumerate(self.clients):
             state = self.game.get_payoff(i)
-            print(state)
             for i, player in enumerate(self.clients):
                 state['players'][i]['name'] = player.name
             state['info'] = 'result'

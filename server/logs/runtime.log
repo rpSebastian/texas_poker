@@ -11598,3 +11598,113 @@ KeyError: 'win_mone y'
 2020-03-29 12:00:30.180 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:20 | MainProcess | - recv client from 127.0.0.1, 51566: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'bots': []}
 2020-03-29 12:00:36.015 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:20 | MainProcess | - recv client from 127.0.0.1, 51576: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent']}
 2020-03-29 12:00:36.020 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:20 | MainProcess | - recv client from 127.0.0.1, 51580: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'bots': []}
+2020-03-29 13:53:35.592 | ERROR | /home/xh/code/texas_poker/server/network/protocols.py:31 | MainProcess | - 'game_number'
+Traceback (most recent call last):
+
+  File "main.py", line 20, in <module>
+    reactor.run()
+    │       └ <function _SignalReactorMixin.run at 0x7f07793e9950>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1283, in run
+    self.mainLoop()
+    │    └ <function _SignalReactorMixin.mainLoop at 0x7f07793e99e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1295, in mainLoop
+    self.doIteration(t)
+    │    │           └ None
+    │    └ <function EPollReactor.doPoll at 0x7f077930d0e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/epollreactor.py", line 235, in doPoll
+    log.callWithLogger(selectable, _drdw, selectable, fd, event)
+    │   │              │           │      │           │   └ 1
+    │   │              │           │      │           └ 16
+    │   │              │           │      └ <GameProtocol #0 on 18888>
+    │   │              │           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>>
+    │   │              └ <GameProtocol #0 on 18888>
+    │   └ <function callWithLogger at 0x7f07795d2710>
+    └ <module 'twisted.python.log' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 103, in callWithLogger
+    return callWithContext({"system": lp}, func, *args, **kw)
+           │                          │    │      │       └ {}
+           │                          │    │      └ (<GameProtocol #0 on 18888>, 16, 1)
+           │                          │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>>
+           │                          └ 'GameProtocol,0,127.0.0.1'
+           └ <function callWithContext at 0x7f077982e290>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 86, in callWithContext
+    return context.call({ILogContext: newCtx}, func, *args, **kw)
+           │       │     │            │        │      │       └ {}
+           │       │     │            │        │      └ (<GameProtocol #0 on 18888>, 16, 1)
+           │       │     │            │        └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>>
+           │       │     │            └ {'system': 'GameProtocol,0,127.0.0.1'}
+           │       │     └ <class 'twisted.python.log.ILogContext'>
+           │       └ <bound method ThreadedContextTracker.callWithContext of <twisted.python.context.ThreadedContextTracker object at 0x7f07795a02...
+           └ <module 'twisted.python.context' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 122, in callWithContext
+    return self.currentContext().callWithContext(ctx, func, *args, **kw)
+           │    │                                │    │      │       └ {}
+           │    │                                │    │      └ (<GameProtocol #0 on 18888>, 16, 1)
+           │    │                                │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>>
+           │    │                                └ {<class 'twisted.python.log.ILogContext'>: {'system': 'GameProtocol,0,127.0.0.1'}}
+           │    └ <function ThreadedContextTracker.currentContext at 0x7f077984c440>
+           └ <twisted.python.context.ThreadedContextTracker object at 0x7f07795a0290>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 85, in callWithContext
+    return func(*args,**kw)
+           │     │      └ {}
+           │     └ (<GameProtocol #0 on 18888>, 16, 1)
+           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7f0779b745d0>>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/posixbase.py", line 614, in _doReadOrWrite
+    why = selectable.doRead()
+          │          └ <function Connection.doRead at 0x7f0779407c20>
+          └ <GameProtocol #0 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 243, in doRead
+    return self._dataReceived(data)
+           │    │             └ b'k\x00\x00\x00{"info": "ai_vs_ai", "room_id": 121, "room_number": 2, "bots": ["CallAgent", "CallAgent"], "game_numer": 2}'
+           │    └ <function Connection._dataReceived at 0x7f0779407e60>
+           └ <GameProtocol #0 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 249, in _dataReceived
+    rval = self.protocol.dataReceived(data)
+           │    │        │            └ b'k\x00\x00\x00{"info": "ai_vs_ai", "room_id": 121, "room_number": 2, "bots": ["CallAgent", "CallAgent"], "game_numer": 2}'
+           │    │        └ <function JsonReceiver.dataReceived at 0x7f077931bef0>
+           │    └ <network.protocols.GameProtocol object at 0x7f07790051d0>
+           └ <GameProtocol #0 on 18888>
+
+  File "/home/xh/code/texas_poker/server/network/base.py", line 20, in dataReceived
+    self.jsonReceived(message)
+    │    │            └ {'info': 'ai_vs_ai', 'room_id': 121, 'room_number': 2, 'bots': ['CallAgent', 'CallAgent'], 'game_numer': 2}
+    │    └ <function GameProtocol.jsonReceived at 0x7f077931b8c0>
+    └ <network.protocols.GameProtocol object at 0x7f07790051d0>
+
+> File "/home/xh/code/texas_poker/server/network/protocols.py", line 27, in jsonReceived
+    self.handle_ai_vs_ai(data)
+    │    │               └ {'info': 'ai_vs_ai', 'room_id': 121, 'room_number': 2, 'bots': ['CallAgent', 'CallAgent'], 'game_numer': 2}
+    │    └ <function GameProtocol.handle_ai_vs_ai at 0x7f0779061830>
+    └ <network.protocols.GameProtocol object at 0x7f07790051d0>
+
+  File "/home/xh/code/texas_poker/server/network/protocols.py", line 53, in handle_ai_vs_ai
+    room_id, room_number, bots, game_number = itemgetter('room_id', 'room_number', 'bots', 'game_number')(data)
+                                              │                                                           └ {'info': 'ai_vs_ai', 'room_id': 121, 'room_number': 2, 'bots': ['CallAgent', 'CallAgent'], 'game_numer': 2}
+                                              └ <class 'operator.itemgetter'>
+
+KeyError: 'game_number'
+2020-03-29 13:55:40.535 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 34562: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 13:55:40.537 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 34564: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:00:19.675 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35172: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:00:19.677 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35174: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:12.096 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35272: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:12.099 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35274: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:13.832 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35288: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:13.835 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35290: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:15.178 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35298: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:15.180 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35300: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:20.500 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35308: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:01:51.330 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35400: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:01:51.335 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35404: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:52.653 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35406: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:01:52.656 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35410: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:53.595 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35416: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:01:53.599 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35420: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:01:54.386 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35422: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:01:54.389 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35426: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:02:02.635 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35436: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:02:02.639 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 35440: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
