@@ -77,11 +77,12 @@ class Game():
             return 3
         return 0
 
-    def get_payoff(self):
+    def get_payoff(self, player_id=-1):
         state = {}
         win_money = self.judge.get_payoff(self.players, self.dealer, self.stack)
         if self.is_terminal() == 1:
-            state['player_card'] = [[] for player in self.players]
+            state['player_card'] = [[str(card) for card in player.hands] if i == player_id else []
+                                    for i, player in enumerate(self.players)]
         else:
             state['player_card'] = [[str(card) for card in player.hands] if player.status == "alive"
                                     else [] for player in self.players]

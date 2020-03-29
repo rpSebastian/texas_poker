@@ -72,7 +72,8 @@ class NoLimitHoldemRoom(Room):
 
     def notify_result(self):
         for i, client in enumerate(self.clients):
-            state = self.game.get_payoff()
+            state = self.game.get_payoff(i)
+            print(state)
             for i, player in enumerate(self.clients):
                 state['players'][i]['name'] = player.name
             state['info'] = 'result'
