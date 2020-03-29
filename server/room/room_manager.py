@@ -3,15 +3,16 @@ from config import cfg
 from utils import sendJson
 from err import RoomFullException, RoomNotExistException, DisconnectException
 from room import NoLimitHoldemRoom
-
+from database.mysql import Mysql
 
 class RoomManager():
     def __init__(self):
         self.rooms = {}
+        self.mysql = Mysql()
 
     def create_room(self, room_id, room_number, game_number):
         if room_id not in self.rooms:
-            self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id, game_number)
+            self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id, game_number, self.mysql)
 
     def add_observer(self, room_id, sock):
         if room_id not in self.rooms:

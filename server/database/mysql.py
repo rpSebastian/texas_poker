@@ -1,16 +1,18 @@
 import pymysql
 import datetime
+import json
+from config import cfg
 
 
 class Mysql:
 
     def __init__(self):
         self.content = pymysql.Connect(
-            host='a.xuhang.ink',  # mysql的主机ip
-            port=3306,  # 端口
-            user='xh',  # 用户名
-            passwd='0',  # 数据库密码
-            db='poker2',  # 数据库名
+            host=cfg["database"]["host"],  # mysql的主机ip
+            port=cfg["database"]["port"],  # 端口
+            user=cfg["database"]["user"],  # 用户名
+            passwd=cfg["database"]["password"],  # 数据库密码
+            db=cfg["database"]["table"],  # 数据库名
             charset='utf8',  # 字符集
         )
         self.cursor = self.content.cursor()
@@ -20,7 +22,7 @@ class Mysql:
 
     def save(self, message):
         game_info = ''.join(message['public_card']), \
-                    '/'.join(','.join(p) for p in message['action_history']), \
+                    json.dumps(message['action_history']), \
                     datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.cursor.execute(self.game_sql, game_info)
         game_id = self.cursor.lastrowid

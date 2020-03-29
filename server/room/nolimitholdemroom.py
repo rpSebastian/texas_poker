@@ -5,8 +5,6 @@ from logs import logger
 
 
 class NoLimitHoldemRoom(Room):
-    def __init__(self, room_number, room_id, game_number):
-        super().__init__(room_number, room_id, game_number)
 
     def init_game(self):
         random.shuffle(self.clients)
@@ -44,6 +42,7 @@ class NoLimitHoldemRoom(Room):
         if self.game.is_terminal():
             self.notify_state(last=True)
             self.notify_result()
+            self.save_data()
             self.ready_count = 0
             self.game_count += 1
             if self.game_count == self.game_number:
@@ -53,6 +52,12 @@ class NoLimitHoldemRoom(Room):
         else:
             self.notify_state()
 
+    def save_data(self):
+        message = self.game.get_save_data()
+        message['name'] = [client.name for client in self.clients]
+        message['position'] = [i for i in range(len(self.clients))]
+        self.mysql.save(message)
+        
     def notify_state(self, last=False):
         for i, client in enumerate(self.clients):
             state = self.game.get_state(i)
