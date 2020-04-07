@@ -11840,3 +11840,189 @@ TypeError: sequence item 0: expected str instance, dict found
 2020-03-29 14:51:22.407 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 41846: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
 2020-03-29 14:53:01.118 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42118: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
 2020-03-29 14:53:01.120 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42120: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:57:15.887 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42342: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 2}
+2020-03-29 14:57:15.890 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42346: {'info': 'connect', 'room_id': 1000, 'name': 'RanAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 14:57:30.740 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42384: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+2020-03-29 14:57:30.740 | ERROR | /home/xh/code/texas_poker/server/network/protocols.py:32 | MainProcess | - 'game_number'
+Traceback (most recent call last):
+
+  File "main.py", line 20, in <module>
+    reactor.run()
+    │       └ <function _SignalReactorMixin.run at 0x7faaf2962950>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1283, in run
+    self.mainLoop()
+    │    └ <function _SignalReactorMixin.mainLoop at 0x7faaf29629e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1295, in mainLoop
+    self.doIteration(t)
+    │    │           └ None
+    │    └ <function EPollReactor.doPoll at 0x7faaf28850e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/epollreactor.py", line 235, in doPoll
+    log.callWithLogger(selectable, _drdw, selectable, fd, event)
+    │   │              │           │      │           │   └ 1
+    │   │              │           │      │           └ 17
+    │   │              │           │      └ <GameProtocol #7 on 18888>
+    │   │              │           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+    │   │              └ <GameProtocol #7 on 18888>
+    │   └ <function callWithLogger at 0x7faaf2b49710>
+    └ <module 'twisted.python.log' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 103, in callWithLogger
+    return callWithContext({"system": lp}, func, *args, **kw)
+           │                          │    │      │       └ {}
+           │                          │    │      └ (<GameProtocol #7 on 18888>, 17, 1)
+           │                          │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │                          └ 'GameProtocol,7,127.0.0.1'
+           └ <function callWithContext at 0x7faaf2da6290>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 86, in callWithContext
+    return context.call({ILogContext: newCtx}, func, *args, **kw)
+           │       │     │            │        │      │       └ {}
+           │       │     │            │        │      └ (<GameProtocol #7 on 18888>, 17, 1)
+           │       │     │            │        └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │       │     │            └ {'system': 'GameProtocol,7,127.0.0.1'}
+           │       │     └ <class 'twisted.python.log.ILogContext'>
+           │       └ <bound method ThreadedContextTracker.callWithContext of <twisted.python.context.ThreadedContextTracker object at 0x7faaf2b69e...
+           └ <module 'twisted.python.context' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 122, in callWithContext
+    return self.currentContext().callWithContext(ctx, func, *args, **kw)
+           │    │                                │    │      │       └ {}
+           │    │                                │    │      └ (<GameProtocol #7 on 18888>, 17, 1)
+           │    │                                │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │    │                                └ {<class 'twisted.python.log.ILogContext'>: {'system': 'GameProtocol,7,127.0.0.1'}}
+           │    └ <function ThreadedContextTracker.currentContext at 0x7faaf2dc6440>
+           └ <twisted.python.context.ThreadedContextTracker object at 0x7faaf2b69e10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 85, in callWithContext
+    return func(*args,**kw)
+           │     │      └ {}
+           │     └ (<GameProtocol #7 on 18888>, 17, 1)
+           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/posixbase.py", line 614, in _doReadOrWrite
+    why = selectable.doRead()
+          │          └ <function Connection.doRead at 0x7faaf290ec20>
+          └ <GameProtocol #7 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 243, in doRead
+    return self._dataReceived(data)
+           │    │             └ b'o\x00\x00\x00{"info": "connect", "room_id": 1000, "name": "xxx", "room_number": 2, "bots": ["RandomAgent"], "game_numbr": 2}'
+           │    └ <function Connection._dataReceived at 0x7faaf290ee60>
+           └ <GameProtocol #7 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 249, in _dataReceived
+    rval = self.protocol.dataReceived(data)
+           │    │        │            └ b'o\x00\x00\x00{"info": "connect", "room_id": 1000, "name": "xxx", "room_number": 2, "bots": ["RandomAgent"], "game_numbr": 2}'
+           │    │        └ <function JsonReceiver.dataReceived at 0x7faaf2894ef0>
+           │    └ <network.protocols.GameProtocol object at 0x7faaf23b43d0>
+           └ <GameProtocol #7 on 18888>
+
+  File "/home/xh/code/texas_poker/server/network/base.py", line 20, in dataReceived
+    self.jsonReceived(message)
+    │    │            └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+    │    └ <function GameProtocol.jsonReceived at 0x7faaf28948c0>
+    └ <network.protocols.GameProtocol object at 0x7faaf23b43d0>
+
+> File "/home/xh/code/texas_poker/server/network/protocols.py", line 23, in jsonReceived
+    self.handle_player(data)
+    │    │             └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+    │    └ <function GameProtocol.handle_player at 0x7faaf25c2320>
+    └ <network.protocols.GameProtocol object at 0x7faaf23b43d0>
+
+  File "/home/xh/code/texas_poker/server/network/protocols.py", line 47, in handle_player
+    room_id, name, room_number, bots, game_number = itemgetter('room_id', 'name', 'room_number', 'bots', 'game_number')(data)
+                                                    │                                                                   └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+                                                    └ <class 'operator.itemgetter'>
+
+KeyError: 'game_number'
+2020-03-29 14:57:34.904 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42390: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+2020-03-29 14:57:34.905 | ERROR | /home/xh/code/texas_poker/server/network/protocols.py:32 | MainProcess | - 'game_number'
+Traceback (most recent call last):
+
+  File "main.py", line 20, in <module>
+    reactor.run()
+    │       └ <function _SignalReactorMixin.run at 0x7faaf2962950>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1283, in run
+    self.mainLoop()
+    │    └ <function _SignalReactorMixin.mainLoop at 0x7faaf29629e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/base.py", line 1295, in mainLoop
+    self.doIteration(t)
+    │    │           └ None
+    │    └ <function EPollReactor.doPoll at 0x7faaf28850e0>
+    └ <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/epollreactor.py", line 235, in doPoll
+    log.callWithLogger(selectable, _drdw, selectable, fd, event)
+    │   │              │           │      │           │   └ 1
+    │   │              │           │      │           └ 17
+    │   │              │           │      └ <GameProtocol #8 on 18888>
+    │   │              │           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+    │   │              └ <GameProtocol #8 on 18888>
+    │   └ <function callWithLogger at 0x7faaf2b49710>
+    └ <module 'twisted.python.log' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 103, in callWithLogger
+    return callWithContext({"system": lp}, func, *args, **kw)
+           │                          │    │      │       └ {}
+           │                          │    │      └ (<GameProtocol #8 on 18888>, 17, 1)
+           │                          │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │                          └ 'GameProtocol,8,127.0.0.1'
+           └ <function callWithContext at 0x7faaf2da6290>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/log.py", line 86, in callWithContext
+    return context.call({ILogContext: newCtx}, func, *args, **kw)
+           │       │     │            │        │      │       └ {}
+           │       │     │            │        │      └ (<GameProtocol #8 on 18888>, 17, 1)
+           │       │     │            │        └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │       │     │            └ {'system': 'GameProtocol,8,127.0.0.1'}
+           │       │     └ <class 'twisted.python.log.ILogContext'>
+           │       └ <bound method ThreadedContextTracker.callWithContext of <twisted.python.context.ThreadedContextTracker object at 0x7faaf2b69e...
+           └ <module 'twisted.python.context' from '/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py'>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 122, in callWithContext
+    return self.currentContext().callWithContext(ctx, func, *args, **kw)
+           │    │                                │    │      │       └ {}
+           │    │                                │    │      └ (<GameProtocol #8 on 18888>, 17, 1)
+           │    │                                │    └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+           │    │                                └ {<class 'twisted.python.log.ILogContext'>: {'system': 'GameProtocol,8,127.0.0.1'}}
+           │    └ <function ThreadedContextTracker.currentContext at 0x7faaf2dc6440>
+           └ <twisted.python.context.ThreadedContextTracker object at 0x7faaf2b69e10>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/python/context.py", line 85, in callWithContext
+    return func(*args,**kw)
+           │     │      └ {}
+           │     └ (<GameProtocol #8 on 18888>, 17, 1)
+           └ <bound method _PollLikeMixin._doReadOrWrite of <twisted.internet.epollreactor.EPollReactor object at 0x7faaf30e1b90>>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/posixbase.py", line 614, in _doReadOrWrite
+    why = selectable.doRead()
+          │          └ <function Connection.doRead at 0x7faaf290ec20>
+          └ <GameProtocol #8 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 243, in doRead
+    return self._dataReceived(data)
+           │    │             └ b'o\x00\x00\x00{"info": "connect", "room_id": 1000, "name": "xxx", "room_number": 2, "bots": ["RandomAgent"], "game_numbr": 2}'
+           │    └ <function Connection._dataReceived at 0x7faaf290ee60>
+           └ <GameProtocol #8 on 18888>
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/twisted/internet/tcp.py", line 249, in _dataReceived
+    rval = self.protocol.dataReceived(data)
+           │    │        │            └ b'o\x00\x00\x00{"info": "connect", "room_id": 1000, "name": "xxx", "room_number": 2, "bots": ["RandomAgent"], "game_numbr": 2}'
+           │    │        └ <function JsonReceiver.dataReceived at 0x7faaf2894ef0>
+           │    └ <network.protocols.GameProtocol object at 0x7faaf23ad590>
+           └ <GameProtocol #8 on 18888>
+
+  File "/home/xh/code/texas_poker/server/network/base.py", line 20, in dataReceived
+    self.jsonReceived(message)
+    │    │            └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+    │    └ <function GameProtocol.jsonReceived at 0x7faaf28948c0>
+    └ <network.protocols.GameProtocol object at 0x7faaf23ad590>
+
+> File "/home/xh/code/texas_poker/server/network/protocols.py", line 23, in jsonReceived
+    self.handle_player(data)
+    │    │             └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+    │    └ <function GameProtocol.handle_player at 0x7faaf25c2320>
+    └ <network.protocols.GameProtocol object at 0x7faaf23ad590>
+
+  File "/home/xh/code/texas_poker/server/network/protocols.py", line 47, in handle_player
+    room_id, name, room_number, bots, game_number = itemgetter('room_id', 'name', 'room_number', 'bots', 'game_number')(data)
+                                                    │                                                                   └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_numbr': 2}
+                                                    └ <class 'operator.itemgetter'>
+
+KeyError: 'game_number'
+2020-03-29 15:01:01.329 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42870: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-03-29 15:01:01.331 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 42872: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-04-07 10:39:44.623 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 40648: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent0', 'room_number': 2, 'game_number': 2, 'bots': []}
+2020-04-07 10:39:44.630 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:22 | MainProcess | - recv client from 127.0.0.1, 40650: {'info': 'connect', 'room_id': 121, 'name': 'CallAgent1', 'room_number': 2, 'game_number': 2, 'bots': []}

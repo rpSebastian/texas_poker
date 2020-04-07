@@ -56,8 +56,9 @@ class NoLimitHoldemRoom(Room):
         message = self.game.get_save_data()
         message['name'] = [client.name for client in self.clients]
         message['position'] = [i for i in range(len(self.clients))]
+        message['room_id'] = self.room_id
         self.mysql.save(message)
-        
+
     def notify_state(self, last=False):
         for i, client in enumerate(self.clients):
             state = self.game.get_state(i)

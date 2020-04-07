@@ -16,14 +16,15 @@ class Mysql:
             charset='utf8',  # 字符集
         )
         self.cursor = self.content.cursor()
-        self.game_sql = 'insert into game(public_card, action_history, time) values(%s, %s, %s)'
+        self.game_sql = 'insert into game(public_card, action_history, time, room_id) values(%s, %s, %s, %s)'
         self.player_sql = 'insert into player(name, position, win_money, private_card, game_id)' \
                           'values(%s, %s, %s, %s, %s)'
 
     def save(self, message):
         game_info = ''.join(message['public_card']), \
                     json.dumps(message['action_history']), \
-                    datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), \
+                    str(message['room_id'])
         self.cursor.execute(self.game_sql, game_info)
         game_id = self.cursor.lastrowid
         for p in range(len(message['position'])):
