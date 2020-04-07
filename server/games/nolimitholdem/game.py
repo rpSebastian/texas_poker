@@ -139,4 +139,6 @@ class Game():
         state["action_history"] = self.action_history
         state['player_card'] = [[str(card) for card in player.hands] for player in self.players]
         state["win_money"] = self.judge.get_payoff(self.players, self.dealer, self.stack)
+        state['money_left'] = [player.remained_chips for player in self.players]
+        state['total_money'] = [self.stack for player in self.players]
         return state
