@@ -141,4 +141,5 @@ class Game():
         state["win_money"] = self.judge.get_payoff(self.players, self.dealer, self.stack)
         state['money_left'] = [player.remained_chips for player in self.players]
         state['total_money'] = [self.stack for player in self.players]
+        state["best_cards"] = [''.join(map(str, sorted(player.best_cards))) for player in self.players]
         return state

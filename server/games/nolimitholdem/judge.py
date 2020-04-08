@@ -10,13 +10,15 @@ class Judge():
         payoff = []
         if valid_num == 1:
             for player in players:
+                player.best_cards = ['']
                 win_money = player.remained_chips - stack
                 if player.status == 'alive':
                     win_money += dealer.pot
                 payoff.append(win_money)
         else:
             for player in players:
-                player.hand_level = hand_level(player.hands, dealer.hands)
+                player.best_cards = best_cards(player.hands, dealer.hands)
+                player.hand_level = cards_level(player.best_cards)
             max_level = max(player.hand_level for player in players if player.status == 'alive')
             for player in players:
                 player.winner = player.status == 'alive' and player.hand_level == max_level
@@ -29,10 +31,10 @@ class Judge():
         return payoff
 
 
-def hand_level(hand_cards, desktop_cards):
-    '''输入手牌和桌牌，计算最大的牌面
+def best_cards(hand_cards, desktop_cards):
+    '''输入手牌和桌牌，计算最大的组合牌
 
-    在2张手牌和5张桌牌中进行组合，计算得出最大的牌面，牌面用元组进行表示。两个牌面可以直接进行比较。
+    在2张手牌和5张桌牌中进行组合，计算得出最大的组合牌。
     牌型级别为:
         9->同花顺， 8->四条， 7->葫芦， 6->同花, 5->顺子,
         4->三条， 3->两对， 2->一对, 1->高牌
@@ -42,7 +44,7 @@ def hand_level(hand_cards, desktop_cards):
         desktop_cards: 桌牌，5张牌的列表
 
     Returns:
-        一个元组表示最大牌面，第一个元素为牌型，剩下元素为相同牌型下依次比较的牌。
+        best_cards: 最大的组合牌
     '''
     total_cards = [*hand_cards, *desktop_cards]
     if isinstance(total_cards[0], str):
@@ -51,8 +53,12 @@ def hand_level(hand_cards, desktop_cards):
             total_card.append(Card(card[0], card[1]))
         total_cards = total_card
     cards_iter = itertools.combinations(total_cards, 5)
-    best_cards = max(cards_iter, key=lambda x: cards_level(x))
-    return cards_level(best_cards)
+    best_cards, best_cards_level = None, None
+    for cards in cards_iter:
+        level = cards_level(cards)
+        if best_cards_level is None or level > best_cards_level:
+            best_cards, best_cards_level = cards, level
+    return best_cards
 
 
 def cards_level(cards):

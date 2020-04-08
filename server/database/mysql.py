@@ -17,8 +17,8 @@ class Mysql:
         )
         self.cursor = self.content.cursor()
         self.game_sql = 'insert into game(public_card, action_history, time, room_id) values(%s, %s, %s, %s)'
-        self.player_sql = 'insert into player(name, position, win_money, private_card, game_id, total_money, money_left)' \
-                          'values(%s, %s, %s, %s, %s, %s, %s)'
+        self.player_sql = 'insert into player(name, position, win_money, private_card, game_id, total_money, money_left, best_cards)' \
+                          'values(%s, %s, %s, %s, %s, %s, %s, %s)'
 
     def save(self, message):
         game_info = ''.join(message['public_card']), \
@@ -30,7 +30,7 @@ class Mysql:
         for p in range(len(message['position'])):
             player_info = message['name'][p], message['position'][p], \
                           message['win_money'][p], ''.join(message['player_card'][p]), game_id, \
-                          message['total_money'][p], message['money_left'][p]
+                          message['total_money'][p], message['money_left'][p], message['best_cards'][p]
             self.cursor.execute(self.player_sql, player_info)
         self.cursor.connection.commit()
 
