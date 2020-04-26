@@ -29,7 +29,7 @@ class RandomAgent(multiprocessing.Process):
 
     def __init__(self, room_id, room_number, name, game_number):
         multiprocessing.Process.__init__(self)
-        self.info = dict(info='connect', room_id=room_id, name="RanAgent" + name[-1], room_number=room_number, game_number=game_number, bots=[])
+        self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.seed = random.randint(0, 30)
 
     def run(self):
