@@ -5,6 +5,7 @@ from err import RoomFullException, RoomNotExistException, DisconnectException
 from room import NoLimitHoldemRoom
 from database.mysql import Mysql
 
+
 class RoomManager():
     def __init__(self):
         self.rooms = {}
