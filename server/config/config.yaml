@@ -29,3 +29,6 @@ database:
   user: "root"
   password: "0"
   table: "poker"
+
+rabbitMQ:
+  host: "127.0.0.1"  
