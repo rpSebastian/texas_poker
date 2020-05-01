@@ -39,6 +39,7 @@ class RandomAgent(multiprocessing.Process):
             sendJson(client, self.info)
             while True:
                 data = recvJson(client)
+                print(data['info'])
                 if data['info'] == 'state' and data['position'] == data['action_position']:
                     if 'fold' in data['legal_actions']:
                         data['legal_actions'].remove('fold')
@@ -50,7 +51,7 @@ class RandomAgent(multiprocessing.Process):
                     sendJson(client, {'action': action, 'info': 'action'})
                 if data['info'] == 'result':
                     sendJson(client, {'info': 'ready', 'status': 'start'})
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         finally:
             client.close()

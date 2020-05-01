@@ -1,6 +1,6 @@
 import json
 import struct
-from err import DisconnectException
+from err import MyError
 
 
 def sendJson(request, jsonData):
@@ -9,20 +9,21 @@ def sendJson(request, jsonData):
         request.send(struct.pack('i', len(data)))
         request.sendall(data)
     except (BrokenPipeError, ConnectionResetError):
-        raise DisconnectException()
+        raise MyError()
+
 
 def recvJson(request):
     try:
         data = request.recv(4)
         if data == b"":
-            raise DisconnectException()
+            raise MyError()
         length = struct.unpack('i', data)[0]
         data = request.recv(length).decode()
         while len(data) != length:
             data = data + request.recv(length - len(data)).decode()
         if data == "":
-            raise DisconnectException()
+            raise MyError()
         data = json.loads(data)
         return data
     except (BrokenPipeError, ConnectionResetError):
-        raise DisconnectException()
+        raise MyError()
