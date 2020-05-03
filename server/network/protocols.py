@@ -6,6 +6,7 @@ from network.base import JsonReceiver
 from logs import logger
 from config import cfg
 from err import MyError, RoomNotExitError, DisconnectError
+from twisted.internet import reactor
 
 
 class GameProtocol(JsonReceiver):
@@ -104,7 +105,7 @@ class GameFactory(protocol.Factory):
         queue_name = channel.queue_declare(queue='').method.queue
         channel.queue_bind(exchange='logs', queue=queue_name, routing_key='player')
         channel.basic_consume(queue=queue_name, on_message_callback=self.player_logs_callback, auto_ack=True)
-        
+
         print(' [*] Waiting for messages. To exit press CTRL+C')
         channel.start_consuming()
 
@@ -119,10 +120,10 @@ class GameFactory(protocol.Factory):
             uuid = data.pop('uuid')
             if uuid in room['player']:
                 protocol = room['player'][uuid]
-                protocol.sendJson(data)
+                reactor.callFromThread(self.send_message, protocol, data)
         elif receiver == 'observer':
             for protocol in room['observer']:
-                protocol.sendJson(data)
+                reactor.callFromThread(self.send_message, protocol, data)
 
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
@@ -132,8 +133,8 @@ class GameFactory(protocol.Factory):
             clients = [*self.rooms[room_id]['player'].values(), *self.rooms[room_id]['observer']]
             del self.rooms[room_id]
             for client in clients:
-                client.sendJson(data)
-                client.transport.loseConnection()
+                reactor.callFromThread(self.send_message, client, data)
+                reactor.callFromThread(self.lose_connection, client)
 
     def player_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
@@ -142,5 +143,11 @@ class GameFactory(protocol.Factory):
         del data['op_type']
         if room_id in self.rooms and uuid in self.rooms[room_id]['player']:
             client = self.rooms[room_id]['player'].pop(uuid)
-            client.sendJson(data)
-            client.transport.loseConnection()
+            reactor.callFromThread(self.send_message, client, data)
+            reactor.callFromThread(self.lose_connection, client)
+
+    def send_message(self, protocol, message):
+        protocol.sendJson(message)
+
+    def lose_connection(self, protocol):
+        protocol.transport.loseConnection()

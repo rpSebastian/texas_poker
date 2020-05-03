@@ -22705,3 +22705,90 @@ pika.exceptions.StreamLostError: Transport indicated EOF
 2020-05-03 16:21:57.375 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:27 | MainProcess | - recv client from 127.0.0.1, 60774: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
 2020-05-03 16:21:57.377 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '88009245-44b4-4994-8d7c-8a17f0a91b1e'}
 2020-05-03 16:21:57.378 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['07401ac0-33d4-4b8c-912b-287824a52385', '88009245-44b4-4994-8d7c-8a17f0a91b1e'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
+2020-05-03 19:34:04.065 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 52868: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:34:04.067 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '0ba1c5c5-c88a-4d5d-8f34-a4af90f80059'}
+2020-05-03 19:34:04.067 | ERROR | /home/xh/code/texas_poker/server/network/scheduler.py:49 | MainProcess | - [Errno 111] Connection refused
+Traceback (most recent call last):
+
+  File "init_scheduler.py", line 3, in <module>
+    Scheduler().start()
+    └ <class 'network.scheduler.Scheduler'>
+
+  File "/home/xh/code/texas_poker/server/network/scheduler.py", line 108, in start
+    self.channel.start_consuming()
+    │    │       └ <function BlockingChannel.start_consuming at 0x7f492d492b90>
+    │    └ <BlockingChannel impl=<Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._As...
+    └ <network.scheduler.Scheduler object at 0x7f492f6eee10>
+
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pika/adapters/blocking_connection.py", line 1866, in start_consuming
+    self._process_data_events(time_limit=None)
+    │    └ <function BlockingChannel._process_data_events at 0x7f492d492d40>
+    └ <BlockingChannel impl=<Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._As...
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pika/adapters/blocking_connection.py", line 2027, in _process_data_events
+    self.connection.process_data_events(time_limit=time_limit)
+    │    │                                         └ None
+    │    └ <property object at 0x7f492d48dc50>
+    └ <BlockingChannel impl=<Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._As...
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pika/adapters/blocking_connection.py", line 834, in process_data_events
+    self._dispatch_channel_events()
+    │    └ <function BlockingConnection._dispatch_channel_events at 0x7f492d489440>
+    └ <BlockingConnection impl=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport obj...
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pika/adapters/blocking_connection.py", line 566, in _dispatch_channel_events
+    impl_channel._get_cookie()._dispatch_events()
+    │            └ <function Channel._get_cookie at 0x7f492d514b90>
+    └ <Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport ...
+  File "/home/xh/anaconda3/envs/platform/lib/python3.7/site-packages/pika/adapters/blocking_connection.py", line 1494, in _dispatch_events
+    evt.properties, evt.body)
+    │   │           │   └ <member 'body' of '_ConsumerDeliveryEvt' objects>
+    │   │           └ <pika.adapters.blocking_connection._ConsumerDeliveryEvt object at 0x7f492ced39b0>
+    │   └ <member 'properties' of '_ConsumerDeliveryEvt' objects>
+    └ <pika.adapters.blocking_connection._ConsumerDeliveryEvt object at 0x7f492ced39b0>
+
+> File "/home/xh/code/texas_poker/server/network/scheduler.py", line 41, in callback
+    self.handle_player(data)
+    │    │             └ {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '0...
+    │    └ <function Scheduler.handle_player at 0x7f492d404f80>
+    └ <network.scheduler.Scheduler object at 0x7f492f6eee10>
+
+  File "/home/xh/code/texas_poker/server/network/scheduler.py", line 56, in handle_player
+    self.notify_bots(room, bots)
+    │    │           │     └ ['RandomAgent']
+    │    │           └ {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['0ba1c5c5-c88a-4d5d-8f34-a4af90f80059'], 'name': ['xxx'], 'n...
+    │    └ <function Scheduler.notify_bots at 0x7f492cea7950>
+    └ <network.scheduler.Scheduler object at 0x7f492f6eee10>
+
+  File "/home/xh/code/texas_poker/server/network/scheduler.py", line 95, in notify_bots
+    client.connect((cfg["bot"][bot]["host"], cfg["bot"][bot]["port"]))
+    │      │        │          │             │          └ 'RandomAgent'
+    │      │        │          │             └ {'server': {'host': '127.0.0.1', 'port': 18888}, 'bot': {'RandomAgent': {'host': '127.0.0.1', 'port': 10020}, 'CallAgent': {'...
+    │      │        │          └ 'RandomAgent'
+    │      │        └ {'server': {'host': '127.0.0.1', 'port': 18888}, 'bot': {'RandomAgent': {'host': '127.0.0.1', 'port': 10020}, 'CallAgent': {'...
+    │      └ <method 'connect' of '_socket.socket' objects>
+    └ <socket.socket fd=9, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('0.0.0.0', 57736)>
+
+ConnectionRefusedError: [Errno 111] Connection refused
+2020-05-03 19:35:55.547 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53030: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:35:55.549 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '23b0e069-f8da-4465-aebe-38dd22c4c78d'}
+2020-05-03 19:35:55.553 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53034: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
+2020-05-03 19:35:55.554 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '13d0893a-ba75-49b2-a7f7-79e066c2f002'}
+2020-05-03 19:35:55.555 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['23b0e069-f8da-4465-aebe-38dd22c4c78d', '13d0893a-ba75-49b2-a7f7-79e066c2f002'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
+2020-05-03 19:36:17.428 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53102: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:36:17.432 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '075e3e2a-d405-49fd-9570-07feb1523cf7'}
+2020-05-03 19:36:17.436 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53106: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
+2020-05-03 19:36:17.438 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '548fb7cc-35a8-49de-93ab-82d00a71a8e3'}
+2020-05-03 19:36:17.438 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['075e3e2a-d405-49fd-9570-07feb1523cf7', '548fb7cc-35a8-49de-93ab-82d00a71a8e3'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
+2020-05-03 19:36:23.011 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53116: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:36:23.015 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '800793d0-8881-4bd7-bb23-a0faa5211535'}
+2020-05-03 19:36:23.020 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53120: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
+2020-05-03 19:36:23.022 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '7cffd356-1377-4f29-9324-0dbbd8cffc3b'}
+2020-05-03 19:36:23.022 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['800793d0-8881-4bd7-bb23-a0faa5211535', '7cffd356-1377-4f29-9324-0dbbd8cffc3b'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
+2020-05-03 19:36:28.403 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53126: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:36:28.405 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '53a863f1-85b5-40a7-8559-11674d17a868'}
+2020-05-03 19:36:28.408 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53130: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
+2020-05-03 19:36:28.410 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '39aeff24-6d89-4bb0-b4e8-61f891c129c9'}
+2020-05-03 19:36:28.410 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['53a863f1-85b5-40a7-8559-11674d17a868', '39aeff24-6d89-4bb0-b4e8-61f891c129c9'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
+2020-05-03 19:36:33.629 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53138: {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100}
+2020-05-03 19:36:33.631 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'xxx', 'room_number': 2, 'bots': ['RandomAgent'], 'game_number': 100, 'uuid': '658acf89-355b-4a1b-b9d1-72a6661fd2ae'}
+2020-05-03 19:36:33.635 | INFO | /home/xh/code/texas_poker/server/network/protocols.py:28 | MainProcess | - recv client from 127.0.0.1, 53142: {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': []}
+2020-05-03 19:36:33.637 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:38 | MainProcess | - recv connect message {'info': 'connect', 'room_id': 1000, 'name': 'RandomAgent', 'room_number': 2, 'game_number': 100, 'bots': [], 'uuid': '9da911e5-1277-40c3-b703-f0e7628d7671'}
+2020-05-03 19:36:33.637 | INFO | /home/xh/code/texas_poker/server/network/scheduler.py:103 | MainProcess | - generate task message {'room_id': 1000, 'room_number': 2, 'game_number': 100, 'uuid': ['658acf89-355b-4a1b-b9d1-72a6661fd2ae', '9da911e5-1277-40c3-b703-f0e7628d7671'], 'name': ['xxx', 'RandomAgent'], 'notify_bot': True}
