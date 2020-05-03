@@ -30,6 +30,7 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
+        print(data['info'])
         if data['info'] == 'result':
             num += 1
             print(num)

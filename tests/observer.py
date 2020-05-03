@@ -5,7 +5,7 @@ import struct
 import multiprocessing
 
 myip = "127.0.0.1"
-myport = 18888
+myport = 18889
 room_id = 1000
 
 def sendJson(request, jsonData):

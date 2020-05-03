@@ -3,6 +3,7 @@ import socket
 from utils.utils import sendJson, recvJson
 import multiprocessing
 import random
+import time
 
 with open("./config/config.yaml") as f:
     cfg = yaml.load(f, Loader=yaml.SafeLoader)

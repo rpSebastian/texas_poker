@@ -48,7 +48,8 @@ class RoomManager():
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')
-        del self.rooms[room_id]
+        if room_id in self.rooms:
+            del self.rooms[room_id]
 
     def task_callback(self, ch, method, props, body):
         data = json.loads(body)

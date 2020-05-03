@@ -4,7 +4,7 @@ from config import cfg
 import socket
 from utils import sendJson
 from operator import itemgetter
-from err import RoomFullError, MyError
+from err import RoomFullError, MyError, RoomNotExitError
 from logs import logger
 
 
@@ -29,16 +29,20 @@ class Scheduler():
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')
-        del self.rooms[room_id]
+        if room_id in self.rooms:
+            del self.rooms[room_id]
 
     def callback(self, ch, method, props, body):
         try:
             data = json.loads(body)
+            logger.info('recv connect message {}', data)
             info = data["info"]
             if info == "connect":
                 self.handle_player(data)
             elif info == "ai_vs_ai":
                 self.handle_ai_vs_ai(data)
+            elif info == "observer":
+                self.handle_observer(data)
         except MyError as e:
             self.send_logs(e.text)
         except Exception as e:
@@ -56,6 +60,11 @@ class Scheduler():
         room_id, room_number, bots, game_number = itemgetter('room_id', 'room_number', 'bots', 'game_number')(data)
         room = self.get_or_create_room(room_id, room_number, game_number)
         self.notify_bots(room, bots)
+
+    def handle_observer(self, data):
+        room_id = data["room_id"]
+        if room_id not in self.rooms:
+            raise RoomNotExitError(room_id)
 
     def get_or_create_room(self, room_id, room_number, game_number):
         if room_id not in self.rooms:
@@ -91,6 +100,7 @@ class Scheduler():
 
     def check_start(self, room):
         if len(room['name']) == room['room_number']:
+            logger.info('generate task message {}', room)
             self.channel.basic_publish(exchange='', routing_key='task_queue', body=json.dumps(room))
 
     def start(self):

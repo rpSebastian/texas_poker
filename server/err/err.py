@@ -3,10 +3,12 @@ class MyError(Exception):
 
 
 class RoomNotExitError(MyError):
-    def __init__(self):
+    def __init__(self, room_id):
         self.text = {
             'info': 'error',
             'text': 'room not exists',
+            'op_type': 'room',
+            'room_id': room_id
         }
 
 

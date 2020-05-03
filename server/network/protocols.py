@@ -32,10 +32,6 @@ class GameProtocol(JsonReceiver):
                 room_id = data['room_id']
                 self.room_id = room_id
                 if room_id not in self.factory.rooms:
-                    if info == 'observer':
-                        self.sendJson(RoomNotExitError().text)
-                        self.transport.loseConnection()
-                        return
                     room = {}
                     room['player'] = {}
                     room['observer'] = []
@@ -118,13 +114,14 @@ class GameFactory(protocol.Factory):
         # 如果服务器发送消息回来时，用户已经断开了连接，那么此时房间号不存在
         if room_id not in self.rooms:
             return
+        room = self.rooms[room_id]
         if receiver == 'player':
             uuid = data.pop('uuid')
-            protocol = self.rooms[room_id]['player'][uuid]
-            # print(data['receiver'], data['info'], )
-            protocol.sendJson(data)
+            if uuid in room['player']:
+                protocol = room['player'][uuid]
+                protocol.sendJson(data)
         elif receiver == 'observer':
-            for protocol in self.rooms[room_id]['observer']:
+            for protocol in room['observer']:
                 protocol.sendJson(data)
 
     def room_logs_callback(self, ch, method, props, body):
@@ -143,8 +140,7 @@ class GameFactory(protocol.Factory):
         room_id = data.pop('room_id')
         uuid = data.pop('uuid')
         del data['op_type']
-        if room_id in self.rooms:
+        if room_id in self.rooms and uuid in self.rooms[room_id]['player']:
             client = self.rooms[room_id]['player'].pop(uuid)
             client.sendJson(data)
             client.transport.loseConnection()
-          

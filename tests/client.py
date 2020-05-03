@@ -1,24 +1,23 @@
 import json
 import struct
 import socket
-
+import time
 server_ip = "127.0.0.1"
 server_port = 18888
 room_id = 1000
 room_number = 2
 bots = ["RandomAgent"]
-game_number = 50
+game_number = 100
+
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
-    request.send(struct.pack('i', len(data)))
-    request.sendall(data)
+    request.send(struct.pack('i', len(data))+data)
 
 
 def recvJson(request):
     length = struct.unpack('i', request.recv(4))[0]
     data = json.loads(request.recv(length).decode())
-    print(length, data)
     return data
 
 

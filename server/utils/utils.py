@@ -2,12 +2,10 @@ import json
 import struct
 from err import MyError
 
-
 def sendJson(request, jsonData):
     try:
         data = json.dumps(jsonData).encode()
-        request.send(struct.pack('i', len(data)))
-        request.sendall(data)
+        request.send(struct.pack('i', len(data)) + data)
     except (BrokenPipeError, ConnectionResetError):
         raise MyError()
 
