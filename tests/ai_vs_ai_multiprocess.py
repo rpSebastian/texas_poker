@@ -1,13 +1,13 @@
 import json
 import struct
 import socket
+import traceback
 from multiprocessing import Process
 server_ip = "127.0.0.1"
-server_port = 18888
-room_id = 121
+server_port = 12345
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-game_number = 50
+game_number = 2
 
 
 def sendJson(request, jsonData):
@@ -18,7 +18,10 @@ def sendJson(request, jsonData):
 
 def recvJson(request):
     length = struct.unpack('i', request.recv(4))[0]
-    data = json.loads(request.recv(length).decode())
+    data = request.recv(length).decode()
+    while len(data) != length:
+        data = data + request.recv(length - len(data)).decode()
+    data = json.loads(data)
     return data
 
 
@@ -30,16 +33,31 @@ class Test(Process):
     def run(self):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((server_ip, server_port))
-        message = dict(info='ai_vs_ai', room_id=room_id, room_number=2, bots=bots, game_number=game_number)
+        message = dict(info='ai_vs_ai', room_id=self.room_id, room_number=2, bots=bots, game_number=game_number)
         sendJson(client, message)
-        while True:
-            data = recvJson(client)
-            # print(datsa)
-            if data["info"] == "error":
-                break
+        num = 0
+        try:
+            while True:
+                data = recvJson(client)
+                if data['info'] == 'result':
+                    num += 1
+        except Exception as e:
+            if num != game_number:
+                print(num)
         client.close()
 
 
 if __name__ == "__main__":
-    for i in range(100):
-        Test(i).start()
+    import time
+    start = time.time()
+    process = []
+    num = 10
+    for i in range(num):
+        p = Test(i)
+        p.start()
+        process.append(p)
+    for p in process:
+        p.join()
+    end = time.time()
+    print(num, end - start)
+

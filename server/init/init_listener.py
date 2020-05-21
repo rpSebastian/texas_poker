@@ -1,3 +1,4 @@
+import context
 from config import cfg
 from twisted.internet import reactor, endpoints
 from network.protocols import GameFactory

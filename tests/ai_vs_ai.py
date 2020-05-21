@@ -3,12 +3,13 @@ import json
 import struct
 import socket
 
-server_ip = "127.0.0.1"
-server_port = 18888
-room_id = int(sys.argv[1]) if len(sys.argv) > 0 else 100
+server_ip = "bb.xuhang.ink"
+server_port = 12345
+room_id = 100
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-game_number = 100
+game_number = 1
+
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
@@ -18,7 +19,10 @@ def sendJson(request, jsonData):
 
 def recvJson(request):
     length = struct.unpack('i', request.recv(4))[0]
-    data = json.loads(request.recv(length).decode())
+    data = request.recv(length).decode()
+    while len(data) != length:
+        data = data + request.recv(length - len(data)).decode()
+    data = json.loads(data)
     return data
 
 
@@ -30,7 +34,7 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
-        print(data['info'])
+        print(data)
         if data['info'] == 'result':
             num += 1
             print(num)

@@ -2,8 +2,8 @@ import json
 import struct
 import socket
 import time
-server_ip = "127.0.0.1"
-server_port = 18888
+server_ip = "bb.xuhang.ink"
+server_port = 12345
 room_id = 1000
 room_number = 2
 bots = ["RandomAgent"]
@@ -29,7 +29,6 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
-        print(data['info'])
         if data['info'] == 'state' and data['position'] == data['action_position']:
             position = data['position']
             if 'call' in data['legal_actions']:
@@ -38,9 +37,7 @@ if __name__ == "__main__":
                 action = 'check'
             sendJson(client, {'action': 'fold', 'info': 'action'})
         if data['info'] == 'result':
-            # print('win money: {},\tyour card: {},\topp card: {},\t\tpublic card: {}'.format(data['players'][position]['win_money'], data['player_card'][position],  data['player_card'][1-position], data['public_card']))
+            print('win money: {},\tyour capytrd: {},\topp card: {},\t\tpublic card: {}'.format(data['players'][position]['win_money'], data['player_card'][position],  data['player_card'][1-position], data['public_card']))
             num += 1
-            print(num)
             sendJson(client, {'info': 'ready', 'status': 'start'})
-            print("send ok")
     client.close()

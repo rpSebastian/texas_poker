@@ -35,7 +35,7 @@ class GameProtocol(JsonReceiver):
                 if room_id not in self.factory.rooms:
                     room = {}
                     room['player'] = {}
-                    room['observer'] = []
+                    room['observer'] = {}
                     self.factory.rooms[room_id] = room
                 room = self.factory.rooms[room_id]
                 if info == 'connect':
@@ -43,7 +43,7 @@ class GameProtocol(JsonReceiver):
                     room['player'][self.uuid] = self
                 if info == "observer" or info == 'ai_vs_ai':
                     self.identity = 'observer'
-                    room['observer'].append(self)
+                    room['observer'][self.uuid] = self
             else:
                 data['uuid'] = self.uuid
                 data['room_id'] = self.room_id
@@ -60,9 +60,9 @@ class GameProtocol(JsonReceiver):
         if self.identity == 'player' and self.uuid in room['player']:
             # 如果是玩家主动断开连接，则该房间无法继续进行游戏，断开所有连接。
             self.factory.send_logs(DisconnectError(self.room_id).text)
-        if self.identity == 'observer' and self in room['observer']:
+        if self.identity == 'observer' and self.uuid in room['observer']:
             # 如果是观察者主动断开连接，直接删除记录，停止之后的消息发送
-            room['observer'].remove(self)
+            del room['observer'][self.uuid]
 
 
 class GameFactory(protocol.Factory):
@@ -122,7 +122,7 @@ class GameFactory(protocol.Factory):
                 protocol = room['player'][uuid]
                 reactor.callFromThread(self.send_message, protocol, data)
         elif receiver == 'observer':
-            for protocol in room['observer']:
+            for protocol in room['observer'].values():
                 reactor.callFromThread(self.send_message, protocol, data)
 
     def room_logs_callback(self, ch, method, props, body):
@@ -130,7 +130,7 @@ class GameFactory(protocol.Factory):
         room_id = data.pop('room_id')
         del data['op_type']
         if room_id in self.rooms:
-            clients = [*self.rooms[room_id]['player'].values(), *self.rooms[room_id]['observer']]
+            clients = [*self.rooms[room_id]['player'].values(), *self.rooms[room_id]['observer'].values()]
             del self.rooms[room_id]
             for client in clients:
                 reactor.callFromThread(self.send_message, client, data)
@@ -143,6 +143,10 @@ class GameFactory(protocol.Factory):
         del data['op_type']
         if room_id in self.rooms and uuid in self.rooms[room_id]['player']:
             client = self.rooms[room_id]['player'].pop(uuid)
+            reactor.callFromThread(self.send_message, client, data)
+            reactor.callFromThread(self.lose_connection, client)
+        if room_id in self.rooms and uuid in self.rooms[room_id]['observer']:
+            client = self.rooms[room_id]['observer'].pop(uuid)
             reactor.callFromThread(self.send_message, client, data)
             reactor.callFromThread(self.lose_connection, client)
 

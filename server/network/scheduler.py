@@ -57,8 +57,10 @@ class Scheduler():
         self.check_start(room)
 
     def handle_ai_vs_ai(self, data):
-        room_id, room_number, bots, game_number = itemgetter('room_id', 'room_number', 'bots', 'game_number')(data)
+        room_id, room_number, bots, game_number, uuid = itemgetter('room_id', 'room_number', 'bots', 'game_number', 'uuid')(data)
         room = self.get_or_create_room(room_id, room_number, game_number)
+        if len(room['name']) == room['room_number']:
+            raise RoomFullError(room_id, uuid)
         self.notify_bots(room, bots)
 
     def handle_observer(self, data):
@@ -100,7 +102,6 @@ class Scheduler():
 
     def check_start(self, room):
         if len(room['name']) == room['room_number']:
-            logger.info('generate task message {}', room)
             self.channel.basic_publish(exchange='', routing_key='task_queue', body=json.dumps(room))
 
     def start(self):

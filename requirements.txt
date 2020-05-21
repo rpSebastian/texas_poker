@@ -1,0 +1,10 @@
+Django==2.2.7 
+dwebsocket 
+pyyaml==5.1.2 
+pymysql 
+requests 
+numpy 
+better-exceptions 
+loguru 
+twisted
+pika

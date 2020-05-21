@@ -47,6 +47,7 @@ class NoLimitHoldemRoom(Room):
             self.ready_count = 0
             self.game_count += 1
             if self.game_count == self.game_number:
+                logger.debug("room {} finished", self.room_id)
                 raise PlayCompeleteError(self.room_id)
             client = self.clients.pop(0)
             self.clients.append(client)
