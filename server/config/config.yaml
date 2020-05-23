@@ -1,6 +1,10 @@
+ext_server:
+  host: "bb.xuhang.ink"
+  port: 12345
+
 server:
   host: "127.0.0.1"
-  port: 12345
+  port: 10000
 
 bot:
   RandomAgent:
@@ -31,5 +35,5 @@ database:
   table: "poker"
 
 rabbitMQ:
-  # host: "b.xuhang.ink"
-  host: "127.0.0.1"
+  host: "b.xuhang.ink"
+  # host: "127.0.0.1"

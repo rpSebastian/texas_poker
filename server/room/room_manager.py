@@ -5,7 +5,6 @@ from room import NoLimitHoldemRoom
 from database.mysql import Mysql
 from operator import itemgetter
 
-
 class People():
     def __init__(self, name, uuid):
         self.name = name
@@ -25,7 +24,7 @@ class RoomManager():
     def __init__(self):
         self.rooms = {}
         self.mysql = Mysql()
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"]))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], heartbeat=0))
         self.channel = self.connection.channel()
         # receive room info from task_queue
         self.channel.queue_declare(queue='task_queue')

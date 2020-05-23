@@ -67,7 +67,7 @@ class GameProtocol(JsonReceiver):
 
 class GameFactory(protocol.Factory):
     def __init__(self):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"]))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], heartbeat=0))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='connect_queue')
         self.channel.exchange_declare(exchange='user_message', exchange_type='fanout')
@@ -88,7 +88,7 @@ class GameFactory(protocol.Factory):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
 
     def start(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"]))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], heartbeat=0))
         channel = connection.channel()
         # receive server message 
         channel.exchange_declare(exchange='server_message', exchange_type='fanout')

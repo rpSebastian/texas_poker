@@ -10,7 +10,7 @@ from logs import logger
 
 class Scheduler():
     def __init__(self):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"]))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], heartbeat=0))
         self.channel = self.connection.channel()
         # receive connect message through connect_queue
         self.channel.queue_declare(queue='connect_queue')
