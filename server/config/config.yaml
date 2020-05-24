@@ -1,3 +1,4 @@
+# 使用nbinx配置后对外暴露的统一ip和端口。
 ext_server:
   host: "bb.xuhang.ink"
   port: 12345
@@ -5,6 +6,10 @@ ext_server:
 server:
   host: "127.0.0.1"
   port: 10000
+
+# 并发处理房间游戏对打的进程数
+room_manager:
+  num: 30
 
 bot:
   RandomAgent:

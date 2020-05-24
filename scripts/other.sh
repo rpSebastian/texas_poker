@@ -7,3 +7,5 @@ nohup python init/init_agent.py  >>../scripts/nohup.out 2>&1 &
 nohup python init/init_listener.py >>../scripts/nohup.out 2>&1 &
 nohup python init/init_room_manager.py >>../scripts/nohup.out 2>&1 &
 
+
+

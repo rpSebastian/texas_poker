@@ -4,6 +4,7 @@ from config import cfg
 from room import NoLimitHoldemRoom
 from database.mysql import Mysql
 from operator import itemgetter
+from multiprocessing import Process
 
 class People():
     def __init__(self, name, uuid):
@@ -20,8 +21,9 @@ class People():
         print(f'{self.name} : {self.session} after {self.times} matchs, {self.session * 10 / self.times} mbb/g')
 
 
-class RoomManager():
+class RoomManager(Process):
     def __init__(self):
+        super().__init__()
         self.rooms = {}
         self.mysql = Mysql()
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], heartbeat=0))
@@ -75,6 +77,6 @@ class RoomManager():
     def send_logs(self, message):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
 
-    def start(self):
+    def run(self):
         print(' [*] Waiting for messages. To exit press CTRL+C')
         self.channel.start_consuming()

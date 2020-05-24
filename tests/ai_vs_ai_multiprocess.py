@@ -51,7 +51,7 @@ if __name__ == "__main__":
     import time
     start = time.time()
     process = []
-    num = 100
+    num = 1
     for i in range(num):
         p = Test(i)
         p.start()
@@ -59,5 +59,5 @@ if __name__ == "__main__":
     for p in process:
         p.join()
     end = time.time()
-    print(num, end - start)
+    print(num, game_number, end - start)
 
