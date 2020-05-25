@@ -8,7 +8,7 @@ server_port = 12345
 room_id = 100
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-game_number = 1
+game_number = 10
 
 
 def sendJson(request, jsonData):
@@ -34,7 +34,6 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
-        print(data)
         if data['info'] == 'result':
             num += 1
             print(num)

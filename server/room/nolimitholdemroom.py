@@ -4,6 +4,7 @@ from games.nolimitholdem.game import Game
 from logs import logger
 from err import MyError, PlayCompeleteError, PlayerExitError
 
+
 class NoLimitHoldemRoom(Room):
 
     def init_game(self):
@@ -46,8 +47,8 @@ class NoLimitHoldemRoom(Room):
             self.save_data()
             self.ready_count = 0
             self.game_count += 1
+            logger.info("room {} finish game {}", self.room_id, self.game_count)
             if self.game_count == self.game_number:
-                logger.debug("room {} finished", self.room_id)
                 raise PlayCompeleteError(self.room_id)
             client = self.clients.pop(0)
             self.clients.append(client)

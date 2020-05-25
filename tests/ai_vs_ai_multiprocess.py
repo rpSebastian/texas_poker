@@ -3,11 +3,11 @@ import struct
 import socket
 import traceback
 from multiprocessing import Process
-server_ip = "127.0.0.1"
+server_ip = "bb.xuhang.ink"
 server_port = 12345
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-game_number = 2
+game_number = 10
 
 
 def sendJson(request, jsonData):
@@ -43,7 +43,7 @@ class Test(Process):
                     num += 1
         except Exception as e:
             if num != game_number:
-                print(num)
+                print(num, e)
         client.close()
 
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     import time
     start = time.time()
     process = []
-    num = 10
+    num = 1
     for i in range(num):
         p = Test(i)
         p.start()
@@ -59,5 +59,5 @@ if __name__ == "__main__":
     for p in process:
         p.join()
     end = time.time()
-    print(num, end - start)
+    print(num, game_number, end - start)
 
