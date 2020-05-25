@@ -1,35 +1,37 @@
 server:
-  host: "127.0.0.1"
+  host: "192.168.26.129"
   port: 12345
 
 bot:
   RandomAgent:
-    host: "127.0.0.1"
+    host: "192.168.26.129"
     port: 20001
 
   CallAgent:
-    host: "127.0.0.1"
+    host: "192.168.26.129"
     port: 20002
 
   AllinAgent:
-    host: "127.0.0.1"
+    host: "192.168.26.129"
     port: 20003
   
   LuaStack:
-    host: "a.xuhang.ink"
+    host: "192.168.26.129"
     port: 30000
   
   RuleAgent:
-    host: "127.0.0.1"
+    host: "192.168.26.129"
     port: 20004
   
 database:
-  host: "127.0.0.1"
+  host: "192.168.26.128"
   port: 3306
   user: "root"
-  password: "0"
+  password: "root"
   table: "poker"
 
 rabbitMQ:
   # host: "b.xuhang.ink"
-  host: "127.0.0.1"
+  host: "192.168.26.128"
+  username: root
+  password: root
