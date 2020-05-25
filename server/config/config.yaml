@@ -40,7 +40,7 @@ database:
   table: "poker"
 
 rabbitMQ:
-  # host: "b.xuhang.ink"
-  host: "192.168.26.128"
+  host: "b.xuhang.ink"
+  # host: "192.168.26.128"
   username: root
   password: root

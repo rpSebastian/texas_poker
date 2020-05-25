@@ -18,7 +18,7 @@ bash scripts/main.sh
 
 ```
 bash scripts/main.sh
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=root rabbitmq:3-management
 ```
 
 * 其他机器上执行

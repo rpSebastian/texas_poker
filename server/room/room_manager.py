@@ -26,8 +26,8 @@ class RoomManager(Process):
         super().__init__()
         self.rooms = {}
         self.mysql = Mysql()
-        credentials= pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"],credentials=credentials, heartbeat=0))
+        credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
         self.channel = self.connection.channel()
         # receive room info from task_queue
         self.channel.queue_declare(queue='task_queue')
