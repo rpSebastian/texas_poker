@@ -17,15 +17,19 @@ class Mysql:
         )
         self.cursor = self.content.cursor()
         self.game_sql = 'insert into game(public_card, action_history, time, room_id) values(%s, %s, %s, %s)'
-        self.player_sql = 'insert into player(player_id, name, position, win_money, private_card, game_id, total_money, money_left, best_cards)' \
-                          'values(%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        self.player_sql = 'insert into player(user_id,name, position, win_money, private_card, game_id, total_money, money_left, best_cards)' \
+                          'values(%s,%s, %s, %s, %s, %s, %s, %s, %s)'
+        self.endDate_sql='update batch_room_mapping set end_date=now()  where room_id=%s and batch_count=(select count(1) from game where room_id=%s);'
 
     def save(self, message):
+        #mysql 超时优化
+        self.content.ping(reconnect=True)
         game_info = ''.join(message['public_card']), \
                     json.dumps(message['action_history']), \
                     datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), \
                     str(message['room_id'])
         self.cursor.execute(self.game_sql, game_info)
+        
         game_id = self.cursor.lastrowid
         for p in range(len(message['position'])):
             player_id = self.trans(message['name'][p])
@@ -33,8 +37,11 @@ class Mysql:
                           message['win_money'][p], ''.join(message['player_card'][p]), game_id, \
                           message['total_money'][p], message['money_left'][p], message['best_cards'][p]
             self.cursor.execute(self.player_sql, player_info)
+        update_info=str(message['room_id']), \
+                    str(message['room_id'])
+        self.cursor.execute(self.endDate_sql, update_info)
         self.cursor.connection.commit()
-
+        
     def trans(self, name):
         player_id = name
         for bot in cfg['bot'].keys():
