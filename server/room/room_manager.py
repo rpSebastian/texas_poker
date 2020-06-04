@@ -5,6 +5,10 @@ from room import NoLimitHoldemRoom
 from database.mysql import Mysql
 from operator import itemgetter
 from multiprocessing import Process
+from database.redis import Redis
+from logs import logger
+from utils import catch_exception
+
 
 class People():
     def __init__(self, name, uuid):
@@ -26,6 +30,7 @@ class RoomManager(Process):
         super().__init__()
         self.rooms = {}
         self.mysql = Mysql()
+        self.redis = Redis()
         credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
         self.channel = self.connection.channel()
@@ -47,12 +52,14 @@ class RoomManager(Process):
         self.channel.queue_bind(exchange='logs', queue=queue_name, routing_key='room')
         self.channel.basic_consume(queue=queue_name, on_message_callback=self.room_logs_callback, auto_ack=True)
 
+    @catch_exception
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')
         if room_id in self.rooms:
             del self.rooms[room_id]
 
+    @catch_exception
     def task_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id, room_number, game_number, uuids, names = itemgetter('room_id', 'room_number', 'game_number', 'uuid', 'name')(data)
@@ -62,8 +69,9 @@ class RoomManager(Process):
         self.rooms[room_id] = NoLimitHoldemRoom(self, clients, room_id, room_number, game_number, self.mysql)
         self.rooms[room_id].init_game()
 
+    @catch_exception
     def action_callback(self, ch, method, props, body):
-        data = json.loads(body)
+        data = self.redis.load_message(body)
         room_id, uuid = itemgetter('room_id', 'uuid')(data)
         if room_id in self.rooms:
             self.rooms[room_id].handle(uuid, data)
@@ -73,7 +81,8 @@ class RoomManager(Process):
             self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id, game_number, self.mysql)
 
     def send_message(self, message):
-        self.channel.basic_publish(exchange='server_message', routing_key='', body=json.dumps(message))
+        pid = self.redis.save_message(message)
+        self.channel.basic_publish(exchange='server_message', routing_key='', body=pid)
 
     def send_logs(self, message):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))

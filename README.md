@@ -19,6 +19,7 @@ bash scripts/main.sh
 ```
 bash scripts/main.sh
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=root rabbitmq:3-management
+docker run -d -p 6379:6379 -v ~/data:/data -d --name redis redis --appendonly yes --requirepass "root"
 ```
 
 * 其他机器上执行

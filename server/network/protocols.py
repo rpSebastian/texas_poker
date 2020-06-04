@@ -7,7 +7,8 @@ from logs import logger
 from config import cfg
 from err import MyError, RoomNotExitError, DisconnectError
 from twisted.internet import reactor
-
+from database.redis import Redis
+from utils import catch_exception
 
 class GameProtocol(JsonReceiver):
 
@@ -19,38 +20,37 @@ class GameProtocol(JsonReceiver):
         self.room_id = None
         self.uuid = str(uuid.uuid4())
 
+    @catch_exception
     def jsonReceived(self, data):
-        try:
-            info = data['info']
-            peer = self.transport.getPeer()
-            # logger.info("recv client from {}, {}: {}", peer.host, peer.port, info)
-            if info == 'connect' or info == 'observer' or info == 'ai_vs_ai':
-                logger.info("recv client from {}, {}: {}", peer.host, peer.port, data)
-                data['uuid'] = self.uuid
-                # send connect message to scheduler
-                self.factory.send_connect_message(data)
-                # record room and player infomation
-                room_id = data['room_id']
-                self.room_id = room_id
-                if room_id not in self.factory.rooms:
-                    room = {}
-                    room['player'] = {}
-                    room['observer'] = {}
-                    self.factory.rooms[room_id] = room
-                room = self.factory.rooms[room_id]
-                if info == 'connect':
-                    self.identity = 'player'
-                    room['player'][self.uuid] = self
-                if info == "observer" or info == 'ai_vs_ai':
-                    self.identity = 'observer'
-                    room['observer'][self.uuid] = self
-            else:
-                data['uuid'] = self.uuid
-                data['room_id'] = self.room_id
-                self.factory.send_user_message(data)
-        except Exception as e:
-            logger.exception(e)
+        info = data['info']
+        peer = self.transport.getPeer()
+        # logger.info("recv client from {}, {}: {}", peer.host, peer.port, info)
+        if info == 'connect' or info == 'observer' or info == 'ai_vs_ai':
+            logger.info("recv client from {}, {}: {}", peer.host, peer.port, data)
+            data['uuid'] = self.uuid
+            # send connect message to scheduler
+            self.factory.send_connect_message(data)
+            # record room and player infomation
+            room_id = data['room_id']
+            self.room_id = room_id
+            if room_id not in self.factory.rooms:
+                room = {}
+                room['player'] = {}
+                room['observer'] = {}
+                self.factory.rooms[room_id] = room
+            room = self.factory.rooms[room_id]
+            if info == 'connect':
+                self.identity = 'player'
+                room['player'][self.uuid] = self
+            if info == "observer" or info == 'ai_vs_ai':
+                self.identity = 'observer'
+                room['observer'][self.uuid] = self
+        else:
+            data['uuid'] = self.uuid
+            data['room_id'] = self.room_id
+            self.factory.send_user_message(data)
 
+    @catch_exception
     def connectionLost(self, reason):
         # 服务器主动断开客户连接也会触发该程序。主要包括局数打完，某用户发送exit，房间已满，消息格式错误等。
         # 如果断开连接的客户不在房间登记列表中，不进行处理。即只处理客户主动断开的情况。
@@ -67,6 +67,7 @@ class GameProtocol(JsonReceiver):
 
 class GameFactory(protocol.Factory):
     def __init__(self):
+        self.redis = Redis()
         credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
         self.channel = self.connection.channel()
@@ -83,7 +84,8 @@ class GameFactory(protocol.Factory):
         self.channel.basic_publish(exchange='', routing_key='connect_queue', body=json.dumps(data))
 
     def send_user_message(self, data):
-        self.channel.basic_publish(exchange='user_message', routing_key='', body=json.dumps(data))
+        pid = self.redis.save_message(data)
+        self.channel.basic_publish(exchange='user_message', routing_key='', body=pid)
 
     def send_logs(self, message):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
@@ -111,8 +113,10 @@ class GameFactory(protocol.Factory):
         print(' [*] Waiting for messages. To exit press CTRL+C')
         channel.start_consuming()
 
+    @catch_exception
     def server_message_callback(self, ch, method, props, body):
-        data = json.loads(body)
+        data = self.redis.load_message(body)
+        # data = json.loads(body)
         receiver, room_id = data.pop('receiver'), data.pop('room_id')
         # 如果服务器发送消息回来时，用户已经断开了连接，那么此时房间号不存在
         if room_id not in self.rooms:
@@ -127,6 +131,7 @@ class GameFactory(protocol.Factory):
             for protocol in room['observer'].values():
                 reactor.callFromThread(self.send_message, protocol, data)
 
+    @catch_exception
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')
@@ -138,6 +143,7 @@ class GameFactory(protocol.Factory):
                 reactor.callFromThread(self.send_message, client, data)
                 reactor.callFromThread(self.lose_connection, client)
 
+    @catch_exception
     def player_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')

@@ -1,6 +1,8 @@
 import json
 import struct
+from logs import logger
 from err import MyError
+
 
 def sendJson(request, jsonData):
     try:
@@ -25,3 +27,12 @@ def recvJson(request):
         return data
     except (BrokenPipeError, ConnectionResetError):
         raise MyError()
+
+
+def catch_exception(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger.exception(e)
+    return wrapper

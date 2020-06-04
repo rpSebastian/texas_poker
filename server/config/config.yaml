@@ -1,11 +1,11 @@
 # 使用nbinx配置后对外暴露的统一ip和端口。
 ext_server:
-  host: "bb.xuhang.ink"
-  port: 12345
+  host: "127.0.0.1" #"bb.xuhang.ink"
+  port: 18888 #12345
 
 server:
   host: "127.0.0.1"
-  port: 10000
+  port: 18888 #10000
 
 # 并发处理房间游戏对打的进程数
 room_manager:
@@ -39,8 +39,14 @@ database:
   password: "0"
   table: "poker"
 
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: "root"
+  
 rabbitMQ:
-  host: "b.xuhang.ink"
+  host: "127.0.0.1"
+  # host: "b.xuhang.ink"
   # host: "192.168.26.128"
   username: root
   password: root
