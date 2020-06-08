@@ -2,11 +2,12 @@ import redis
 import json
 import uuid
 from logs import logger
+from config import cfg
 
 
 class Redis():
     def __init__(self):
-        self.r = redis.Redis(host='localhost', port=6379, decode_responses=True, password="root")
+        self.r = redis.Redis(host=cfg["redis"]["host"], port=cfg["redis"]["port"], decode_responses=True, password=cfg["redis"]["password"])
 
     def save_message(self, message):
         pid = str(uuid.uuid4())
