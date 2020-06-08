@@ -3,41 +3,33 @@
 1.  安装环境
 
 ```
-pip install Django==2.2.7 dwebsocket pyyaml==5.1.2 pymysql requests numpy better-exceptions loguru twisted
+pip install -r requirements.txt  
 ```
 
-2. 在一个终端下运行
+2. 单机部署服务器
 
 ```
-cd website
-python manage.py runserver
+bash scripts/main.sh
 ```
 
-3. 在另一个终端下运行
+3. 多机部署服务器
+
+* 一台机器上执行
 
 ```
-cd server
-python main.py
+bash scripts/main.sh
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=root rabbitmq:3-management
+docker run -d -p 6379:6379 -v ~/data:/data -d --name redis redis --appendonly yes --requirepass "root"
 ```
 
-4. 三种连接方式
+* 其他机器上执行
 
-   * 在浏览器中输入127.0.0.1:8000/poker/login 
+```
+bash scripts/other.sh
+```
 
-   * 使用python连接服务器
+4. 停止服务器执行
 
-     ```
-     cd demo/PyDemo
-     python demo.py
-     ```
-
-   * 使用C++连接服务器
-
-     ```
-     cd demo/CppDemo
-     make
-     ./main
-     make clean
-     ```
-
- 
+```
+bash scripts/stop.sh
+```

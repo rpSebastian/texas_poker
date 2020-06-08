@@ -2,6 +2,7 @@ import random
 from room import Room
 from games.nolimitholdem.game import Game
 from logs import logger
+from err import MyError, PlayCompeleteError, PlayerExitError
 
 
 class NoLimitHoldemRoom(Room):
@@ -14,27 +15,28 @@ class NoLimitHoldemRoom(Room):
         self.current_player_id = self.game.game_init()
         self.notify_state()
 
-    def handle(self, sock, data):
+    def handle(self, uuid, data):
         try:
             if data['info'] == 'ready':
-                self.handle_start_message(sock, data)
+                self.handle_start_message(uuid, data)
             elif data['info'] == 'action':
-                self.handle_action_message(sock, data)
+                self.handle_action_message(uuid, data)
+        except MyError as e:
+            self.room_manager.send_logs(e.text)
         except Exception as e:
             logger.exception(e)
-            sock.transport.loseConnection()
 
-    def handle_start_message(self, sock, data):
+    def handle_start_message(self, uuid, data):
         status = data['status']
         if status == 'exit':
-            sock.transport.loseConnection()
+            raise PlayerExitError(self.room_id)
         self.ready_count += 1
         if self.ready_count == self.room_number:
             self.current_player_id = self.game.game_init()
             self.notify_state()
 
-    def handle_action_message(self, sock, data):
-        player_id = self.get_player_id(sock)
+    def handle_action_message(self, uuid, data):
+        player_id = self.get_player_id(uuid)
         if player_id != self.current_player_id:
             raise Exception('Not your turn')
         action = data['action']
@@ -45,8 +47,9 @@ class NoLimitHoldemRoom(Room):
             self.save_data()
             self.ready_count = 0
             self.game_count += 1
+            logger.info("room {} finish game {}", self.room_id, self.game_count)
             if self.game_count == self.game_number:
-                sock.transport.loseConnection()
+                raise PlayCompeleteError(self.room_id)
             client = self.clients.pop(0)
             self.clients.append(client)
         else:
@@ -67,38 +70,36 @@ class NoLimitHoldemRoom(Room):
             state['info'] = 'state'
             if last:
                 state['action_position'] = -1
-            client.sock.sendJson(state)
+            self.room_manager.send_message(state, room_id=self.room_id, receiver='player', uuid=client.uuid)            
 
-        for observer in self.observers:
-            state = self.game.get_public_state()
-            if last:
-                state['action_position'] = -1
-            state['info'] = 'state'
-            for i, player in enumerate(self.clients):
-                state['players'][i]['name'] = player.name
-            observer.sock.sendJson(state)
+        state = self.game.get_public_state()
+        if last:
+            state['action_position'] = -1
+        state['info'] = 'state'
+        for i, player in enumerate(self.clients):
+            state['players'][i]['name'] = player.name
+        self.room_manager.send_message(state, room_id=self.room_id, receiver='observer')
 
     def notify_result(self):
         for i, client in enumerate(self.clients):
             state = self.game.get_payoff(i)
+            state['info'] = 'result'
             for i, player in enumerate(self.clients):
                 state['players'][i]['name'] = player.name
-            state['info'] = 'result'
-            client.sock.sendJson(state)
+            self.room_manager.send_message(state, room_id=self.room_id, receiver='player', uuid=client.uuid)
             client.update_session(state['players'][i]['win_money'])
 
-        for observer in self.observers:
-            state = self.game.get_payoff()
-            state['info'] = 'result'
-            state['total_money'] = [client.session for client in self.clients]
-            state['times'] = [client.times for client in self.clients]
-            for i, player in enumerate(self.clients):
-                state['players'][i]['name'] = player.name
-            observer.sock.sendJson(state)
+        state = self.game.get_payoff()
+        state['info'] = 'result'
+        state['total_money'] = [client.session for client in self.clients]
+        state['times'] = [client.times for client in self.clients]
+        for i, player in enumerate(self.clients):
+            state['players'][i]['name'] = player.name
+        self.room_manager.send_message(state, room_id=self.room_id, receiver='observer')
 
-    def get_player_id(self, sock):
+    def get_player_id(self, uuid):
         player_id = None
         for i, client in enumerate(self.clients):
-            if sock == client.sock:
+            if uuid == client.uuid:
                 player_id = i
         return player_id

@@ -114,7 +114,7 @@ class RuleAgent(multiprocessing.Process):
 
     def run(self):
         client = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
-        client.connect((cfg["server"]["host"], cfg["server"]["port"])) 
+        client.connect((cfg["ext_server"]["host"], cfg["ext_server"]["port"])) 
         try:
             sendJson(client, self.info) 
             cnt = 0

@@ -1,18 +1,18 @@
 import json
 import struct
 import socket
-
-server_ip = "127.0.0.1"
-server_port = 18888
+import time
+server_ip = "bb.xuhang.ink"
+server_port = 12345
 room_id = 1000
 room_number = 2
-bots = ["RandomAgent"]
-game_number = 2
+bots = []
+game_number = 100
+
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
-    request.send(struct.pack('i', len(data)))
-    request.sendall(data)
+    request.send(struct.pack('i', len(data))+data)
 
 
 def recvJson(request):
@@ -26,11 +26,12 @@ if __name__ == "__main__":
     client.connect((server_ip, server_port))
     message = dict(info='connect', room_id=room_id, name='xxx', room_number=room_number, bots=bots, game_number=game_number)
     sendJson(client, message)
+    num = 0
     while True:
         data = recvJson(client)
-        print(data)
-        if data['info'] == 'state' and data['position'] == data['action_position']:
+        if 'position' in data:
             position = data['position']
+        if data['info'] == 'state' and data['position'] == data['action_position']:
             if 'call' in data['legal_actions']:
                 action = 'call'
             else:
@@ -38,6 +39,6 @@ if __name__ == "__main__":
             sendJson(client, {'action': 'fold', 'info': 'action'})
         if data['info'] == 'result':
             print('win money: {},\tyour card: {},\topp card: {},\t\tpublic card: {}'.format(data['players'][position]['win_money'], data['player_card'][position],  data['player_card'][1-position], data['public_card']))
+            num += 1
             sendJson(client, {'info': 'ready', 'status': 'start'})
-            break
     client.close()

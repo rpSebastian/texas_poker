@@ -3,7 +3,7 @@ import socket
 from utils.utils import sendJson, recvJson
 import multiprocessing
 import random
-
+import time
 with open("./config/config.yaml") as f:
     cfg = yaml.load(f, Loader=yaml.SafeLoader)
 
@@ -34,7 +34,7 @@ class CallAgent(multiprocessing.Process):
 
     def run(self):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect((cfg["server"]["host"], cfg["server"]["port"]))
+        client.connect((cfg["ext_server"]["host"], cfg["ext_server"]["port"]))
         try:
             sendJson(client, self.info)
             while True:
