@@ -70,10 +70,7 @@ class NoLimitHoldemRoom(Room):
             state['info'] = 'state'
             if last:
                 state['action_position'] = -1
-            state['room_id'] = self.room_id
-            state['uuid'] = client.uuid
-            state['receiver'] = 'player'
-            self.room_manager.send_message(state)
+            self.room_manager.send_message(state, room_id=self.room_id, receiver='player', uuid=client.uuid)            
 
         state = self.game.get_public_state()
         if last:
@@ -81,20 +78,15 @@ class NoLimitHoldemRoom(Room):
         state['info'] = 'state'
         for i, player in enumerate(self.clients):
             state['players'][i]['name'] = player.name
-        state['room_id'] = self.room_id
-        state['receiver'] = 'observer'
-        self.room_manager.send_message(state)
+        self.room_manager.send_message(state, room_id=self.room_id, receiver='observer')
 
     def notify_result(self):
         for i, client in enumerate(self.clients):
             state = self.game.get_payoff(i)
+            state['info'] = 'result'
             for i, player in enumerate(self.clients):
                 state['players'][i]['name'] = player.name
-            state['info'] = 'result'
-            state['room_id'] = self.room_id
-            state['uuid'] = client.uuid
-            state['receiver'] = 'player'
-            self.room_manager.send_message(state)
+            self.room_manager.send_message(state, room_id=self.room_id, receiver='player', uuid=client.uuid)
             client.update_session(state['players'][i]['win_money'])
 
         state = self.game.get_payoff()
@@ -103,9 +95,7 @@ class NoLimitHoldemRoom(Room):
         state['times'] = [client.times for client in self.clients]
         for i, player in enumerate(self.clients):
             state['players'][i]['name'] = player.name
-        state['room_id'] = self.room_id
-        state['receiver'] = 'observer'
-        self.room_manager.send_message(state)
+        self.room_manager.send_message(state, room_id=self.room_id, receiver='observer')
 
     def get_player_id(self, uuid):
         player_id = None

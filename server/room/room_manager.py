@@ -71,18 +71,25 @@ class RoomManager(Process):
 
     @catch_exception
     def action_callback(self, ch, method, props, body):
-        data = self.redis.load_message(body)
-        room_id, uuid = itemgetter('room_id', 'uuid')(data)
+        message = json.loads(body)
+        room_id, uuid = itemgetter('room_id', 'uuid')(message)
         if room_id in self.rooms:
+            data = self.redis.load_message(message["rid"])
             self.rooms[room_id].handle(uuid, data)
 
     def create_room(self, room_id, room_number, game_number):
         if room_id not in self.rooms:
             self.rooms[room_id] = NoLimitHoldemRoom(room_number, room_id, game_number, self.mysql)
 
-    def send_message(self, message):
-        pid = self.redis.save_message(message)
-        self.channel.basic_publish(exchange='server_message', routing_key='', body=pid)
+    def send_message(self, state, room_id, receiver, uuid=None):
+        rid = self.redis.save_message(state)
+        message = {}
+        message["rid"] = rid
+        message["room_id"] = room_id
+        message["receiver"] = receiver
+        if uuid is not None:
+            message["uuid"] = uuid
+        self.channel.basic_publish(exchange='server_message', routing_key='', body=json.dumps(message))
 
     def send_logs(self, message):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))

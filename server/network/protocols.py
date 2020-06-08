@@ -46,9 +46,7 @@ class GameProtocol(JsonReceiver):
                 self.identity = 'observer'
                 room['observer'][self.uuid] = self
         else:
-            data['uuid'] = self.uuid
-            data['room_id'] = self.room_id
-            self.factory.send_user_message(data)
+            self.factory.send_user_message(data, room_id=self.room_id, uuid=self.uuid)
 
     @catch_exception
     def connectionLost(self, reason):
@@ -83,9 +81,13 @@ class GameFactory(protocol.Factory):
     def send_connect_message(self, data):
         self.channel.basic_publish(exchange='', routing_key='connect_queue', body=json.dumps(data))
 
-    def send_user_message(self, data):
-        pid = self.redis.save_message(data)
-        self.channel.basic_publish(exchange='user_message', routing_key='', body=pid)
+    def send_user_message(self, data, room_id, uuid):
+        rid = self.redis.save_message(data)
+        message = {}
+        message["rid"] = rid
+        message["room_id"] = room_id
+        message["uuid"] = uuid
+        self.channel.basic_publish(exchange='user_message', routing_key='', body=json.dumps(message))
 
     def send_logs(self, message):
         self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
@@ -115,19 +117,20 @@ class GameFactory(protocol.Factory):
 
     @catch_exception
     def server_message_callback(self, ch, method, props, body):
-        data = self.redis.load_message(body)
-        # data = json.loads(body)
-        receiver, room_id = data.pop('receiver'), data.pop('room_id')
+        message = json.loads(body)
+        receiver, room_id = message['receiver'], message['room_id']
         # 如果服务器发送消息回来时，用户已经断开了连接，那么此时房间号不存在
         if room_id not in self.rooms:
             return
         room = self.rooms[room_id]
         if receiver == 'player':
-            uuid = data.pop('uuid')
+            uuid = message['uuid']
             if uuid in room['player']:
                 protocol = room['player'][uuid]
+                data = self.redis.load_message(message["rid"])
                 reactor.callFromThread(self.send_message, protocol, data)
         elif receiver == 'observer':
+            data = self.redis.load_message(message["rid"])
             for protocol in room['observer'].values():
                 reactor.callFromThread(self.send_message, protocol, data)
 
