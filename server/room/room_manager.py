@@ -77,7 +77,6 @@ class RoomManager(Process):
         message = dict(rid=rid, room_id=room_id, receiver=receiver)
         if uuid is not None:
             message["uuid"] = uuid
-        logger.info(message)
         self.rb.send_msg_to_exchange('server_message', '', json.dumps(message))
 
     def send_logs(self, message):

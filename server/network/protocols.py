@@ -94,7 +94,6 @@ class GameFactory(protocol.Factory):
         rb = Rabbitmq()
         # receive server message
         queue_name = "{}_protocols_server".format(myip)
-        logger.info(queue_name)
         rb.recv_msg_from_fanout_exchange(queue_name, 'server_message', self.server_message_callback)
         # receive room logs message
         queue_name = "{}_protocols_room_logs".format(myip)
@@ -127,7 +126,6 @@ class GameFactory(protocol.Factory):
     @catch_exception
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
-        logger.info(data)
         room_id = data.pop('room_id')
         del data['op_type']
         if room_id in self.rooms:
@@ -140,7 +138,6 @@ class GameFactory(protocol.Factory):
     @catch_exception
     def player_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
-        logger.info(data)
         room_id = data.pop('room_id')
         uuid = data.pop('uuid')
         del data['op_type']
