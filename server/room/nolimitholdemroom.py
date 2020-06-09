@@ -14,6 +14,7 @@ class NoLimitHoldemRoom(Room):
         self.ready_count = 0
         self.current_player_id = self.game.game_init()
         self.notify_state()
+        
 
     def handle(self, uuid, data):
         try:

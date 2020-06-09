@@ -2,6 +2,8 @@ import json
 import struct
 from logs import logger
 from err import MyError
+import subprocess
+myip = subprocess.check_output(["hostname", "-I"]).decode().split(" ")[0]
 
 
 def sendJson(request, jsonData):
