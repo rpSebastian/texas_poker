@@ -22,14 +22,15 @@ class Mysql:
         self.endDate_sql='update batch_room_mapping set end_date=now()  where room_id=%s and batch_count=(select count(1) from game where room_id=%s);'
 
     def save(self, message):
-        #mysql 超时优化
+        # mysql 超时优化
         self.content.ping(reconnect=True)
         game_info = ''.join(message['public_card']), \
                     json.dumps(message['action_history']), \
                     datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), \
                     str(message['room_id'])
         self.cursor.execute(self.game_sql, game_info)
-        
+        self.cursor.connection.commit()
+
         game_id = self.cursor.lastrowid
         for p in range(len(message['position'])):
             player_id = self.trans(message['name'][p])
@@ -41,7 +42,7 @@ class Mysql:
                     str(message['room_id'])
         self.cursor.execute(self.endDate_sql, update_info)
         self.cursor.connection.commit()
-        
+
     def trans(self, name):
         player_id = name
         for bot in cfg['bot'].keys():
