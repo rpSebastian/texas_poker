@@ -6,37 +6,30 @@ from utils import sendJson
 from operator import itemgetter
 from err import RoomFullError, MyError, RoomNotExitError
 from logs import logger
+from database.rabbitmq import Rabbitmq
+from utils import myip, catch_exception
 
 
 class Scheduler():
+
+    @catch_exception
     def __init__(self):
-        credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
-        self.channel = self.connection.channel()
-        # receive connect message through connect_queue
-        self.channel.queue_declare(queue='connect_queue')
-        self.channel.basic_consume(queue='connect_queue', on_message_callback=self.callback, auto_ack=True)
-        # send task through task queue
-        self.channel.queue_declare(queue='task_queue')
-        # send logs through logs exchange
-        self.channel.exchange_declare(exchange='logs', exchange_type='direct')
-        # receive room logs message
-        self.channel.exchange_declare(exchange='logs', exchange_type='direct')
-        queue_name = self.channel.queue_declare(queue='').method.queue
-        self.channel.queue_bind(exchange='logs', queue=queue_name, routing_key='room')
-        self.channel.basic_consume(queue=queue_name, on_message_callback=self.room_logs_callback, auto_ack=True)
+        self.rb = Rabbitmq()
         self.rooms = {}
+        # recv connect msg from user
+        self.rb.recv_msg_from_queue('connect_queue', self.connect_callback)
+        # recv logs
+        queue_name = "{}_scheduler_logs".format(myip)
+        self.rb.recv_msg_from_direct_exchange(queue_name, 'logs', 'room', self.room_logs_callback)
+        # send task
+        self.rb.queue_declare('task_queue')
+        # send logs
+        self.rb.exchange_declare('logs', 'direct')
 
-    def room_logs_callback(self, ch, method, props, body):
-        data = json.loads(body)
-        room_id = data.pop('room_id')
-        if room_id in self.rooms:
-            del self.rooms[room_id]
-
-    def callback(self, ch, method, props, body):
+    @catch_exception
+    def connect_callback(self, ch, method, props, body):
         try:
             data = json.loads(body)
-            logger.info('recv connect message {}', data)
             info = data["info"]
             if info == "connect":
                 self.handle_player(data)
@@ -46,11 +39,8 @@ class Scheduler():
                 self.handle_observer(data)
         except MyError as e:
             self.send_logs(e.text)
-        except Exception as e:
-            logger.exception(e)
 
     def handle_player(self, data):
-        self.identity = 'player'
         room_id, name, room_number, bots, game_number, uuid = itemgetter('room_id', 'name', 'room_number', 'bots', 'game_number', 'uuid')(data)
         room = self.get_or_create_room(room_id, room_number, game_number)
         self.add_client(room, room_id, name, uuid)
@@ -103,11 +93,18 @@ class Scheduler():
 
     def check_start(self, room):
         if len(room['name']) == room['room_number']:
-            self.channel.basic_publish(exchange='', routing_key='task_queue', body=json.dumps(room))
+            self.rb.send_msg_to_queue('task_queue', json.dumps(room))
+
+    @catch_exception
+    def room_logs_callback(self, ch, method, props, body):
+        data = json.loads(body)
+        room_id = data.pop('room_id')
+        if room_id in self.rooms:
+            del self.rooms[room_id]
+
+    def send_logs(self, message):
+        self.rb.send_msg_to_exchange('logs', message['op_type'], json.dumps(message))
 
     def start(self):
         print(' [*] Waiting for messages. To exit press CTRL+C')
-        self.channel.start_consuming()
-
-    def send_logs(self, message):
-        self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
+        self.rb.start()

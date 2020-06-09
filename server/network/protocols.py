@@ -8,14 +8,16 @@ from config import cfg
 from err import MyError, RoomNotExitError, DisconnectError
 from twisted.internet import reactor
 from database.redis import Redis
-from utils import catch_exception
+from database.rabbitmq import Rabbitmq
+from utils import myip, catch_exception
+
 
 class GameProtocol(JsonReceiver):
 
+    @catch_exception
     def __init__(self, factory):
         self.factory = factory
         self.game = None
-        self.room = None
         self.identity = None
         self.room_id = None
         self.uuid = str(uuid.uuid4())
@@ -24,7 +26,6 @@ class GameProtocol(JsonReceiver):
     def jsonReceived(self, data):
         info = data['info']
         peer = self.transport.getPeer()
-        # logger.info("recv client from {}, {}: {}", peer.host, peer.port, info)
         if info == 'connect' or info == 'observer' or info == 'ai_vs_ai':
             logger.info("recv client from {}, {}: {}", peer.host, peer.port, data)
             data['uuid'] = self.uuid
@@ -64,56 +65,45 @@ class GameProtocol(JsonReceiver):
 
 
 class GameFactory(protocol.Factory):
+
+    @catch_exception
     def __init__(self):
         self.redis = Redis()
-        credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue='connect_queue')
-        self.channel.exchange_declare(exchange='user_message', exchange_type='fanout')
-        # send logs through logs exchange
-        self.channel.exchange_declare(exchange='logs', exchange_type='direct')
+        self.rb = Rabbitmq()
+        self.rb.queue_declare('connect_queue')
+        self.rb.exchange_declare('user_message', 'fanout')
+        self.rb.exchange_declare('logs', 'direct')
         self.rooms = {}
 
     def buildProtocol(self, addr):
         return GameProtocol(self)
 
     def send_connect_message(self, data):
-        self.channel.basic_publish(exchange='', routing_key='connect_queue', body=json.dumps(data))
+        self.rb.send_msg_to_queue('connect_queue', json.dumps(data))
 
     def send_user_message(self, data, room_id, uuid):
         rid = self.redis.save_message(data)
-        message = {}
-        message["rid"] = rid
-        message["room_id"] = room_id
-        message["uuid"] = uuid
-        self.channel.basic_publish(exchange='user_message', routing_key='', body=json.dumps(message))
+        data = dict(rid=rid, room_id=room_id, uuid=uuid)
+        self.rb.send_msg_to_exchange('user_message', '', json.dumps(data))
 
     def send_logs(self, message):
-        self.channel.basic_publish(exchange='logs', routing_key=message['op_type'], body=json.dumps(message))
+        self.rb.send_msg_to_exchange('logs', message['op_type'], json.dumps(message))
 
+    @catch_exception
     def start(self):
-        credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=cfg["rabbitMQ"]["host"], credentials=credentials, heartbeat=0))
-        channel = connection.channel()
-        # receive server message 
-        channel.exchange_declare(exchange='server_message', exchange_type='fanout')
-        queue_name = channel.queue_declare(queue='').method.queue
-        channel.queue_bind(exchange='server_message', queue=queue_name)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.server_message_callback, auto_ack=True)
+        rb = Rabbitmq()
+        # receive server message
+        queue_name = "{}_protocols_server".format(myip)
+        logger.info(queue_name)
+        rb.recv_msg_from_fanout_exchange(queue_name, 'server_message', self.server_message_callback)
         # receive room logs message
-        channel.exchange_declare(exchange='logs', exchange_type='direct')
-        queue_name = channel.queue_declare(queue='').method.queue
-        channel.queue_bind(exchange='logs', queue=queue_name, routing_key='room')
-        channel.basic_consume(queue=queue_name, on_message_callback=self.room_logs_callback, auto_ack=True)
+        queue_name = "{}_protocols_room_logs".format(myip)
+        rb.recv_msg_from_direct_exchange(queue_name, 'logs', 'room', self.room_logs_callback)
         # receive player logs message
-        channel.exchange_declare(exchange='logs', exchange_type='direct')
-        queue_name = channel.queue_declare(queue='').method.queue
-        channel.queue_bind(exchange='logs', queue=queue_name, routing_key='player')
-        channel.basic_consume(queue=queue_name, on_message_callback=self.player_logs_callback, auto_ack=True)
+        queue_name = "{}_protocols_player_logs".format(myip)
+        rb.recv_msg_from_direct_exchange(queue_name, 'logs', 'player', self.player_logs_callback)
 
-        print(' [*] Waiting for messages. To exit press CTRL+C')
-        channel.start_consuming()
+        rb.start()
 
     @catch_exception
     def server_message_callback(self, ch, method, props, body):
@@ -137,6 +127,7 @@ class GameFactory(protocol.Factory):
     @catch_exception
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
+        logger.info(data)
         room_id = data.pop('room_id')
         del data['op_type']
         if room_id in self.rooms:
@@ -149,6 +140,7 @@ class GameFactory(protocol.Factory):
     @catch_exception
     def player_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
+        logger.info(data)
         room_id = data.pop('room_id')
         uuid = data.pop('uuid')
         del data['op_type']

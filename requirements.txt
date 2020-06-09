@@ -8,3 +8,5 @@ better-exceptions
 loguru 
 twisted
 pika
+service_identity
+redis
