@@ -66,8 +66,8 @@ class NoLimitHoldemRoom(Room):
     def notify_state(self, last=False):
         for i, client in enumerate(self.clients):
             state = self.game.get_state(i)
-            for i, player in enumerate(self.clients):
-                state['players'][i]['name'] = player.name
+            for j, player in enumerate(self.clients):
+                state['players'][j]['name'] = player.name
             state['info'] = 'state'
             if last:
                 state['action_position'] = -1
@@ -85,11 +85,10 @@ class NoLimitHoldemRoom(Room):
         for i, client in enumerate(self.clients):
             state = self.game.get_payoff(i)
             state['info'] = 'result'
-            for i, player in enumerate(self.clients):
-                state['players'][i]['name'] = player.name
+            for j, player in enumerate(self.clients):
+                state['players'][j]['name'] = player.name
             self.room_manager.send_message(state, room_id=self.room_id, receiver='player', uuid=client.uuid)
             client.update_session(state['players'][i]['win_money'])
-
         state = self.game.get_payoff()
         state['info'] = 'result'
         state['total_money'] = [client.session for client in self.clients]
