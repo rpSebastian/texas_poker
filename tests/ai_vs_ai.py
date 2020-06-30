@@ -3,12 +3,12 @@ import json
 import struct
 import socket
 
-server_ip = "bb.xuhang.ink"
-server_port = 12345
-room_id = 100
+server_ip = "172.18.40.65"
+server_port = 18888
+room_id = 1000000
 room_number = 2
 bots = ["CallAgent", "CallAgent"]
-game_number = 10
+game_number = 2
 
 
 def sendJson(request, jsonData):
@@ -29,12 +29,13 @@ def recvJson(request):
 if __name__ == "__main__":
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((server_ip, server_port))
-    message = dict(info='ai_vs_ai', room_id=room_id, room_number=2, bots=bots, game_number=game_number)
+    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number)
     sendJson(client, message)
     num = 0
     while True:
         data = recvJson(client)
         if data['info'] == 'result':
+            print(data)
             num += 1
             print(num)
     client.close()

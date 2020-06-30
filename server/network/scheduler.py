@@ -25,6 +25,8 @@ class Scheduler():
         self.rb.queue_declare('task_queue')
         # send logs
         self.rb.exchange_declare('logs', 'direct')
+        # send LuaStack Task
+        self.rb.queue_declare('LuaStack_queue')
 
     @catch_exception
     def connect_callback(self, ch, method, props, body):
@@ -82,6 +84,10 @@ class Scheduler():
             return
         num = ''
         for bot in bots:
+            if bot == "OpenStack":
+                info = [room['room_id'], room['room_number'], "OpenStack"+str(num), room['game_number']]
+                self.rb.send_msg_to_queue('LuaStack_queue', json.dumps(info))
+                continue
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             if bot not in cfg["bot"]:
                 bot = "CallAgent"

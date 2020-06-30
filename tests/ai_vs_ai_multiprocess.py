@@ -3,9 +3,8 @@ import struct
 import socket
 import traceback
 from multiprocessing import Process
-server_ip = "bb.xuhang.ink"
-server_port = 12345
-room_number = 2
+server_ip = "172.18.40.65"
+server_port = 18888
 bots = ["CallAgent", "CallAgent"]
 game_number = 10
 
@@ -51,9 +50,9 @@ if __name__ == "__main__":
     import time
     start = time.time()
     process = []
-    num = 1
+    num = 6
     for i in range(num):
-        p = Test(i)
+        p = Test(i+1000000)
         p.start()
         process.append(p)
     for p in process:

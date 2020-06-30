@@ -6,7 +6,7 @@ import multiprocessing
 
 myip = "127.0.0.1"
 myport = 18889
-room_id = 1000
+room_id = 1000000
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()

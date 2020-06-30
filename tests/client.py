@@ -2,12 +2,12 @@ import json
 import struct
 import socket
 import time
-server_ip = "bb.xuhang.ink"
-server_port = 12345
-room_id = 1000
+server_ip = "172.18.40.65"
+server_port = 18888
+room_id = 1000000
 room_number = 2
-bots = []
-game_number = 100
+bots = ["CallAgent"]
+game_number = 1
 
 
 def sendJson(request, jsonData):
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
+        print(data)
         if 'position' in data:
             position = data['position']
         if data['info'] == 'state' and data['position'] == data['action_position']:
@@ -36,7 +37,7 @@ if __name__ == "__main__":
                 action = 'call'
             else:
                 action = 'check'
-            sendJson(client, {'action': 'fold', 'info': 'action'})
+            sendJson(client, {'action': action, 'info': 'action'})
         if data['info'] == 'result':
             print('win money: {},\tyour card: {},\topp card: {},\t\tpublic card: {}'.format(data['players'][position]['win_money'], data['player_card'][position],  data['player_card'][1-position], data['public_card']))
             num += 1
