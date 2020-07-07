@@ -24,6 +24,8 @@ class GameProtocol(JsonReceiver):
 
     @catch_exception
     def jsonReceived(self, data):
+        if 'room_id' in data:
+            data['room_id'] = int(data['room_id'])
         info = data['info']
         peer = self.transport.getPeer()
         if info == 'connect' or info == 'observer' or info == 'ai_vs_ai':

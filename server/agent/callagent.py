@@ -4,6 +4,8 @@ from utils.utils import sendJson, recvJson
 import multiprocessing
 import random
 import time
+import traceback
+from logs import logger
 with open("./config/config.yaml") as f:
     cfg = yaml.load(f, Loader=yaml.SafeLoader)
 

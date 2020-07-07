@@ -7,8 +7,8 @@ server_ip = "172.18.40.65"
 server_port = 18888
 room_id = 1000000
 room_number = 2
-bots = ["CallAgent", "CallAgent"]
-game_number = 2
+bots = ["CallAgent", "OpenStack"]
+game_number = 1
 
 
 def sendJson(request, jsonData):
@@ -34,6 +34,7 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
+        print(data)
         if data['info'] == 'result':
             print(data)
             num += 1

@@ -37,7 +37,7 @@ class PlayCompeleteError(MyError):
     def __init__(self, room_id):
         self.text = {
             'info': 'success',
-            'text': 'compele playing',
+            'text': 'Complete playing',
             'op_type': 'room',
             'room_id': room_id
         }

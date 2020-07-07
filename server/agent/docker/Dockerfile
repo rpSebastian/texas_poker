@@ -1,6 +1,5 @@
-FROM registry.cn-hangzhou.aliyuncs.com/xuhang/agent:base
+FROM python:3
 WORKDIR /root
-COPY CallAgent.py .
-ENV PATH /root/miniconda3/bin:$PATH
+COPY project ./project
 
 

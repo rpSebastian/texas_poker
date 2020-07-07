@@ -8,7 +8,7 @@ from err import RoomFullError, MyError, RoomNotExitError
 from logs import logger
 from database.rabbitmq import Rabbitmq
 from utils import myip, catch_exception
-
+from collections import defaultdict
 
 class Scheduler():
 
@@ -82,19 +82,21 @@ class Scheduler():
     def notify_bots(self, room, bots):
         if room['notify_bot']:
             return
-        num = ''
+        count = defaultdict(int)
         for bot in bots:
+            count[bot] += 1
+            suffix = "" if count[bot] == 1 else str(count[bot])
+            bot_name = bot + suffix
             if bot == "OpenStack":
-                info = [room['room_id'], room['room_number'], "OpenStack"+str(num), room['game_number']]
+                info = [room['room_id'], room['room_number'], bot_name, room['game_number']]
                 self.rb.send_msg_to_queue('LuaStack_queue', json.dumps(info))
                 continue
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             if bot not in cfg["bot"]:
                 bot = "CallAgent"
             client.connect((cfg["bot"][bot]["host"], cfg["bot"][bot]["port"]))
-            sendJson(client, [room['room_id'], room['room_number'], bot+str(num), room['game_number']])
+            sendJson(client, [room['room_id'], room['room_number'], bot_name, room['game_number']])
             client.close()
-            num = 2 if num == '' else num + 1
         room['notify_bot'] = True
 
     def check_start(self, room):
