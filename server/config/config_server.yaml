@@ -1,37 +1,16 @@
 # 使用nbinx配置后对外暴露的统一ip和端口。
 ext_server:
-  host: "172.18.40.65" #"bb.xuhang.ink"
-  port: 18888 #12345
+  host: "172.18.40.65"
+  port: 18888 
 
 server:
   host: "127.0.0.1"
-  port: 10000 #10000
+  port: 10000 
 
 # 并发处理房间游戏对打的进程数
 room_manager:
   num: 30
-
-bot:
-  RandomAgent:
-    host: "127.0.0.1"
-    port: 20001
-
-  CallAgent:
-    host: "127.0.0.1"
-    port: 20002
-
-  AllinAgent:
-    host: "127.0.0.1"
-    port: 20003
-
-  LuaStack:
-    host: "a.xuhang.ink"
-    port: 30000
-
-  RuleAgent:
-    host: "127.0.0.1"
-    port: 20004
-
+  
 database:
   host: "172.18.40.65"
   port: 3306
@@ -43,8 +22,8 @@ redis:
   host: "172.18.40.65"
   port: 6379
   password: "root"
-
+  
 rabbitMQ:
   host: "172.18.40.65"
-  username: "root"
-  password: "root"
+  username: root
+  password: root

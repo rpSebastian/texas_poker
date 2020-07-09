@@ -45,9 +45,8 @@ class Mysql:
 
     def trans(self, name):
         player_id = name
-        for bot in cfg['bot'].keys():
-            if bot in name:
-                player_id = bot
+        if player_id[-2] == "_" and '0' <= player_id[-1] <= '9':
+            player_id = player_id[:-2]
         return player_id
 
     def end(self):

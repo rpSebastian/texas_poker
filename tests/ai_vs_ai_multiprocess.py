@@ -5,7 +5,7 @@ import traceback
 from multiprocessing import Process
 server_ip = "172.18.40.65"
 server_port = 18888
-bots = ["CallAgent", "CallAgent"]
+bots = ["CallAgent", "OpenStack"]
 game_number = 10
 
 
@@ -50,9 +50,9 @@ if __name__ == "__main__":
     import time
     start = time.time()
     process = []
-    num = 6
+    num = 4
     for i in range(num):
-        p = Test(i+1000000)
+        p = Test(i+100000)
         p.start()
         process.append(p)
     for p in process:

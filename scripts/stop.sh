@@ -1,5 +1,8 @@
 #! /usr/bin/bash
-pids=`ps -ef | grep "python init" | grep -v grep | awk '{print $2}'`
+pids1=`ps -ef | grep "python init" | grep -v grep | awk '{print $2}'`
+pids2=`ps -ef | grep "python agent" | grep -v grep | awk '{print $2}'`
+pids=${pids1}" "${pids2}
+
 if [ "$pids" == "" ]
 then
     echo "already stopped!"

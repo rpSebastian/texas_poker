@@ -4,9 +4,10 @@ from config import cfg
 import socket
 from utils import sendJson
 from operator import itemgetter
-from err import RoomFullError, MyError, RoomNotExitError
+from err import RoomFullError, MyError, RoomNotExitError, AgentNotFoundError, NoEnoughResource
 from logs import logger
 from database.rabbitmq import Rabbitmq
+from database.redis import Redis
 from utils import myip, catch_exception
 from collections import defaultdict
 
@@ -14,6 +15,7 @@ class Scheduler():
 
     @catch_exception
     def __init__(self):
+        self.redis = Redis()
         self.rb = Rabbitmq()
         self.rooms = {}
         # recv connect msg from user
@@ -25,8 +27,8 @@ class Scheduler():
         self.rb.queue_declare('task_queue')
         # send logs
         self.rb.exchange_declare('logs', 'direct')
-        # send LuaStack Task
-        self.rb.queue_declare('LuaStack_queue')
+        # recv agent create error 
+        self.rb.recv_msg_from_queue("agent_error_queue", self.agent_error_callback)
 
     @catch_exception
     def connect_callback(self, ch, method, props, body):
@@ -46,7 +48,7 @@ class Scheduler():
         room_id, name, room_number, bots, game_number, uuid = itemgetter('room_id', 'name', 'room_number', 'bots', 'game_number', 'uuid')(data)
         room = self.get_or_create_room(room_id, room_number, game_number)
         self.add_client(room, room_id, name, uuid)
-        self.notify_bots(room, bots)
+        self.notify_bots(room, bots, data)
         self.check_start(room)
 
     def handle_ai_vs_ai(self, data):
@@ -54,7 +56,7 @@ class Scheduler():
         room = self.get_or_create_room(room_id, room_number, game_number)
         if len(room['name']) == room['room_number']:
             raise RoomFullError(room_id, uuid)
-        self.notify_bots(room, bots)
+        self.notify_bots(room, bots, data)
 
     def handle_observer(self, data):
         room_id = data["room_id"]
@@ -79,24 +81,30 @@ class Scheduler():
         room['name'].append(name)
         room['uuid'].append(uuid)
 
-    def notify_bots(self, room, bots):
+    def notify_bots(self, room, bots, data):
         if room['notify_bot']:
             return
         count = defaultdict(int)
         for bot in bots:
+            supported_agent = json.loads(self.redis.r.get("supported_agent"))
+            if bot not in supported_agent:
+                self.send_logs(AgentNotFoundError(data["room_id"], bot).text)
+                return
+        for bot in bots:
             count[bot] += 1
-            suffix = "" if count[bot] == 1 else str(count[bot])
-            bot_name = bot + suffix
-            if bot == "OpenStack":
-                info = [room['room_id'], room['room_number'], bot_name, room['game_number']]
-                self.rb.send_msg_to_queue('LuaStack_queue', json.dumps(info))
-                continue
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            if bot not in cfg["bot"]:
-                bot = "CallAgent"
-            client.connect((cfg["bot"][bot]["host"], cfg["bot"][bot]["port"]))
-            sendJson(client, [room['room_id'], room['room_number'], bot_name, room['game_number']])
-            client.close()
+            suffix = "" if count[bot] == 1 else "_" + str(count[bot]) 
+            info = dict(
+                room_id=data["room_id"],
+                room_number=data["room_number"],
+                game_number=data["game_number"],
+                bot_name=bot,
+                bot_name_suffix=suffix,
+                uuid=data["uuid"],
+                server=cfg["ext_server"]["host"],
+                port=cfg["ext_server"]["port"],
+                no_gpu=0
+            )
+            self.rb.send_msg_to_queue(bot, json.dumps(info))
         room['notify_bot'] = True
 
     def check_start(self, room):
@@ -113,6 +121,15 @@ class Scheduler():
     def send_logs(self, message):
         self.rb.send_msg_to_exchange('logs', message['op_type'], json.dumps(message))
 
+    @catch_exception
+    def agent_error_callback(self, ch, method, props, body):
+        data = json.loads(body)
+        room_id = data["room_id"]
+        bot_name = data["bot_name"]
+        if data["error"] == "no_gpu":
+            self.send_logs(NoEnoughResource(room_id, bot_name).text)
+
+    
     def start(self):
         print(' [*] Waiting for messages. To exit press CTRL+C')
         self.rb.start()

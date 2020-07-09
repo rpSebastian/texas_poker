@@ -51,3 +51,23 @@ class PlayerExitError(MyError):
             'op_type': 'room',
             'room_id': room_id
         }
+
+
+class AgentNotFoundError(MyError):
+    def __init__(self, room_id, agent_name):
+        self.text = {
+            'info': 'error',
+            'text': 'Agent {} not found'.format(agent_name),
+            'op_type': 'room',
+            'room_id': room_id
+        }
+
+
+class NoEnoughResource(MyError):
+    def __init__(self, room_id, agent_name):
+        self.text = {
+            'info': 'error',
+            'text': 'No enough resources for agent {}'.format(agent_name),
+            'op_type': 'room',
+            'room_id': room_id
+        }

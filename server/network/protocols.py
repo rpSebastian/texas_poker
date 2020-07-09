@@ -45,8 +45,11 @@ class GameProtocol(JsonReceiver):
             if info == 'connect':
                 self.identity = 'player'
                 room['player'][self.uuid] = self
-            if info == "observer" or info == 'ai_vs_ai':
+            if info == "observer":
                 self.identity = 'observer'
+                room['observer'][self.uuid] = self
+            if info == 'ai_vs_ai':
+                self.identity = 'ai_vs_ai'
                 room['observer'][self.uuid] = self
         else:
             self.factory.send_user_message(data, room_id=self.room_id, uuid=self.uuid)
@@ -64,6 +67,10 @@ class GameProtocol(JsonReceiver):
         if self.identity == 'observer' and self.uuid in room['observer']:
             # 如果是观察者主动断开连接，直接删除记录，停止之后的消息发送
             del room['observer'][self.uuid]
+        if self.identity == 'ai_vs_ai':
+            # 如果是ai对战发起者主动断开连接，删除记录，停止之后的消息发送,并且终止房间游戏.
+            del room['observer'][self.uuid]
+            self.factory.send_logs(DisconnectError(self.room_id).text)
 
 
 class GameFactory(protocol.Factory):
