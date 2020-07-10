@@ -7,7 +7,7 @@ from operator import itemgetter
 from err import RoomFullError, MyError, RoomNotExitError, AgentNotFoundError, NoEnoughResource
 from logs import logger
 from database.rabbitmq import Rabbitmq
-from database.redis import Redis
+from database.mysql import Mysql
 from utils import myip, catch_exception
 from collections import defaultdict
 
@@ -15,8 +15,8 @@ class Scheduler():
 
     @catch_exception
     def __init__(self):
-        self.redis = Redis()
         self.rb = Rabbitmq()
+        self.mysql = Mysql()
         self.rooms = {}
         # recv connect msg from user
         self.rb.recv_msg_from_queue('connect_queue', self.connect_callback)
@@ -86,7 +86,7 @@ class Scheduler():
             return
         count = defaultdict(int)
         for bot in bots:
-            supported_agent = json.loads(self.redis.r.get("supported_agent"))
+            supported_agent = self.mysql.get_agent()
             if bot not in supported_agent:
                 self.send_logs(AgentNotFoundError(data["room_id"], bot).text)
                 return

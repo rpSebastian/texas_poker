@@ -7,8 +7,8 @@ server_ip = "172.18.40.65"
 server_port = 18888
 room_id = 100000
 room_number = 2
-bots = ["CallAgent", "CallAI"]
-game_number = 10
+bots = ["AllinAgent", "OpenStack"]
+game_number = 2
 
 
 def sendJson(request, jsonData):

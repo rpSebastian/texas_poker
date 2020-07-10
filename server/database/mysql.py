@@ -52,3 +52,10 @@ class Mysql:
     def end(self):
         self.cursor.close()
         self.content.close()
+
+    def get_agent(self):
+        select_sql = 'select name from agent'
+        self.cursor.execute(select_sql)
+        results = self.cursor.fetchall()
+        agents = [result[0] for result in results]
+        return agents
