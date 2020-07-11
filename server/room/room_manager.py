@@ -52,10 +52,13 @@ class RoomManager(Process):
     @catch_exception
     def task_callback(self, ch, method, props, body):
         data = json.loads(body)
-        room_id, room_number, game_number, uuids, names = itemgetter('room_id', 'room_number', 'game_number', 'uuid', 'name')(data)
+        room_id, room_number, game_number, uuids, names = itemgetter('room_id' , 'room_number', 'game_number', 'uuid', 'name')(data)
         clients = [People(name, uuid) for uuid, name in zip(uuids, names)]
-        self.rooms[room_id] = NoLimitHoldemRoom(self, clients, room_id, room_number, game_number, self.mysql)
-        self.rooms[room_id].init_game()
+        if "mode" in data:
+            self.rooms[room_id] = NoLimitHoldemRoom(self, clients, room_id, room_number, game_number, self.mysql, data["mode"])
+        else:
+            self.rooms[room_id] = NoLimitHoldemRoom(self, clients, room_id, room_number, game_number, self.mysql)
+        self.rooms[room_id].init()
 
     @catch_exception
     def action_callback(self, ch, method, props, body):

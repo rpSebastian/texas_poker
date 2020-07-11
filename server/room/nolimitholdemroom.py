@@ -1,3 +1,4 @@
+import copy
 import random
 from room import Room
 from games.nolimitholdem.game import Game
@@ -7,15 +8,24 @@ from err import MyError, PlayCompeleteError, PlayerExitError
 
 class NoLimitHoldemRoom(Room):
 
-    def init_game(self):
+    def init(self):
         random.shuffle(self.clients)
-        self.game = Game(self.room_number)
         self.game_count = 0
         self.ready_count = 0
-        self.current_player_id = self.game.game_init()
-        self.notify_state()
-        
+        self.game = Game(self.room_number)
+        self.init_game()
 
+    def init_game(self):
+        self.current_player_id = self.game.game_init()
+        if self.mode == "duplicate":
+            if self.game_count % 2 == 0:
+                self.record_game = copy.deepcopy(self.game)
+                self.record_player = self.current_player_id
+            else:
+                self.game = self.record_game
+                self.current_player_id = self.record_player
+        self.notify_state()    
+        
     def handle(self, uuid, data):
         try:
             if data['info'] == 'ready':
@@ -33,8 +43,7 @@ class NoLimitHoldemRoom(Room):
             raise PlayerExitError(self.room_id)
         self.ready_count += 1
         if self.ready_count == self.room_number:
-            self.current_player_id = self.game.game_init()
-            self.notify_state()
+            self.init_game()
 
     def handle_action_message(self, uuid, data):
         player_id = self.get_player_id(uuid)

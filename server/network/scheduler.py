@@ -53,7 +53,10 @@ class Scheduler():
 
     def handle_ai_vs_ai(self, data):
         room_id, room_number, bots, game_number, uuid = itemgetter('room_id', 'room_number', 'bots', 'game_number', 'uuid')(data)
-        room = self.get_or_create_room(room_id, room_number, game_number)
+        if "mode" in data:
+            room = self.get_or_create_room(room_id, room_number, game_number, data["mode"])
+        else:    
+            room = self.get_or_create_room(room_id, room_number, game_number)
         if len(room['name']) == room['room_number']:
             raise RoomFullError(room_id, uuid)
         self.notify_bots(room, bots, data)
@@ -63,7 +66,7 @@ class Scheduler():
         if room_id not in self.rooms:
             raise RoomNotExitError(room_id)
 
-    def get_or_create_room(self, room_id, room_number, game_number):
+    def get_or_create_room(self, room_id, room_number, game_number, mode=None):
         if room_id not in self.rooms:
             room = {}
             room['room_id'] = room_id
@@ -72,6 +75,8 @@ class Scheduler():
             room['uuid'] = []
             room['name'] = []
             room['notify_bot'] = False
+            if mode is not None:
+                room['mode'] = mode
             self.rooms[room_id] = room
         return self.rooms[room_id]
 

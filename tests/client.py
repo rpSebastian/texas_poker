@@ -7,7 +7,7 @@ server_port = 18888
 room_id = 1000000
 room_number = 2
 bots = ["CallAgent"]
-game_number = 100
+game_number = 2
 
 
 def sendJson(request, jsonData):
@@ -29,20 +29,20 @@ if __name__ == "__main__":
     num = 0
     while True:
         data = recvJson(client)
-        print(data)
         if 'position' in data:
             position = data['position']
-        if data['info'] == 'state' and data['position'] == data['action_position']:
-            if 'call' in data['legal_actions']:
-                action = 'call'
-            else:
-                action = 'check'
-            sendJson(client, {'action': action, 'info': 'action'})
-        if data['info'] == 'result':
+        if data['info'] == 'state':
+            if data['position'] == data['action_position']:
+                if 'call' in data['legal_actions']:
+                    action = 'call'
+                else:
+                    action = 'check'
+                sendJson(client, {'action': action, 'info': 'action'})
+        elif data['info'] == 'result':
             print('win money: {},\tyour card: {},\topp card: {},\t\tpublic card: {}'.format(data['players'][position]['win_money'], data['player_card'][position],  data['player_card'][1-position], data['public_card']))
             num += 1
-            x = input()
-            if x == "1":
-                break
             sendJson(client, {'info': 'ready', 'status': 'start'})
-    # client.close()
+        else:
+            print(data)
+            break
+    client.close()
