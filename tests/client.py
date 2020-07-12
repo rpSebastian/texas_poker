@@ -5,8 +5,8 @@ import time
 server_ip = "172.18.40.65"
 server_port = 18888
 room_id = 1000000
-room_number = 2
-bots = ["CallAgent"]
+room_number = 3
+bots = ["CallAgent", "CallAgent"]
 game_number = 2
 
 

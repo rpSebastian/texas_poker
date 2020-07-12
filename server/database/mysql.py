@@ -54,6 +54,7 @@ class Mysql:
         self.content.close()
 
     def get_agent(self):
+        self.content.ping(reconnect=True)
         select_sql = 'select name from agent'
         self.cursor.execute(select_sql)
         results = self.cursor.fetchall()
