@@ -44,9 +44,10 @@ class Mysql:
         self.cursor.connection.commit()
 
     def trans(self, name):
+        agents = self.get_agent()
         player_id = name
-        if player_id[-2] == "_" and '0' <= player_id[-1] <= '9':
-            player_id = player_id[:-2]
+        if "1" <= name[-1] <= "9" and name[:-1] in agents:
+            player_id = name[:-1]
         return player_id
 
     def end(self):

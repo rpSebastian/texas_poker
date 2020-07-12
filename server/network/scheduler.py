@@ -97,7 +97,7 @@ class Scheduler():
                 return
         for bot in bots:
             count[bot] += 1
-            suffix = "" if count[bot] == 1 else "_" + str(count[bot]) 
+            suffix = "" if count[bot] == 1 else str(count[bot] - 1) 
             info = dict(
                 room_id=data["room_id"],
                 room_number=data["room_number"],
