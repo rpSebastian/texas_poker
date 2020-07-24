@@ -10,6 +10,7 @@ class Round():
         else:
             self.raised_counter = [0 for _ in range(self.num_players)]
         self.call_count = 0
+        self.least_raise = self.big_blind
 
     def step(self, players, dealer, action):
         player = players[self.pointer]
@@ -25,6 +26,7 @@ class Round():
         elif action[0] == 'r':
             action = int(action[1:])
             self.call_count = 1
+            self.least_raise = max(self.least_raise, action - max(self.raised_counter))
             player.wager(action - self.raised_counter[self.pointer], dealer)
             self.raised_counter[self.pointer] = action
 
@@ -63,7 +65,7 @@ class Round():
         if player.remained_chips > diff:
             legal_actions.append('raise')
             # 额外raise的最小金额为大盲和两次差价的较大值
-            min_raise_amount = max(self.big_blind, diff) + diff
+            min_raise_amount = self.least_raise + diff
             if min_raise_amount > player.remained_chips:
                 raise_range.append(player.remained_chips + have_raised)
                 raise_range.append(player.remained_chips + have_raised)           

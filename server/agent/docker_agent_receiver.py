@@ -20,7 +20,7 @@ def callback(ch, method, properties, body):
     
     if bot_name == "CallAI":
         command = (
-            'docker run --rm registry.cn-hangzhou.aliyuncs.com/xuhang/agent:demo bash -c "cd /root/project && python demo.py {} {} {} {}"'.format(
+            'docker run -d --rm registry.cn-hangzhou.aliyuncs.com/xuhang/agent:demo bash -c "cd /root/project && python demo.py {} {} {} {}"'.format(
             room_id, room_number, bot_name + bot_name_suffix, game_number)
         )
         print(command)
