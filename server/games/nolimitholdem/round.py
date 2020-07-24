@@ -1,3 +1,5 @@
+from err import err
+
 class Round():
     def __init__(self, num_players, big_blind):
         self.num_players = num_players
@@ -11,8 +13,26 @@ class Round():
             self.raised_counter = [0 for _ in range(self.num_players)]
         self.call_count = 0
         self.least_raise = self.big_blind
+        self.raise_count = 0
+
+    def check_action_available(self, players, action):
+        legal_actions, raise_range = self.get_legal_actions(players)
+        error = err.InvalidActionError(action)
+        if action[0] == "r":
+            if "raise" not in legal_actions:
+                raise error
+            try:
+                money = int(action[1:])
+            except ValueError:
+                raise error
+            if not (raise_range[0] <= money <= raise_range[1]):
+                raise error
+        else:
+            if not action in legal_actions:
+                raise error
 
     def step(self, players, dealer, action):
+        self.check_action_available(players, action) 
         player = players[self.pointer]
         if action == 'call':
             self.call_count += 1
@@ -24,6 +44,7 @@ class Round():
             self.call_count += 1
         
         elif action[0] == 'r':
+            self.raise_count += 1
             action = int(action[1:])
             self.call_count = 1
             self.least_raise = max(self.least_raise, action - max(self.raised_counter))
@@ -57,21 +78,22 @@ class Round():
             legal_actions.append('check')
         if self.raised_counter[self.pointer] < max(self.raised_counter):
             legal_actions.append('call')
-    
-        # 计算需要补齐的差价
-        diff = max(self.raised_counter) - have_raised
+        
         raise_range = []
-        # 如果在补齐差价后还有钱，则可以进行raise操作
-        if player.remained_chips > diff:
-            legal_actions.append('raise')
-            # 额外raise的最小金额为大盲和两次差价的较大值
-            min_raise_amount = self.least_raise + diff
-            if min_raise_amount > player.remained_chips:
-                raise_range.append(player.remained_chips + have_raised)
-                raise_range.append(player.remained_chips + have_raised)           
-            else:
-                raise_range.append(have_raised + min_raise_amount)
-                raise_range.append(have_raised + player.remained_chips)
+        if self.raise_count < 4:
+            # 计算需要补齐的差价
+            diff = max(self.raised_counter) - have_raised
+            # 如果在补齐差价后还有钱，则可以进行raise操作
+            if player.remained_chips > diff:
+                legal_actions.append('raise')
+                # 额外raise的最小金额为大盲和两次差价的较大值
+                min_raise_amount = self.least_raise + diff
+                if min_raise_amount > player.remained_chips:
+                    raise_range.append(player.remained_chips + have_raised)
+                    raise_range.append(player.remained_chips + have_raised)           
+                else:
+                    raise_range.append(have_raised + min_raise_amount)
+                    raise_range.append(have_raised + player.remained_chips)
         return legal_actions, raise_range
         
 

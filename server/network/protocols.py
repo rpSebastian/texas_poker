@@ -1,5 +1,6 @@
 import pika
 import uuid
+import copy
 import json
 from twisted.internet import protocol
 from network.base import JsonReceiver
@@ -136,12 +137,19 @@ class GameFactory(protocol.Factory):
     def room_logs_callback(self, ch, method, props, body):
         data = json.loads(body)
         room_id = data.pop('room_id')
+        if "uuid" in data:
+            uuid = data.pop("uuid")
+        else:
+            uuid = None
         del data['op_type']
         if room_id in self.rooms:
-            clients = [*self.rooms[room_id]['player'].values(), *self.rooms[room_id]['observer'].values()]
+            clients = {**self.rooms[room_id]['player'], **self.rooms[room_id]['observer']}
             del self.rooms[room_id]
-            for client in clients:
-                reactor.callFromThread(self.send_message, client, data)
+            for c_uuid, client in clients.items():
+                data_copy = copy.copy(data)
+                if uuid is not None and c_uuid != uuid:
+                    data_copy["text"] = "Some players are disconnected"
+                reactor.callFromThread(self.send_message, client, data_copy)
                 reactor.callFromThread(self.lose_connection, client)
 
     @catch_exception

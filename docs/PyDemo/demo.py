@@ -16,8 +16,25 @@ def get_action(data):
         action = 'call'
     else:
         action = 'check'
+    check_action_available(data, action)e
     return action
 
+def check_action_available(data, action):
+    legal_actions = data["legal_actions"]
+    raise_range = data["raise_range"]
+    error = ValueError("Invalid Action: {}".format(action))
+    if action[0] == "r":
+        if "raise" not in legal_actions:
+            raise error
+        try:
+            money = int(action[1:])
+        except ValueError:
+            raise error
+        if not (raise_range[0] <= money <= raise_range[1]):
+            raise error
+    else:
+        if not action in legal_actions:
+            raise error
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()

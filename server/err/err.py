@@ -71,3 +71,15 @@ class NoEnoughResource(MyError):
             'op_type': 'room',
             'room_id': room_id
         }
+
+class InvalidActionError(MyError):
+    def __init__(self, action, player_id=None, room_id=None):
+        self.text = {
+            'info': 'error',
+            'text': 'Invalid action: {}'.format(action)
+        }
+        self.action = action
+        if player_id is not None:
+            self.text["room_id"] = room_id
+            self.text["uuid"] = player_id
+            self.text["op_type"] = "room"

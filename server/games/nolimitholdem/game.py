@@ -31,8 +31,6 @@ class Game():
         return self.pointer
 
     def step(self, action):
-        if not self.check_action_valid(action):
-            raise Exception("Action invalid!")
         self.action_player, self.current_action = self.pointer, action
         self.action_history[self.round_counter].append(dict(position=self.pointer, action=action, timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]))
         self.pointer = self.cur_round.step(self.players, self.dealer, action)
@@ -54,16 +52,6 @@ class Game():
     def skip_folded_player(self):
         while self.players[self.pointer].status == 'folded':
             self.pointer = (self.pointer + 1) % self.num_players
-
-    def check_action_valid(self, action):
-        legal_actions, raise_range = self.cur_round.get_legal_actions(self.players)
-        if action[0] == 'r' and 'raise' in legal_actions \
-           and int(action[1:]) >= raise_range[0] \
-           and int(action[1:]) <= raise_range[1]:
-            return True
-        if action in legal_actions:
-            return True
-        return False
 
     def is_terminal(self):
         # 其他人都fold了

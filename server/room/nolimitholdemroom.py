@@ -3,7 +3,7 @@ import random
 from room import Room
 from games.nolimitholdem.game import Game
 from logs import logger
-from err import MyError, PlayCompeleteError, PlayerExitError
+from err import MyError, PlayCompeleteError, PlayerExitError, InvalidActionError
 
 
 class NoLimitHoldemRoom(Room):
@@ -32,6 +32,9 @@ class NoLimitHoldemRoom(Room):
                 self.handle_start_message(uuid, data)
             elif data['info'] == 'action':
                 self.handle_action_message(uuid, data)
+        except InvalidActionError as e:
+            error = InvalidActionError(e.action, uuid, self.room_id)
+            self.room_manager.send_logs(error.text)
         except MyError as e:
             self.room_manager.send_logs(e.text)
         except Exception as e:
