@@ -9,7 +9,7 @@ room_id = 100000
 room_number = 2
 bots = ["OpenStack", "CallAgent"]
 game_number = 10
-mode = "duplicate"
+# mode = "duplicate"
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
@@ -29,7 +29,7 @@ def recvJson(request):
 if __name__ == "__main__":
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((server_ip, server_port))
-    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number, mode=mode)
+    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number)
     sendJson(client, message)
     num = 0
     while True:

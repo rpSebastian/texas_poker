@@ -7,7 +7,7 @@ import collections
 import subprocess
 
 
-supported_agent = ["CallAI"]
+supported_agent = ["xxx"]
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
@@ -18,7 +18,7 @@ def callback(ch, method, properties, body):
     bot_name = data["bot_name"]
     bot_name_suffix = data["bot_name_suffix"]
     
-    if bot_name == "CallAI":
+    if bot_name == "xxx":
         command = (
             'docker run -d --rm registry.cn-hangzhou.aliyuncs.com/xuhang/agent:demo bash -c "cd /root/project && python demo.py {} {} {} {}"'.format(
             room_id, room_number, bot_name + bot_name_suffix, game_number)
@@ -56,6 +56,7 @@ def update_database():
     cursor = connect.cursor()
     select_sql = 'select name from agent'
     cursor.execute(select_sql)
+    cursor.connection.commit()
     results = cursor.fetchall()
     agents = [result[0] for result in results]
     update_sql = "insert into agent(name) values (%s)"
