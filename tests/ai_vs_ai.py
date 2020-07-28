@@ -5,9 +5,9 @@ import socket
 
 server_ip = "172.18.40.65"
 server_port = 18888
-room_id = 100000
+room_id = int(sys.argv[1])
 room_number = 2
-bots = ["OpenStack", "CallAgent"]
+bots = ["RandomAgent", "CallAgent"]
 game_number = 10
 # mode = "duplicate"
 
@@ -29,13 +29,14 @@ def recvJson(request):
 if __name__ == "__main__":
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((server_ip, server_port))
-    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number)
+    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number, deposit=True)
     sendJson(client, message)
     num = 0
     while True:
         data = recvJson(client)
         if data['info'] == 'result':
-            print(data)
+            num += 1
+            print(num)
         if data['info'] == 'error' or data['info'] == 'success':
             print(data)
             break

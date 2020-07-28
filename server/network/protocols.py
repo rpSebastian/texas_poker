@@ -22,11 +22,15 @@ class GameProtocol(JsonReceiver):
         self.identity = None
         self.room_id = None
         self.uuid = str(uuid.uuid4())
+        self.deposit = False
 
     @catch_exception
     def jsonReceived(self, data):
         if 'room_id' in data:
             data['room_id'] = int(data['room_id'])
+        if 'deposit' in data:
+            self.deposit = True
+        
         info = data['info']
         peer = self.transport.getPeer()
         if info == 'connect' or info == 'observer' or info == 'ai_vs_ai':
@@ -71,8 +75,8 @@ class GameProtocol(JsonReceiver):
         if self.identity == 'ai_vs_ai':
             # 如果是ai对战发起者主动断开连接，删除记录，停止之后的消息发送,并且终止房间游戏.
             del room['observer'][self.uuid]
-            self.factory.send_logs(DisconnectError(self.room_id).text)
-
+            if not self.deposit:
+                self.factory.send_logs(DisconnectError(self.room_id).text)
 
 class GameFactory(protocol.Factory):
 
