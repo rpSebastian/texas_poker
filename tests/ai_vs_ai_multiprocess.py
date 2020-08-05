@@ -10,8 +10,8 @@ gevent.monkey.patch_all()
 server_ip = "holdem.ia.ac.cn"
 server_port = 18888
 bots = ["CallAgent", "RandomAgent"]
-game_number = 4
-game = 1
+game_number = 10
+game = 1000
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()

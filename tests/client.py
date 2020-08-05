@@ -6,8 +6,8 @@ server_ip = "holdem.ia.ac.cn"
 server_port = 18888
 room_id = 1000002
 room_number = 2
-game_number = 20
-bots = ["CallAgent"]
+game_number = 2
+bots = ["xxx"]
 
 
 def sendJson(request, jsonData):
