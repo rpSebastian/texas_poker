@@ -4,7 +4,7 @@ import sys
 credentials = pika.PlainCredentials("root", "root")
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
-        host="172.18.40.65",
+        host="172.30.224.1",
         credentials=credentials,
         heartbeat=0
     ))

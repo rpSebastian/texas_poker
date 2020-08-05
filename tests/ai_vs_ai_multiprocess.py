@@ -2,12 +2,16 @@ import json
 import struct
 import socket
 import traceback
-from multiprocessing import Process
-server_ip = "172.18.40.65"
-server_port = 18888
-bots = ["CallAgent", "OpenStack"]
-game_number = 10
 
+import gevent
+import gevent.monkey 
+gevent.monkey.patch_all()
+
+server_ip = "holdem.ia.ac.cn"
+server_port = 18888
+bots = ["CallAgent", "RandomAgent"]
+game_number = 4
+game = 1
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
@@ -24,10 +28,11 @@ def recvJson(request):
     return data
 
 
-class Test(Process):
-    def __init__(self, room_id):
+class Test():
+    def __init__(self, room_id, xid):
         super().__init__()
         self.room_id = room_id
+        self.xid = xid
 
     def run(self):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,11 +40,19 @@ class Test(Process):
         message = dict(info='ai_vs_ai', room_id=self.room_id, room_number=2, bots=bots, game_number=game_number)
         sendJson(client, message)
         num = 0
+        if self.xid != 0:
+            client.close()
+            return
         try:
             while True:
                 data = recvJson(client)
-                if data['info'] == 'result':
+                if data["info"] == "state":
+                    pass
+                elif data['info'] == 'result':
                     num += 1
+                else:
+                    # print(data)
+                    break
         except Exception as e:
             if num != game_number:
                 print(num, e)
@@ -49,14 +62,10 @@ class Test(Process):
 if __name__ == "__main__":
     import time
     start = time.time()
-    process = []
-    num = 4
-    for i in range(num):
-        p = Test(i+100000)
-        p.start()
-        process.append(p)
-    for p in process:
-        p.join()
-    end = time.time()
-    print(num, game_number, end - start)
-
+    tasks = []
+    for i in range(game):
+        p = Test(i+123456, i)
+        tasks.append(gevent.spawn(p.run))
+    gevent.joinall(tasks)
+    print("game: {} game_number:{} time:{}".format(game, game_number, time.time() - start))
+    

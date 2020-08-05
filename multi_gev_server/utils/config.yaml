@@ -1,0 +1,32 @@
+num_workers: 90
+num_database: 10
+
+ext_server:
+  host: "holdem.ia.ac.cn"
+  port: 18888
+
+
+# ext_server:
+#   host: "127.0.0.1"
+#   port: 10000
+
+server:
+  host: "172.18.40.66"
+  port: 10000
+
+database:
+  host: "172.18.40.65"
+  port: 3306
+  user: "root"
+  password: "root"
+  table: "poker"
+
+redis:
+  host: "172.18.40.65"
+  port: 6379
+  password: "root"
+  
+rabbitMQ:
+  host: "172.18.40.65"
+  username: root
+  password: root

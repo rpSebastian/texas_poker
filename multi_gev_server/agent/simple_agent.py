@@ -19,17 +19,18 @@ def recvJson(request):
     data = json.loads(data)
     return data
 
-class CallAgent(multiprocessing.Process):
+class CallAgent():
 
     def __init__(self, room_id, room_number, name, game_number, server, port):
-        multiprocessing.Process.__init__(self)
         self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.server = server
         self.port = port
 
     def run(self):
+        print(self.server, self.port, self.info)
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((self.server, self.port))
+        print("connect")
         try:
             sendJson(client, self.info)
             while True:
@@ -48,10 +49,9 @@ class CallAgent(multiprocessing.Process):
             client.close()
 
 
-class RandomAgent(multiprocessing.Process):
+class RandomAgent():
 
     def __init__(self, room_id, room_number, name, game_number, server, port):
-        multiprocessing.Process.__init__(self)
         self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.server = server
         self.port = port
@@ -80,10 +80,9 @@ class RandomAgent(multiprocessing.Process):
             client.close()
 
 
-class AllinAgent(multiprocessing.Process):
+class AllinAgent():
 
     def __init__(self, room_id, room_number, name, game_number, server, port):
-        multiprocessing.Process.__init__(self)
         self.info = dict(info='connect', room_id=room_id, name=name, room_number=room_number, game_number=game_number, bots=[])
         self.server = server
         self.port = port

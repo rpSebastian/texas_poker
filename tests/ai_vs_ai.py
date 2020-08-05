@@ -3,9 +3,9 @@ import json
 import struct
 import socket
 
-server_ip = "172.18.40.65"
+server_ip = "holdem.ia.ac.cn"
 server_port = 18888
-room_id = int(sys.argv[1])
+room_id = 1000003
 room_number = 2
 bots = ["RandomAgent", "CallAgent"]
 game_number = 10
