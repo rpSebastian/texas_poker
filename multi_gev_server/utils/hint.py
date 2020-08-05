@@ -39,6 +39,11 @@ def room_not_exist_info(room_id):
         'text': 'room {} not exists'.format(room_id),
     }
 
+def unknown_error_info(info):
+    return {
+        'info': 'Unhandled error',
+        'text':  info,
+    }
 # class NoEnoughResource(MyError):
 #     def __init__(self, room_id, agent_name):
 #         self.text = {

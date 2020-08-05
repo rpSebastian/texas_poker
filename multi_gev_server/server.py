@@ -66,6 +66,13 @@ class Game():
             self.observers.append(Player(sock))
 
     def run(self):
+        try:
+            self.work()
+        except Exception as e:
+            logger.exception(e)
+            self.tear_down(hint.unknown_error_info(repr(e)))
+    
+    def work(self):
         random.shuffle(self.players)
         self.game = holdem_game(self.room_number)
         for game_count in range(1, self.game_number + 1):
@@ -108,7 +115,7 @@ class Game():
         message['room_id'] = self.room_id
         self.rb.send_msg_to_queue("mysql_queue", json.dumps(message))
 
-    def tear_down(self, info):
+    def tear_down(self, info=None):
         for player in [*self.players, *self.observers]:
             player.notify(info)
         for player in [*self.players, *self.observers]:
@@ -362,7 +369,7 @@ def main():
         try:
             listener.recv_data()
         except Exception as e:
-            listener.tear_down()
+            listener.tear_down(hint.unknown_error_info(repr(e)))
             logger.exception(e)
                        
 if __name__ == '__main__':

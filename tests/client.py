@@ -38,8 +38,6 @@ if __name__ == "__main__":
                     action = 'call'
                 else:
                     action = 'check'
-              
-                # x = input("!")
                 sendJson(client, {'action': action, 'info': 'action'})
                 # start = time.time()
         elif data['info'] == 'result':
