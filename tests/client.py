@@ -7,7 +7,7 @@ server_port = 18888
 room_id = 1000002
 room_number = 2
 game_number = 2
-bots = ["xxx"]
+bots = ["OpenStack"]
 
 
 def sendJson(request, jsonData):

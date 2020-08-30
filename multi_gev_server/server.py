@@ -240,8 +240,18 @@ class Room():
         self.notify_bot_done = True
         return True, None
 
+    def dismiss(self, info):
+        for sock in self.socks:
+            if info is not None:
+                utils.sendJson(sock, info)
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except Exception:
+                pass
+            sock.close()
+
 class Listener():
-    def __init__(self, address, port, controlers, room_end_queue):
+    def __init__(self, address, port, controlers, room_end_queue, agent_error_queue):
         self.s = socket.socket()
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind((address, port))
@@ -252,16 +262,27 @@ class Listener():
         self.db = mysql.Mysql()
         self.rb = rabbitmq.Rabbitmq()
         self.room_end_queue = room_end_queue
+        self.agent_error_queue = agent_error_queue
 
     def recv_user(self):
+        self.status = 0
         self.conn, self.addr = self.s.accept()
+        self.status = 1
 
     def clear_room(self):
         while not self.room_end_queue.empty():
             room_id = self.room_end_queue.get()
             if room_id in self.rooms:
                 del self.rooms[room_id]
-
+        
+        while not self.agent_error_queue.empty():
+            msg = self.agent_error_queue.get()
+            room_id = msg["room_id"]
+            bot_name = msg["bot_name"]
+            if room_id in self.rooms:
+                self.rooms[room_id].dismiss(hint.no_enough_resource_info(bot_name))
+                del self.rooms[room_id]
+        
     def recv_data(self):
         data = utils.recvJson(self.conn)
         logger.info("{}:{}, {}", self.addr[0], self.addr[1], data)
@@ -323,11 +344,18 @@ class Listener():
         return self.rooms[room_id]
 
 class Receiver(multiprocessing.Process):
-    def __init__(self, room_end_queue):
+    def __init__(self, room_end_queue, agent_error_queue):
         super().__init__()
         self.room_end_queue = room_end_queue
+        self.agent_error_queue = agent_error_queue
         self.rb = rabbitmq.Rabbitmq()
         self.rb.recv_msg_from_queue('room_end_queue', self.room_end_callback)
+        self.rb.recv_msg_from_queue("agent_error_queue", self.agent_error_call_back)
+            
+    def agent_error_call_back(self, ch, method, props, body):
+        msg = json.loads(body)
+        logger.info(msg)
+        self.agent_error_queue.put(msg)
 
     def room_end_callback(self, ch, method, props, body):
         room_id = json.loads(body)[0]
@@ -357,20 +385,29 @@ def main():
         for i in range(cfg["num_workers"])
     ]
     room_end_queue = multiprocessing.Queue()
-    listener = Listener(cfg["server"]["host"], cfg["server"]["port"], controlers, room_end_queue)
-    Receiver(room_end_queue).start()
+    agent_error_queue = multiprocessing.Queue()
+
+    listener = Listener(cfg["server"]["host"], cfg["server"]["port"], controlers, room_end_queue, agent_error_queue)
+    Receiver(room_end_queue, agent_error_queue).start()
 
     for i in range(cfg["num_database"]):
         DatabaseReceiver().start()
 
     while True:
-        listener.recv_user()
         listener.clear_room()
+        
         try:
-            listener.recv_data()
-        except Exception as e:
-            listener.tear_down(hint.unknown_error_info(repr(e)))
-            logger.exception(e)
+            with utils.time_limit(3):
+                listener.recv_user()
+        except Exception:
+            pass
+
+        if listener.status == 1:
+            try:
+                listener.recv_data()
+            except Exception as e:
+                listener.tear_down(hint.unknown_error_info(repr(e)))
+                logger.exception(e)
                        
 if __name__ == '__main__':
     main()

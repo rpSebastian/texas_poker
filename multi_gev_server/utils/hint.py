@@ -44,12 +44,9 @@ def unknown_error_info(info):
         'info': 'Unhandled error',
         'text':  info,
     }
-# class NoEnoughResource(MyError):
-#     def __init__(self, room_id, agent_name):
-#         self.text = {
-#             'info': 'error',
-#             'text': 'No enough resources for agent {}'.format(agent_name),
-#             'op_type': 'room',
-#             'room_id': room_id
-#         }
 
+def no_enough_resource_info(agent_name):
+    return {
+        'info': 'error',
+        'text': 'No enough resources for agent {}'.format(agent_name)
+    }

@@ -10,3 +10,5 @@ twisted
 pika
 service_identity
 redis
+gevent
+gipc

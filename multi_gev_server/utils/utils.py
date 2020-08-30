@@ -2,7 +2,6 @@ import json
 import struct
 
 
-
 def sendJson(request, jsonData):
     try:
         data = json.dumps(jsonData).encode()
@@ -36,3 +35,31 @@ def catch_exception(func):
         except Exception as e:
             logger.exception(e)
     return wrapper
+
+
+import signal
+from contextlib import contextmanager
+
+class TimeoutException(Exception): pass
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
+if __name__ == "__main__":
+
+    def func(s):
+        import time
+        time.sleep(s)
+        print("ok")
+
+    with time_limit(3):
+        func(2)
