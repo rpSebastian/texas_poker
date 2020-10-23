@@ -1,3 +1,4 @@
+import os
 import time
 import pika
 import pymysql
@@ -7,6 +8,8 @@ import redis
 import subprocess
 import collections
 import subprocess
+
+
 
 supported_agent = ["OpenStack"]
 GpuNeeded = {

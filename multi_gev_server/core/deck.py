@@ -1,7 +1,6 @@
 import random
 from .card import Card
 
-
 class Deck():
 
     ranks = [str(n) for n in range(2, 10)] + list('TJQKA')
@@ -21,3 +20,13 @@ class Deck():
             card = self._cards.pop()
             cards.append(card)
         return cards
+
+class StaticDeck(Deck):
+
+    def __init__(self):
+        self.deck_list = []
+        file_name = "core/deck_file.txt"
+        with open("file_name") as f:
+            for line in f:
+                print(line)
+

@@ -5,10 +5,11 @@ import socket
 
 server_ip = "holdem.ia.ac.cn"
 server_port = 18888
-room_id = 1000003
+room_id = 888891
 room_number = 2
-bots = ["RandomAgent", "CallAgent"]
-game_number = 10
+# bots = ["LooseAggressive","TightPassive"]
+bots = ["RandomGambler","CandidStatistician"]
+game_number = 2
 # mode = "duplicate"
 
 def sendJson(request, jsonData):
@@ -28,12 +29,17 @@ def recvJson(request):
 
 if __name__ == "__main__":
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print(server_ip, server_port)
     client.connect((server_ip, server_port))
-    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number, deposit=True)
+    print("connect")
+    message = dict(info='ai_vs_ai', room_id=room_id, room_number=room_number, bots=bots, game_number=game_number)
     sendJson(client, message)
+    print("send")
     num = 0
     while True:
+        # print("recving")
         data = recvJson(client)
+        print(data)
         if data['info'] == 'result':
             num += 1
             print(num)

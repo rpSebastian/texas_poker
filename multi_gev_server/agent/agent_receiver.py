@@ -11,10 +11,14 @@ import gevent
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import simple_agent
+from simple_agent import CallAgent, AllinAgent, RandomAgent
+from multitype_agent import CandidStatistician, HotheadManiac, LooseAggressive, LoosePassive
+from multitype_agent import TightAggressive, ScaredLimper, RandomGambler, TightPassive
 
 
-supported_agent = ["CallAgent", "AllinAgent", "RandomAgent"]
+supported_agent = ["CallAgent", "AllinAgent", "RandomAgent",
+                   "CandidStatistician", "HotheadManiac", "LooseAggressive", "LoosePassive",
+                   "TightAggressive", "ScaredLimper", "RandomGambler", "TightPassive"]
 
 
 def callback(ch, method, properties, body):
@@ -26,15 +30,9 @@ def callback(ch, method, properties, body):
     bot_name_suffix = data["bot_name_suffix"]
     server = data["server"]
     port = data["port"]
-    if bot_name == "CallAgent":
-        agent = simple_agent.CallAgent(room_id, room_number, bot_name + bot_name_suffix, game_number, server, port)
-        gevent.spawn(agent.run)
-    if bot_name == "AllinAgent":
-        agent = simple_agent.AllinAgent(room_id, room_number, bot_name + bot_name_suffix, game_number, server, port)
-        gevent.spawn(agent.run)
-    if bot_name == "RandomAgent":
-        agent = simple_agent.RandomAgent(room_id, room_number, bot_name + bot_name_suffix, game_number, server, port)
-        gevent.spawn(agent.run)
+    agent = globals()[bot_name](room_id, room_number, bot_name + bot_name_suffix, game_number, server, port)
+    gevent.spawn(agent.run)
+    
     ch.basic_ack(method.delivery_tag)
 
 

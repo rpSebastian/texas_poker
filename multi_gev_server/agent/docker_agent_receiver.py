@@ -1,3 +1,4 @@
+import os
 import time
 import pika
 import pymysql
@@ -7,7 +8,7 @@ import collections
 import subprocess
 
 
-supported_agent = ["xxx"]
+supported_agent = ["xxx", "YangJun", "LiShuokai", "QianTao"]
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
@@ -21,6 +22,30 @@ def callback(ch, method, properties, body):
     if bot_name == "xxx":
         command = (
             'docker run -d --rm registry.cn-hangzhou.aliyuncs.com/xuhang/agent:demo bash -c "cd /root/project && python demo.py {} {} {} {}"'.format(
+            room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+        print(command)
+        subprocess.call(command, shell=True)
+
+    if bot_name == "YangJun":
+        command = (
+            'docker run -d registry.cn-beijing.aliyuncs.com/liuqh/texas2:v1.2 bash -c "cd /root/poker && export PATH=/root/miniconda3/bin:$PATH && python run_this.py {} {} {} {}"'.format(
+            room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+        print(command)
+        subprocess.call(command, shell=True)
+
+    if bot_name == "LiShuokai":
+        command = (
+            'docker run -d registry.cn-beijing.aliyuncs.com/xuehongyan/ict_agent:v0.1.2 bash -c "cd /root/project && python py_player_new.py {} {} {} {}"'.format(
+            room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+        print(command)
+        subprocess.call(command, shell=True)
+
+    if bot_name == "QianTao":
+        command = (
+            'docker run -d registry.cn-shenzhen.aliyuncs.com/hitszcs/hitsz6p:v1.4 bash -c "cd /root/project && python agent_cas.py {} {} {} {}"'.format(
             room_id, room_number, bot_name + bot_name_suffix, game_number)
         )
         print(command)

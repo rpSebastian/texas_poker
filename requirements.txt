@@ -10,5 +10,5 @@ twisted
 pika
 service_identity
 redis
-gevent
+gevent==1.4.0
 gipc

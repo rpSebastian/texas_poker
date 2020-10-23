@@ -1,3 +1,4 @@
+import copy
 import time
 import json
 import socket
@@ -49,7 +50,7 @@ class Player():
 
 
 class Game():
-    def __init__(self, room_id, room_number, game_number, names, socks, rb, observer_queue):
+    def __init__(self, room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai):
         self.room_id = room_id
         self.room_number = room_number
         self.game_number = game_number
@@ -59,6 +60,7 @@ class Game():
             self.players.append(Player(sock, name))
         self.rb = rb
         self.observer_queue = observer_queue
+        self.is_ai = is_ai
 
     def retrive_observer(self):
         while self.observer_queue[self.room_id]:
@@ -74,9 +76,12 @@ class Game():
     
     def work(self):
         random.shuffle(self.players)
-        self.game = holdem_game(self.room_number)
+        self.record_game = holdem_game(self.room_number)
         for game_count in range(1, self.game_number + 1):
-            player_id = self.game.game_init()
+            if not self.is_ai or self.is_ai and game_count % self.room_number == 1:
+                self.record_player = self.record_game.game_init()
+            player_id = self.record_player
+            self.game =  copy.deepcopy(self.record_game)    
             while not self.game.is_terminal():
                 self.retrive_observer()
                 self.notify_state()
@@ -120,6 +125,8 @@ class Game():
             player.notify(info)
         for player in [*self.players, *self.observers]:
             player.finish()
+        if info["info"] != "success":
+            logger.warning("room {}, {}", self.room_id, info["text"])
         self.rb.send_msg_to_queue("room_end_queue", json.dumps([self.room_id]))
 
     def notify_state(self, last=False):
@@ -167,13 +174,13 @@ def worker(socket_reader, data_reader):
     while True:
         data = data_reader.get()
         if data["info"] == "room":
-            room_id, room_number, game_number, names = data["data"]
+            room_id, room_number, game_number, names, is_ai = data["data"]
             socks = []
             for i in range(room_number):
                 socket_reader.poll(None)
                 sock = socket.fromfd(reduction.recv_handle(socket_reader), socket.AF_INET, socket.SOCK_STREAM)
                 socks.append(sock)
-            game = Game(room_id, room_number, game_number, names, socks, rb, observer_queue)
+            game = Game(room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai)
             gevent.spawn(game.run)
 
         if data["info"] == "observer":
@@ -189,7 +196,7 @@ class WorkerControler():
         self.p = gipc.start_process(target=worker, args=(self.socket_r, self.data_r))
 
     def dispatch(self, room):
-        self.data_w.put(dict(info="room", data=[room.room_id, room.room_number, room.game_number, room.names]))
+        self.data_w.put(dict(info="room", data=[room.room_id, room.room_number, room.game_number, room.names, room.is_ai]))
         for sock in room.socks:
             reduction.send_handle(self.socket_w, sock.fileno(), self.p.pid)
 
@@ -198,7 +205,7 @@ class WorkerControler():
         reduction.send_handle(self.socket_w, sock.fileno(), self.p.pid)
 
 class Room():
-    def __init__(self, room_id, room_number, game_number, bots, control_id):
+    def __init__(self, room_id, room_number, game_number, bots, control_id, is_ai):
         self.socks = []
         self.names = []
         self.room_number = room_number
@@ -207,7 +214,8 @@ class Room():
         self.bots = bots
         self.notify_bot_done = False
         self.control_id = control_id
-     
+        self.is_ai = is_ai
+
     def add_player(self, sock, name):
         self.socks.append(sock)
         self.names.append(name)
@@ -215,12 +223,12 @@ class Room():
     def full(self):
         return len(self.socks) == self.room_number
     
-    def notify_bots(self, db, rb):
+    def notify_bots(self, supported_agent, rb):
         if self.notify_bot_done:
             return True, None
+        self.notify_bot_done = True  
         count = defaultdict(int)
         for bot in self.bots:
-            supported_agent = db.get_agent()
             if bot not in supported_agent:
                 return False, bot
         for bot in self.bots:
@@ -237,7 +245,6 @@ class Room():
                 no_gpu=0
             )
             rb.send_msg_to_queue(bot, json.dumps(info))
-        self.notify_bot_done = True
         return True, None
 
     def dismiss(self, info):
@@ -263,12 +270,24 @@ class Listener():
         self.rb = rabbitmq.Rabbitmq()
         self.room_end_queue = room_end_queue
         self.agent_error_queue = agent_error_queue
+        self.supported_agent = self.db.get_agent()
+        
+    def run(self):
+        tasks = [
+            gevent.spawn(self.clear_room),
+            gevent.spawn(self.recv_user),
+            gevent.spawn(self.update_agent_list)
+        ]
+        gevent.joinall(tasks)
 
-    def recv_user(self):
-        self.status = 0
-        self.conn, self.addr = self.s.accept()
-        self.status = 1
+    @utils.run_forever
+    @utils.catch_exception
+    def update_agent_list(self):
+        self.supported_agent = self.db.get_agent()
+        gevent.sleep(10)
 
+    @utils.run_forever
+    @utils.catch_exception
     def clear_room(self):
         while not self.room_end_queue.empty():
             room_id = self.room_end_queue.get()
@@ -282,10 +301,25 @@ class Listener():
             if room_id in self.rooms:
                 self.rooms[room_id].dismiss(hint.no_enough_resource_info(bot_name))
                 del self.rooms[room_id]
-        
-    def recv_data(self):
-        data = utils.recvJson(self.conn)
-        logger.info("{}:{}, {}", self.addr[0], self.addr[1], data)
+        gevent.sleep(1)
+
+    @utils.run_forever
+    @utils.catch_exception
+    def recv_user(self):
+        conn, addr = self.s.accept()
+        logger.info("accept user {}:{}", addr[0], addr[1])
+        gevent.spawn(self.recv_data_run, conn, addr)
+
+    def recv_data_run(self, conn, addr):
+        try:
+            self.recv_data(conn, addr)
+        except Exception as e:
+            self.tear_down(conn, hint.unknown_error_info(repr(e)))
+            logger.exception(e)
+
+    def recv_data(self, conn, addr):
+        data = utils.recvJson(conn)
+        logger.info("{}:{}, {}", addr[0], addr[1], data)
         info = itemgetter("info")(data)
         
         if info == "connect":
@@ -293,52 +327,52 @@ class Listener():
             room_id = int(room_id)
             room = self.get_room(room_id, room_number, game_number, bots)
             if room.full():
-                self.tear_down(hint.room_full_info(room_id))
+                self.tear_down(conn, hint.room_full_info(room_id))
                 return
-            room.add_player(self.conn, name)
-            succ, agent_name = room.notify_bots(self.db, self.rb)
+            room.add_player(conn, name)
+            succ, agent_name = room.notify_bots(self.supported_agent, self.rb)
             if not succ:
-                self.tear_down(hint.agent_not_found_info(agent_name))
+                self.tear_down(conn, hint.agent_not_found_info(agent_name))
                 del self.rooms[room_id]
                 return 
             if room.full():
                 self.controlers[room.control_id].dispatch(room)
-                
         
         if info == "observer":
             room_id = int(itemgetter("room_id")(data))
             if room_id not in self.rooms:
-                self.tear_down(hint.room_not_exist_info(room_id))
+                self.tear_down(conn, hint.room_not_exist_info(room_id))
                 return
             room = self.rooms[room_id]
-            self.controlers[room.control_id].dispatch_observer(self.conn, room_id)
+            self.controlers[room.control_id].dispatch_observer(conn, room_id)
 
         if info == "ai_vs_ai":
             room_id, room_number, bots, game_number = itemgetter("room_id", "room_number", "bots", "game_number")(data)
             room_id = int(room_id)
-            room = self.get_room(room_id, room_number, game_number, bots)
+            room = self.get_room(room_id, room_number, game_number, bots, True)
             if room.full():
-                self.tear_down(hint.room_full_info(room_id))
+                self.tear_down(conn, hint.room_full_info(room_id))
                 return
-            succ, agent_name = room.notify_bots(self.db, self.rb)
+            succ, agent_name = room.notify_bots(self.supported_agent, self.rb)
             if not succ:
-                self.tear_down(hint.agent_not_found_info(agent_name))
+                self.tear_down(conn, hint.agent_not_found_info(agent_name))
                 del self.rooms[room_id]
                 return
-            self.controlers[room.control_id].dispatch_observer(self.conn, room_id)
-
-    def tear_down(self, info=None):
+            self.controlers[room.control_id].dispatch_observer(conn, room_id)
+    
+    def tear_down(self, conn, info=None):
+        # logger.warning(info)
         if info is not None:
-            utils.sendJson(self.conn, info)
+            utils.sendJson(conn, info)
         try:
-            self.conn.shutdown(socket.SHUT_RDWR)
+            conn.shutdown(socket.SHUT_RDWR)
         except Exception:
             pass
-        self.conn.close()
+        conn.close()
 
-    def get_room(self, room_id, room_number, game_number, bots):
+    def get_room(self, room_id, room_number, game_number, bots, is_ai=False):
         if room_id not in self.rooms:
-            self.rooms[room_id] = Room(room_id, room_number, game_number, bots, self.cur_control)
+            self.rooms[room_id] = Room(room_id, room_number, game_number, bots, self.cur_control, is_ai)
             self.cur_control += 1
             self.cur_control %= len(self.controlers)
         return self.rooms[room_id]
@@ -393,21 +427,7 @@ def main():
     for i in range(cfg["num_database"]):
         DatabaseReceiver().start()
 
-    while True:
-        listener.clear_room()
-        
-        try:
-            with utils.time_limit(3):
-                listener.recv_user()
-        except Exception:
-            pass
-
-        if listener.status == 1:
-            try:
-                listener.recv_data()
-            except Exception as e:
-                listener.tear_down(hint.unknown_error_info(repr(e)))
-                logger.exception(e)
+    listener.run()
                        
 if __name__ == '__main__':
     main()

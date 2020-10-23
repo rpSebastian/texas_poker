@@ -94,7 +94,12 @@ def enumerate_level(cards, count):
 
 def straight_flush(cards):
     for i in range(4):
-        if cards[i].suit != cards[i + 1].suit or cards[i].rank != cards[i + 1].rank + 1:
+        if cards[i].suit != cards[i + 1].suit: 
+            return (False, )
+    if cards[0].rank == 14 and cards[1].rank == 5 and cards[2].rank == 4 and cards[3].rank == 3 and cards[4].rank == 2:
+        return (True, 9, 5)
+    for i in range(4):
+        if cards[i].rank != cards[i + 1].rank + 1:
             return (False, )
     return (True, 9, cards[0].rank)
 
@@ -119,6 +124,8 @@ def flush(cards):
 
 
 def straight(cards):
+    if cards[0].rank == 14 and cards[1].rank == 5 and cards[2].rank == 4 and cards[3].rank == 3 and cards[4].rank == 2:
+        return (True, 5, 5)
     for i in range(4):
         if cards[i].rank != cards[i + 1].rank + 1:
             return (False, )

@@ -5,11 +5,6 @@ ext_server:
   host: "holdem.ia.ac.cn"
   port: 18888
 
-
-# ext_server:
-#   host: "127.0.0.1"
-#   port: 10000
-
 server:
   host: "172.18.40.66"
   port: 10000
@@ -20,11 +15,7 @@ database:
   user: "root"
   password: "root"
   table: "poker"
-
-redis:
-  host: "172.18.40.65"
-  port: 6379
-  password: "root"
+  save_data: True
   
 rabbitMQ:
   host: "172.18.40.65"

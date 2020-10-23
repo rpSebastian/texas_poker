@@ -5,6 +5,6 @@ fi
 cd $CURPATH/../multi_gev_server/
 rm -rf ./utils/runtime.log
 
-nohup python server.py >> $CURPATH/nohup.out 2>&1 &
+nohup python -u server.py >> $CURPATH/nohup.out 2>&1 &
 cd $CURPATH/../multi_gev_server/agent
-nohup python agent_receiver.py >> $CURPATH/nohup.out 2>&1 &
+nohup python -u agent_receiver.py >> $CURPATH/nohup.out 2>&1 &

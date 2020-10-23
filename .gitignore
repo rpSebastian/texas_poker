@@ -131,3 +131,7 @@ dmypy.json
 *.pyc
 
 scripts/nohup.out
+
+multi_gev_server/agent/CardEvaluator/data/random_board_wp.npy
+
+multi_gev_server/agent/CardEvaluator/data/texas_lookup.npy

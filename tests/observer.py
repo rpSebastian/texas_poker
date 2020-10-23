@@ -4,9 +4,9 @@ import time
 import struct
 import multiprocessing
 
-myip = "127.0.0.1"
-myport =  60010
-room_id = 1000002
+myip = "holdem.ia.ac.cn"
+myport =  18888
+room_id = 789789789
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()

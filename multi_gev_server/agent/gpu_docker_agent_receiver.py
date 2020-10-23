@@ -1,3 +1,4 @@
+import os
 import time
 import pika
 import pymysql
@@ -8,9 +9,15 @@ import subprocess
 import collections
 import subprocess
 
-supported_agent = ["OpenStack"]
+docker_version = int(os.popen("docker version | grep Version | awk '{print $2}'  | head -1").read().strip().split(".")[0])
+docker_gpu_command = (lambda x: ' --gpus "device={}" '.format(x)) if docker_version==19 else (lambda x: " --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES={} ".format(x))
+
+supported_agent = ["OpenStack", "YuanWeilin", "TestAI", "Hitsz"]
 GpuNeeded = {
-	"OpenStack": 4000, 
+	"OpenStack": 5000,
+	"YuanWeilin": 5000,
+	"TestAI": 5000,
+	"Hitsz": 5000,
 }
 
 class GpuManager():
@@ -24,14 +31,14 @@ class GpuManager():
 		for gpu in GPUs:
 			initialing_amount = 0
 			for use_time, amount in reversed(self.last_use[gpu.id]):
-				if time.time() - use_time < 90:
+				if time.time() - use_time < 120:
 					initialing_amount += amount
 			if gpu.memoryFree - initialing_amount - 1000 > gpu_needed:
 				gpu_available = True
 				break
 		if gpu_available:
 			self.last_use[gpu.id].append([time.time(), gpu_needed])
-			while time.time() - self.last_use[gpu.id][0][0] > 90:
+			while time.time() - self.last_use[gpu.id][0][0] > 120:
 				self.last_use[gpu.id].pop(0)
 			return True, gpu.id
 		else:
@@ -53,10 +60,29 @@ def callback(ch, method, properties, body):
 	if gpu_available:
 		if bot_name == "OpenStack":
 			command = (
-				'docker run -d --rm --gpus "device={}" -v /home/xuhang/code/LuaStack:/root/LuaStack cxxuhang/luastack:lua-python-base bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
-					gpu_id, room_id, room_number, bot_name + bot_name_suffix, game_number)
+				'docker run -d {} -v /home/xuhang/code/LuaStack:/root/LuaStack hub.kce.ksyun.com/cxxuhang/openstack:lua-py-base-v4 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)
+		if bot_name == "YuanWeilin":
+			command = (
+				'docker run -d {} registry.cn-beijing.aliyuncs.com/poker_ws/deepcard:v5 bash -c "source /root/torch/install/bin/torch-activate;cd /code/ReadyCompile/Compiled;th Player/deepcards.lua {} {} {} {}"'.format(
+					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
+			)
+			print(command)
+		if bot_name == "TestAI":
+			command = (
+				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v2.1 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
+			)
+			print(command)
+		if bot_name == "Hitsz":
+			command = (
+            'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:6p_v1 bash -c "cd /root/openstackv1/Source && th Player/deepstack_server_agent_6p.lua {} {} {} {}"'.format(
+            docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+			print(command)
+
 		subprocess.call(command, shell=True)
 	else:
 		data["no_gpu"] += 1
