@@ -11,7 +11,7 @@ from gevent import monkey
 gevent.monkey.patch_all()
 gevent.monkey.patch_all(httplib=True)
 
-
+import multiprocessing
 
 class Mysql:
     def __init__(self):
@@ -325,5 +325,10 @@ def handle(socket, address):
     name = data["name"]
     SlumbotKernel(name, socket).run()
 
-server = StreamServer(('172.18.40.66', 5000), handle)
-server.serve_forever()
+
+def run_server(port):
+    server = StreamServer(('172.18.40.66', port), handle)
+    server.serve_forever()
+
+for port in (5000, 5005):
+    multiprocessing.Process(target=run_server, args=(port, )).start()

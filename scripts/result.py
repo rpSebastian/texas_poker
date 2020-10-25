@@ -4,11 +4,11 @@ import json
 from collections import defaultdict
 
 def main():
-    name = "TestAI vs nudt"
-    # name = "Hit_6p_test"
+    # name = "TestAI vs nudt"
+    name = "Hit_6p_test"
     Mysql().lookup(name) 
     Mysql().battle_history(name)
-
+    # Mysql().user_battle_history("EMzhao", "OpenStack")
 
 class Mysql:
 
@@ -94,6 +94,60 @@ class Mysql:
         if save_file:
             with open("{}_history.json".format(battle_name), "w") as f:
                 json.dump(history, f, indent=4, ensure_ascii=False)
+
+    def user_battle_history(self, user_name, bot_name, save_file=True):
+        history = {}
+        game_sql = 'SELECT * FROM game WHERE room_id IN (SELECT room_id FROM room WHERE create_user_name = "{}" AND boot_list = "{}" ) Order By time'.format(user_name, bot_name)
+        self.cursor.execute(game_sql)
+        result = self.cursor.fetchall()
+        for row in result:
+            game_id, public_card, action_history, battle_time, room_id = row[:5]
+            history[game_id] = dict(
+                public_card=public_card, 
+                action_history=self.transpose(json.loads(action_history)),
+                battle_time=battle_time.strftime('%Y-%m-%d %H:%M:%S' ),
+                players={}
+            )
+
+        game_sql = 'SELECT game_id, position, win_money, private_card, name FROM player WHERE room_id IN (SELECT room_id FROM room WHERE create_user_name = "{}" AND boot_list = "{}" )'.format(user_name, bot_name)
+        self.cursor.execute(game_sql)
+        result = self.cursor.fetchall()
+        for row in result:
+            game_id, position, win_money, private_card, name = row[:]
+            history[game_id]["players"][int(position)] = dict(
+                win_money=float(win_money),
+                private_card=private_card,
+                name=name                
+            )
+        error_game_id = []
+        for game_id, value in history.items():
+            if value["players"][0]["name"] != bot_name and value["players"][1]["name"] != bot_name:
+                error_game_id.append(game_id)
+        for game_id in error_game_id:
+            del history[game_id]
+        if save_file:
+            with open("{}_{}_history.json".format(user_name, bot_name), "w") as f:
+                json.dump(history, f, indent=4, ensure_ascii=False)
+
+        table = pd.DataFrame(columns=['玩家名', '玩家位置', '玩家手牌', 'OpenStack手牌', '公共牌', '玩家获胜筹码', '动作序列', '对打时间'])
+        for game_id, value in history.items():
+            line = []
+            line.append(user_name)
+            if value["players"][0]["name"] == bot_name:
+                position = 1
+            else:
+                position = 0
+            line.append(position)
+            line.append(value["players"][position]["private_card"])
+            line.append(value["players"][1 - position]["private_card"])
+            line.append(value["public_card"])
+            line.append(value["players"][position]["win_money"])
+            line.append(value["action_history"])
+            line.append(value["battle_time"])
+            table.loc[table.shape[0]] = line
+        writer = pd.ExcelWriter('{}_{}_stat.xlsx'.format(user_name, bot_name))  
+        table.to_excel(writer,float_format='%.5f')
+        writer.save()
 
 if __name__ == "__main__":
     main()
