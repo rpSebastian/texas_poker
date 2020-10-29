@@ -4,11 +4,14 @@ import json
 from collections import defaultdict
 
 def main():
-    # name = "TestAI vs nudt"
-    name = "Hit_6p_test"
+    # name = "NewStack_MoreAction vs nudt"
+    # name = "Hit_6p_test"
+    name = "NewStack_argmax vs nudt"
     Mysql().lookup(name) 
+    name = "Test6p"
+    Mysql().lookup(name)
     Mysql().battle_history(name)
-    # Mysql().user_battle_history("EMzhao", "OpenStack")
+    # Mysql().user_battle_history("FengYan", "OpenStack")
 
 class Mysql:
 
@@ -43,7 +46,7 @@ class Mysql:
             result = self.cursor.fetchall()[0]
             table.loc[table.shape[0]] = [bot, result[0], result[1], result[2], result[4]]
         print(table)
-        writer = pd.ExcelWriter('{}_stat.xlsx'.format(battle_name))  
+        writer = pd.ExcelWriter('../docs/record/{}_stat.xlsx'.format(battle_name))  
         table.to_excel(writer,float_format='%.5f')
         writer.save()
 
@@ -92,7 +95,7 @@ class Mysql:
                 name=name                
             )
         if save_file:
-            with open("{}_history.json".format(battle_name), "w") as f:
+            with open("../docs/record/{}_history.json".format(battle_name), "w") as f:
                 json.dump(history, f, indent=4, ensure_ascii=False)
 
     def user_battle_history(self, user_name, bot_name, save_file=True):
@@ -126,10 +129,12 @@ class Mysql:
         for game_id in error_game_id:
             del history[game_id]
         if save_file:
-            with open("{}_{}_history.json".format(user_name, bot_name), "w") as f:
+            with open("../docs/record/{}_{}_history.json".format(user_name, bot_name), "w") as f:
                 json.dump(history, f, indent=4, ensure_ascii=False)
 
         table = pd.DataFrame(columns=['玩家名', '玩家位置', '玩家手牌', 'OpenStack手牌', '公共牌', '玩家获胜筹码', '动作序列', '对打时间'])
+
+        count, total = 0, 0
         for game_id, value in history.items():
             line = []
             line.append(user_name)
@@ -145,9 +150,12 @@ class Mysql:
             line.append(value["action_history"])
             line.append(value["battle_time"])
             table.loc[table.shape[0]] = line
-        writer = pd.ExcelWriter('{}_{}_stat.xlsx'.format(user_name, bot_name))  
+            count += 1
+            total += value["players"][position]["win_money"]
+        writer = pd.ExcelWriter('../docs/record/{}_{}_stat.xlsx'.format(user_name, bot_name))  
         table.to_excel(writer,float_format='%.5f')
         writer.save()
+        print(count, total, total / count)
 
 if __name__ == "__main__":
     main()

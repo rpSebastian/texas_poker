@@ -33,11 +33,14 @@ def battle(parallel, game_number, botList, battleName):
         }
         r_json = requests.post(url=url, data=json.dumps(data), headers=headers)
         print(r_json.json())
-    time.sleep(10)
 
 login()
 
-# battle(6, 5000, ["TestAI", "YuanWeilin"], "TestAI vs nudt")
+# battle(6, 5000, ["OpenStackTwo", "YuanWeilin"], "NewStack_argmax vs nudt")
 
-battle(2, 5000, ["RandomGambler","LooseAggressive","LoosePassive","TightPassive","TightAggressive","Hitsz"], "Hit_6p_test")
+# battle(14, 5000, ["TightAggressive","TightPassive","RandomGambler","ScaredLimper","CandidStatistician","Hitsz"], "Hit_6p_test2")
 
+# battle(4, 1000, ["RuleAgent6p", "RuleAgent6p", "RuleAgent6p", "Hitsz", "Hitsz", "Hitsz"], "Rule_vs_hitsz")
+
+
+battle(7, 2000, ["CandidStatistician","TightPassive","QianTao","RuleAgent6p","Hitsz","HitszTwo"], "Test6p")
