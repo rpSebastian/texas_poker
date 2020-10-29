@@ -12,12 +12,14 @@ import subprocess
 docker_version = int(os.popen("docker version | grep Version | awk '{print $2}'  | head -1").read().strip().split(".")[0])
 docker_gpu_command = (lambda x: ' --gpus "device={}" '.format(x)) if docker_version==19 else (lambda x: " --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES={} ".format(x))
 
-supported_agent = ["OpenStack", "YuanWeilin", "TestAI", "Hitsz"]
+supported_agent = ["OpenStack", "YuanWeilin", "TestAI", "Hitsz", "HitszTwo", "OpenStackTwo"]
 GpuNeeded = {
 	"OpenStack": 5000,
 	"YuanWeilin": 5000,
-	"TestAI": 5000,
+	"TestAI": 10000,
 	"Hitsz": 5000,
+	"HitszTwo": 5000,
+	"OpenStackTwo": 5000,
 }
 
 class GpuManager():
@@ -64,6 +66,12 @@ def callback(ch, method, properties, body):
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)
+		if bot_name == "OpenStackTwo":
+			command = (
+				'docker run -d {} -v /home/xuhang/code/LuaStack:/root/LuaStack hub.kce.ksyun.com/cxxuhang/openstack:new_argmax bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
+			)
+			print(command)
 		if bot_name == "YuanWeilin":
 			command = (
 				'docker run -d {} registry.cn-beijing.aliyuncs.com/poker_ws/deepcard:v5 bash -c "source /root/torch/install/bin/torch-activate;cd /code/ReadyCompile/Compiled;th Player/deepcards.lua {} {} {} {}"'.format(
@@ -72,13 +80,19 @@ def callback(ch, method, properties, body):
 			print(command)
 		if bot_name == "TestAI":
 			command = (
-				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v2.1 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v3.2 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)
 		if bot_name == "Hitsz":
 			command = (
-            'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:6p_v1 bash -c "cd /root/openstackv1/Source && th Player/deepstack_server_agent_6p.lua {} {} {} {}"'.format(
+            'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:6p_v1.5 bash -c "cd /root/openstackv1/Source && th Player/deepstack_server_agent_6p.lua {} {} {} {}"'.format(
+            docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+			print(command)
+		if bot_name == "HitszTwo":
+			command = (
+            'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:6p_v2 bash -c "cd /root/openstackv1/Source && th Player/deepstack_server_agent_6p.lua {} {} {} {}"'.format(
             docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
         )
 			print(command)
