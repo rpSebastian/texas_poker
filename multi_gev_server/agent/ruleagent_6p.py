@@ -226,7 +226,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
             bet=opobet*2
     elif handsrank1(hands)==2:
         
-        if a<0.99553:
+        if a<0.9953:
             action='call'
             bet=0
         else:
@@ -746,7 +746,7 @@ def run2elseblind(hands,publichands,opobet,publicbetbefore):#2.1小盲位的动�
     if opobet==0:#对面call牌        
         actionf=action
         betf=bet
-    elif opobet>0 and opobet==publicbetbefore/2 :
+    elif opobet>0 and opobet<=publicbetbefore :
         if bet==opobet:
             actionf='call'
             betf=bet
@@ -756,7 +756,7 @@ def run2elseblind(hands,publichands,opobet,publicbetbefore):#2.1小盲位的动�
         else:
             actionf='fold'
             betf=0
-    elif opobet>0 and opobet==publicbetbefore :
+    elif opobet>0 and opobet>=publicbetbefore  and opobet<=3000:
         if bet==opobet:
             if sum(ranktype)>8:
                 actionf='raise'
@@ -998,7 +998,7 @@ def run3_1undergunblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位�
             else:
                 actionf='fold'
                 betf=0
-    elif opobet>100 and opobet==publicbetbefore/2 :
+    elif opobet>100 and opobet<=publicbetbefore/2 :
         if bet==opobet:
             actionf='call'
             betf=bet
@@ -1013,7 +1013,7 @@ def run3_1undergunblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位�
                 actionf='fold'
                 betf=0
 
-    elif opobet>0 and opobet==publicbetbefore :
+    elif opobet>0 and opobet==publicbetbefore and opobet>publicbetbefore/2:
         if bet==opobet:
             if rank>=2.9:
                 actionf='raise'
@@ -1091,7 +1091,7 @@ def run3elseblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位的动�
             else:
                 actionf='fold'
                 betf=0
-    elif opobet>0 and opobet==publicbetbefore/2:
+    elif opobet>0 and opobet<=publicbetbefore/2:
         if bet==opobet:
             actionf='call'
             betf=bet
@@ -1106,7 +1106,7 @@ def run3elseblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位的动�
                 actionf='fold'
                 betf=0
 
-    elif opobet>0 and opobet==publicbetbefore :
+    elif opobet>0 and opobet<=2*publicbetbefore and opobet>publicbetbefore/2:
         if bet==opobet:
             if rank>=1.8:
                 actionf='raise'
@@ -1121,7 +1121,7 @@ def run3elseblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位的动�
             else:
                 actionf='fold'
                 betf=0
-    elif opobet>publicbetbefore:
+    elif opobet>2*publicbetbefore:
         if rank>=2.9:
             actionf='raise'
             betf=opobet*3-publicbetbefore/2
@@ -1316,17 +1316,17 @@ def run4_elseblind(hands,publichands,opobet,publicbetbefore):#3.1小盲位的动
     else:
         actionf='fold'
         betf=0
-    if opobet>4*publicbetbefore or opobet>5000:
+    if opobet>3*publicbetbefore or opobet>5000:
         if handtype7==2 or handtype7==3:
-            if kind(4,publicsuit) or kind(3,publicsuit):
+            if kind(4,publicsuit):
 
                 action='fold'
                 betf=0
             else:
                 actionf='call'
                 betf=opobet
-                if opobet>=3000 and max(handsrank)==max(publicrank) and handtype7==2:
-                    if bot_bet==0:
+                if opobet>=3000 and (max(handsrank)==max(publicrank) or  kind(2,handsrank)) :
+                    if kind(3,publicsuit) or kind(2,publicsuit):
                         actionf='call'
                         betf=opobet
                     else:
@@ -1701,7 +1701,7 @@ class RuleAgent6p(Agent):
                         sendJson(client, {'action': action, 'info': 'action'})
                         privatecard=data['private_card']
                 elif data['info'] == 'result':
-                    print("position",position)
+                    # print("position",position)
                     print('win money: {},\tyour card: {},\topp card: {},\t\tpublic card: {}'.format(
                         data['players'][position]['win_money'], privatecard, data['player_card'], data['public_card'])) 
                     sendJson(client, {'info': 'ready', 'status': 'start'})
