@@ -14,11 +14,12 @@ gevent.monkey.patch_all()
 from simple_agent import CallAgent, AllinAgent, RandomAgent
 from multitype_agent import CandidStatistician, HotheadManiac, LooseAggressive, LoosePassive
 from multitype_agent import TightAggressive, ScaredLimper, RandomGambler, TightPassive
+from ruleagent_6p import RuleAgent6p
 
 
 supported_agent = ["CallAgent", "AllinAgent", "RandomAgent",
                    "CandidStatistician", "HotheadManiac", "LooseAggressive", "LoosePassive",
-                   "TightAggressive", "ScaredLimper", "RandomGambler", "TightPassive"]
+                   "TightAggressive", "ScaredLimper", "RandomGambler", "TightPassive", "RuleAgent6p"]
 
 
 def callback(ch, method, properties, body):
