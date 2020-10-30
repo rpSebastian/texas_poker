@@ -6,6 +6,10 @@ import json
 import subprocess
 import collections
 import multiprocessing
+import yaml
+with open("../utils/config.yaml") as f:
+    cfg = yaml.load(f, Loader=yaml.FullLoader)
+
 
 import gevent
 import gevent.monkey
@@ -24,6 +28,7 @@ supported_agent = ["CallAgent", "AllinAgent", "RandomAgent",
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
+    print(data)
     room_id = data["room_id"]
     room_number = data["room_number"]
     game_number = data["game_number"]
@@ -38,10 +43,10 @@ def callback(ch, method, properties, body):
 
 
 def declare_queue():
-    credentials = pika.PlainCredentials("root", "root")
+    credentials = pika.PlainCredentials(cfg["rabbitMQ"]["username"], cfg["rabbitMQ"]["password"])
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host="172.18.40.65",
+            host=cfg["rabbitMQ"]["host"],
             credentials=credentials,
             heartbeat=0
         ))
@@ -54,11 +59,11 @@ def declare_queue():
 
 def update_database():
     connect = pymysql.Connect(
-        host="172.18.40.65",  # mysql的主机ip
-        port=3306,  # 端口
-        user="root",  # 用户名
-        passwd="root",  # 数据库密码
-        db="poker",  # 数据库名
+        host=cfg["database"]["host"],  # mysql的主机ip
+        port=cfg["database"]["port"],  # 端口
+        user=cfg["database"]["user"],  # 用户名
+        passwd=cfg["database"]["password"],  # 数据库密码
+        db=cfg["database"]["table"],  # 数据库名
         charset='utf8',  # 字符集
     )
     cursor = connect.cursor()
