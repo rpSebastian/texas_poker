@@ -1,0 +1,23 @@
+num_workers: 2
+num_database: 2
+
+ext_server:
+  host: "127.0.0.1"
+  port: 18888
+
+server:
+  host: "127.0.0.1"
+  port: 18888
+
+database:
+  host: "172.18.40.65"
+  port: 3306
+  user: "root"
+  password: "root"
+  table: "poker"
+  save_data: True
+  
+rabbitMQ:
+  host: "172.18.40.91"
+  username: root
+  password: root
