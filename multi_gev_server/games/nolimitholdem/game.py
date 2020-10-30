@@ -32,8 +32,9 @@ class Game():
 
     def step(self, action):
         self.action_player, self.current_action = self.pointer, action
+        result = self.cur_round.step(self.players, self.dealer, action)
+        self.pointer = result
         self.action_history[self.round_counter].append(dict(position=self.pointer, action=action, timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]))
-        self.pointer = self.cur_round.step(self.players, self.dealer, action)
         if self.is_terminal():
             if self.is_terminal() == 3:
                 while self.round_counter < 3:

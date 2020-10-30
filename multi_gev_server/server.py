@@ -7,7 +7,7 @@ from collections import defaultdict
 import multiprocessing
 from multiprocessing import reduction
 from operator import itemgetter
-
+import threading
 import gevent
 import gevent.monkey
 gevent.monkey.patch_all()
@@ -75,6 +75,7 @@ class Game():
             self.tear_down(hint.unknown_error_info(repr(e)))
     
     def work(self):
+        error_info = None
         random.shuffle(self.players)
         self.record_game = holdem_game(self.room_number)
         for game_count in range(1, self.game_number + 1):
@@ -88,18 +89,22 @@ class Game():
                 
                 data = self.players[player_id].recv()
                 if data is None:
-                    self.tear_down(hint.disconnect_info(self.players[player_id].name))
-                    return
-
+                    error_info = hint.disconnect_info(self.players[player_id].name)
+                    action = "fold"
+                else:
+                    action = data["action"]                
                 try:
-                    player_id = self.game.step(data["action"])
+                    player_id = self.game.step(action)
                 except err.InvalidActionError as e:
-                    self.tear_down(hint.invalid_action_info(self.players[player_id].name, e.action))
-                    return
+                    error_info = hint.invalid_action_info(self.players[player_id].name, e.action)
+                    player_id = self.game.step("fold")
 
             self.notify_state(last=True)
             self.notify_result()
             self.save_data()
+            if error_info is not None:
+                self.tear_down(error_info)
+                return
             for player in self.players:
                 data = player.recv()
                 if data is None:
@@ -271,7 +276,7 @@ class Listener():
         self.room_end_queue = room_end_queue
         self.agent_error_queue = agent_error_queue
         self.supported_agent = self.db.get_agent()
-        
+
     def run(self):
         tasks = [
             gevent.spawn(self.clear_room),
@@ -404,14 +409,29 @@ class DatabaseReceiver(multiprocessing.Process):
         self.rb = rabbitmq.Rabbitmq()
         self.rb.recv_msg_from_queue("mysql_queue", self.callback)
         self.db = mysql.Mysql()
+        self.lock = threading.Lock()
 
     def callback(self, ch, method, props, body):
+        self.lock.acquire()
         msg = json.loads(body)
         # ch.basic_ack(method.delivery_tag)
         self.db.save(msg)
+        self.lock.release()
+
+    def save_data(self):
+        while True:
+            self.lock.acquire()
+            self.db.save_data()
+            self.lock.release()
+            time.sleep(5)
 
     def run(self):
-        self.rb.start()
+        t1 = threading.Thread(target=self.rb.start)
+        t1.start()
+        t2 = threading.Thread(target=self.save_data)
+        t2.start()
+        t1.join()
+        t2.join()
     
 def main():
     controlers = [
