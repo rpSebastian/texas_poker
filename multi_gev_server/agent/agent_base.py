@@ -28,6 +28,7 @@ class Agent():
         self.port = port
         self.game_counter = 0
         self.verbose = verbose
+        self.cur_id = 0
         if self.verbose:
             print(self.info)
 
