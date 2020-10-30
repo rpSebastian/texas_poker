@@ -6,8 +6,8 @@ from collections import defaultdict
 def main():
     # name = "NewStack_MoreAction vs nudt"
     # name = "Hit_6p_test"
-    name = "NewStack_argmax vs nudt"
-    Mysql().lookup(name) 
+    # name = "NewStack_argmax vs nudt"
+    # Mysql().lookup(name) 
     name = "Test6p"
     Mysql().lookup(name)
     Mysql().battle_history(name)

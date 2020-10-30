@@ -43,4 +43,4 @@ login()
 # battle(4, 1000, ["RuleAgent6p", "RuleAgent6p", "RuleAgent6p", "Hitsz", "Hitsz", "Hitsz"], "Rule_vs_hitsz")
 
 
-battle(7, 2000, ["CandidStatistician","TightPassive","QianTao","RuleAgent6p","Hitsz","HitszTwo"], "Test6p")
+battle(8, 2000, ["CandidStatistician","TightPassive","QianTao","RuleAgent6p","Hitsz","HitszTwo"], "Test6p")

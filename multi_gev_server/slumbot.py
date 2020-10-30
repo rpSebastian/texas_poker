@@ -59,6 +59,7 @@ class SlumbotKernel():
     
     def work(self):
         while True:
+            self.slumbot_name = self.name + str(random.randint(1, 1000))
             data = self.slumbot_send_action('nh')
             is_terminal = self.parse_data(data)
             while not is_terminal:
@@ -227,7 +228,7 @@ class SlumbotKernel():
         data["type"] = "play"
         data["action"] = action
         data["sid"] = self.sid
-        data["un"] = self.name
+        data["un"] = self.slumbot_name
         data["ai"] = self.ai
         data["_"] = self.under_line
         self.under_line += 1

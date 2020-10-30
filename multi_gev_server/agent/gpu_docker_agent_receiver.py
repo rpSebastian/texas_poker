@@ -12,7 +12,11 @@ import subprocess
 docker_version = int(os.popen("docker version | grep Version | awk '{print $2}'  | head -1").read().strip().split(".")[0])
 docker_gpu_command = (lambda x: ' --gpus "device={}" '.format(x)) if docker_version==19 else (lambda x: " --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES={} ".format(x))
 
-supported_agent = ["OpenStack", "YuanWeilin", "TestAI", "Hitsz", "HitszTwo", "OpenStackTwo"]
+if docker_version == 19:
+	supported_agent = ["OpenStack", "YuanWeilin"]
+else:
+	supported_agent = ["OpenStack", "TestAI", "Hitsz", "HitszTwo", "OpenStackTwo"]
+
 GpuNeeded = {
 	"OpenStack": 5000,
 	"YuanWeilin": 5000,
@@ -62,13 +66,13 @@ def callback(ch, method, properties, body):
 	if gpu_available:
 		if bot_name == "OpenStack":
 			command = (
-				'docker run -d {} -v /home/xuhang/code/LuaStack:/root/LuaStack hub.kce.ksyun.com/cxxuhang/openstack:lua-py-base-v4 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v0.1 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)
 		if bot_name == "OpenStackTwo":
 			command = (
-				'docker run -d {} -v /home/xuhang/code/LuaStack:/root/LuaStack hub.kce.ksyun.com/cxxuhang/openstack:new_argmax bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:new_argmax2_30_v3 bash -c "cd /root/LuaStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)
