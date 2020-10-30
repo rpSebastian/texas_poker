@@ -72,6 +72,7 @@ class Agent():
                         self.output(data)
                     if data['position'] == data['action_position']:
                         action = self.get_action(data)
+                        print(action)
                         sendJson(client, {'action': action, 'info': 'action'})
                 elif data['info'] == 'result':
                     if self.verbose:

@@ -28,7 +28,6 @@ supported_agent = ["CallAgent", "AllinAgent", "RandomAgent",
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
-    print(data)
     room_id = data["room_id"]
     room_number = data["room_number"]
     game_number = data["game_number"]

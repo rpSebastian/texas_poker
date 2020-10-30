@@ -78,8 +78,6 @@ class Mysql:
         if len(self.data_clt) == 0:
             return
         all_game_info = self.data_clt.get_all_game_info()
-        print(self.game_sql)
-        print(all_game_info)
         self.cursor.executemany(self.game_sql, all_game_info)
         self.cursor.connection.commit()
         first_game_id = self.cursor.lastrowid

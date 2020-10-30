@@ -32,7 +32,6 @@ class Round():
                 raise error
 
     def step(self, players, dealer, action):
-        self.check_action_available(players, action) 
         player = players[self.pointer]
         if action == 'call':
             self.call_count += 1

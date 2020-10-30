@@ -50,7 +50,7 @@ class Player():
 
 
 class Game():
-    def __init__(self, room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai):
+    def __init__(self, room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai, save_db):
         self.room_id = room_id
         self.room_number = room_number
         self.game_number = game_number
@@ -61,6 +61,7 @@ class Game():
         self.rb = rb
         self.observer_queue = observer_queue
         self.is_ai = is_ai
+        self.save_db = save_db
 
     def retrive_observer(self):
         while self.observer_queue[self.room_id]:
@@ -82,17 +83,20 @@ class Game():
             if not self.is_ai or self.is_ai and game_count % self.room_number == 1:
                 self.record_player = self.record_game.game_init()
             player_id = self.record_player
-            self.game =  copy.deepcopy(self.record_game)    
+            self.game =  copy.deepcopy(self.record_game)
             while not self.game.is_terminal():
                 self.retrive_observer()
                 self.notify_state()
-                
                 data = self.players[player_id].recv()
                 if data is None:
                     error_info = hint.disconnect_info(self.players[player_id].name)
                     action = "fold"
                 else:
-                    action = data["action"]                
+                    try:
+                        action = data["action"]                
+                    except Exception as e:
+                        error_info = hint.no_action_info(self.players[player_id].name)
+                        action = "fold"
                 try:
                     player_id = self.game.step(action)
                 except err.InvalidActionError as e:
@@ -101,10 +105,14 @@ class Game():
 
             self.notify_state(last=True)
             self.notify_result()
-            self.save_data()
+    
+            if self.save_db:
+                self.save_data()
+    
             if error_info is not None:
                 self.tear_down(error_info)
                 return
+    
             for player in self.players:
                 data = player.recv()
                 if data is None:
@@ -179,13 +187,13 @@ def worker(socket_reader, data_reader):
     while True:
         data = data_reader.get()
         if data["info"] == "room":
-            room_id, room_number, game_number, names, is_ai = data["data"]
+            room_id, room_number, game_number, names, is_ai, save_db = data["data"]
             socks = []
             for i in range(room_number):
                 socket_reader.poll(None)
                 sock = socket.fromfd(reduction.recv_handle(socket_reader), socket.AF_INET, socket.SOCK_STREAM)
                 socks.append(sock)
-            game = Game(room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai)
+            game = Game(room_id, room_number, game_number, names, socks, rb, observer_queue, is_ai, save_db)
             gevent.spawn(game.run)
 
         if data["info"] == "observer":
@@ -201,7 +209,7 @@ class WorkerControler():
         self.p = gipc.start_process(target=worker, args=(self.socket_r, self.data_r))
 
     def dispatch(self, room):
-        self.data_w.put(dict(info="room", data=[room.room_id, room.room_number, room.game_number, room.names, room.is_ai]))
+        self.data_w.put(dict(info="room", data=[room.room_id, room.room_number, room.game_number, room.names, room.is_ai, room.save_db]))
         for sock in room.socks:
             reduction.send_handle(self.socket_w, sock.fileno(), self.p.pid)
 
@@ -210,7 +218,7 @@ class WorkerControler():
         reduction.send_handle(self.socket_w, sock.fileno(), self.p.pid)
 
 class Room():
-    def __init__(self, room_id, room_number, game_number, bots, control_id, is_ai):
+    def __init__(self, room_id, room_number, game_number, bots, control_id, is_ai, save_db):
         self.socks = []
         self.names = []
         self.room_number = room_number
@@ -220,6 +228,7 @@ class Room():
         self.notify_bot_done = False
         self.control_id = control_id
         self.is_ai = is_ai
+        self.save_db = save_db
 
     def add_player(self, sock, name):
         self.socks.append(sock)
@@ -312,7 +321,7 @@ class Listener():
     @utils.catch_exception
     def recv_user(self):
         conn, addr = self.s.accept()
-        logger.info("accept user {}:{}", addr[0], addr[1])
+        # logger.info("accept user {}:{}", addr[0], addr[1])
         gevent.spawn(self.recv_data_run, conn, addr)
 
     def recv_data_run(self, conn, addr):
@@ -375,9 +384,9 @@ class Listener():
             pass
         conn.close()
 
-    def get_room(self, room_id, room_number, game_number, bots, is_ai=False):
+    def get_room(self, room_id, room_number, game_number, bots, is_ai=False, save_db=True):
         if room_id not in self.rooms:
-            self.rooms[room_id] = Room(room_id, room_number, game_number, bots, self.cur_control, is_ai)
+            self.rooms[room_id] = Room(room_id, room_number, game_number, bots, self.cur_control, is_ai, save_db)
             self.cur_control += 1
             self.cur_control %= len(self.controlers)
         return self.rooms[room_id]

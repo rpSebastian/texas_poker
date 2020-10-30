@@ -50,3 +50,10 @@ def no_enough_resource_info(agent_name):
         'info': 'error',
         'text': 'No enough resources for agent {}'.format(agent_name)
     }
+    
+def no_action_info(name):
+    return {
+        'info': 'error',
+        'text': 'No action in Player {}\' message'.format(name)
+    }
+    
