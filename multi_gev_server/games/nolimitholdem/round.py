@@ -15,8 +15,18 @@ class Round():
         self.least_raise = self.big_blind
         self.raise_count = 0
 
-    def check_action_available(self, players, action):
+    def check_action_available(self, players, dealer, action):
         legal_actions, raise_range = self.get_legal_actions(players)
+        
+        if action == "bet":
+            call_num = max(self.raised_counter) - self.raised_counter[self.pointer]
+            extre_raise_num = dealer.pot + call_num
+            raise_num = self.raised_counter[self.pointer] + call_num + extre_raise_num
+            legal_actions, raise_range = self.get_legal_actions(players)
+            if raise_num > raise_range[1]:
+                raise_num = raise_range[1]
+            action = "r" + str(raise_num)
+
         error = err.InvalidActionError(action)
         if action[0] == "r":
             if "raise" not in legal_actions:
@@ -30,6 +40,7 @@ class Round():
         else:
             if not action in legal_actions:
                 raise error
+        return action
 
     def step(self, players, dealer, action):
         player = players[self.pointer]

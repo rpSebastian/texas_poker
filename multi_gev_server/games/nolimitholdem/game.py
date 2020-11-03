@@ -31,7 +31,7 @@ class Game():
         return self.pointer
 
     def step(self, action):
-        self.cur_round.check_action_available(self.players, action) 
+        action = self.cur_round.check_action_available(self.players, self.dealer, action) 
         self.action_player, self.current_action = self.pointer, action
         self.action_history[self.round_counter].append(dict(position=self.pointer, action=action, timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]))
         self.pointer = self.cur_round.step(self.players, self.dealer, action)
