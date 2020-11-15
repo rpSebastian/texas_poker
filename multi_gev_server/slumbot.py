@@ -3,8 +3,8 @@ import random
 import requests
 import pymysql
 import datetime
-
-from utils.utils import sendJson, recvJson
+import json
+import struct
 from gevent.server import StreamServer
 import gevent
 from gevent import monkey
@@ -12,6 +12,31 @@ gevent.monkey.patch_all()
 gevent.monkey.patch_all(httplib=True)
 
 import multiprocessing
+
+def sendJson(request, jsonData):
+    try:
+        data = json.dumps(jsonData).encode()
+        request.send(struct.pack('i', len(data)) + data)
+        return True
+    except (BrokenPipeError, ConnectionResetError):
+        return False
+
+
+def recvJson(request):
+    try:
+        data = request.recv(4)
+        if data == b"":
+            return None
+        length = struct.unpack('i', data)[0]
+        data = request.recv(length).decode()
+        while len(data) != length:
+            data = data + request.recv(length - len(data)).decode()
+        if data == b"":
+            return None
+        data = json.loads(data)
+        return data
+    except (BrokenPipeError, ConnectionResetError):
+        return None
 
 class Mysql:
     def __init__(self):
@@ -228,7 +253,7 @@ class SlumbotKernel():
         data["type"] = "play"
         data["action"] = action
         data["sid"] = self.sid
-        data["un"] = self.slumbot_name
+        data["un"] = ""
         data["ai"] = self.ai
         data["_"] = self.under_line
         self.under_line += 1

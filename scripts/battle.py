@@ -36,7 +36,7 @@ def battle(parallel, game_number, botList, battleName):
 
 login()
 
-# battle(6, 5000, ["OpenStackTwo", "YuanWeilin"], "NewStack_argmax vs nudt")
+battle(6, 5000, ["OpenStackTwo", "YuanWeilin"], "NewStack_argmax vs nudt")
 
 # battle(14, 5000, ["TightAggressive","TightPassive","RandomGambler","ScaredLimper","CandidStatistician","Hitsz"], "Hit_6p_test2")
 

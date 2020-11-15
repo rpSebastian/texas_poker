@@ -4,13 +4,16 @@ import json
 from collections import defaultdict
 
 def main():
+    names = ["TEST_NUDT_IA", "TEST_NUDT_THU", "TEST_IA_THU", "TEST_NUDT_ICT", "Test_IA_ICT", "TEST_THU_ICT"]
+    for name in names:
+        Mysql().lookup(name, False)
     # name = "NewStack_MoreAction vs nudt"
     # name = "Hit_6p_test"
     # name = "NewStack_argmax vs nudt"
     # Mysql().lookup(name) 
-    name = "Test6p"
-    Mysql().lookup(name)
-    Mysql().battle_history(name)
+    # name = "Test6p"
+    # Mysql().lookup(name)
+    # Mysql().battle_history(name)
     # Mysql().user_battle_history("FengYan", "OpenStack")
 
 class Mysql:
@@ -26,7 +29,7 @@ class Mysql:
         )
         self.cursor = self.content.cursor()
 
-    def lookup(self, battle_name):
+    def lookup(self, battle_name, save_file=True):
         game_sql = 'select bot_list from batch_ai_validate where batch_name like "{}%"'.format(battle_name)
         self.cursor.execute(game_sql)
         result = self.cursor.fetchall()
@@ -38,17 +41,18 @@ class Mysql:
             game_sql = (
                 'SELECT count(*) AS 总局数, sum( win_money ) AS 总赢钱, Round( sum( win_money ) / count(*) , 2 ) AS "mbb/h", Round( STD( win_money ) * 10, 2 ) AS 标准差, '
                 'Round( 1.96 * STD( win_money )/ POWER( count(*), 1 / 2 ) , 2 ) AS "0.95置信区间范围" FROM player ' 
-                'WHERE room_id IN (select room_id from validate_room_mapping where batch_name like "{}%" '
-        	    'and name = "{}")'
+                'WHERE room_id IN (select room_id from validate_room_mapping where batch_name like "{}%")  and name = "{}"'
             ).format(battle_name, bot)
             self.cursor.execute(game_sql)
             self.cursor.connection.commit()
             result = self.cursor.fetchall()[0]
             table.loc[table.shape[0]] = [bot, result[0], result[1], result[2], result[4]]
         print(table)
-        writer = pd.ExcelWriter('../docs/record/{}_stat.xlsx'.format(battle_name))  
-        table.to_excel(writer,float_format='%.5f')
-        writer.save()
+
+        if save_file:
+            writer = pd.ExcelWriter('../docs/record/{}_stat.xlsx'.format(battle_name))  
+            table.to_excel(writer,float_format='%.5f')
+            writer.save()
 
     def transpose(self, action_history):
         def f(x):
@@ -72,7 +76,7 @@ class Mysql:
 
     def battle_history(self, battle_name, save_file=True):
         history = {}
-        game_sql = 'SELECT * FROM game WHERE room_id IN (SELECT room_id FROM validate_room_mapping WHERE batch_name LIKE "{}%" )'.format(battle_name)
+        game_sql = 'SELECT * FROM game WHERE room_id IN (select room_id from validate_room_mapping where batch_name like "{}%")  )'.format(battle_name)
         self.cursor.execute(game_sql)
         result = self.cursor.fetchall()
         for row in result:
@@ -84,7 +88,7 @@ class Mysql:
                 players={}
             )
         
-        game_sql = 'SELECT game_id, position, win_money, private_card, name FROM player WHERE room_id IN (SELECT room_id FROM validate_room_mapping WHERE batch_name LIKE "{}%" )'.format(battle_name)
+        game_sql = 'SELECT game_id, position, win_money, private_card, name FROM player WHERE (room_id IN (select room_id from validate_room_mapping where batch_name like "{}%")  or (room_id >= 800000 and room_id <= 800100))'.format(battle_name)
         self.cursor.execute(game_sql)
         result = self.cursor.fetchall()
         for row in result:

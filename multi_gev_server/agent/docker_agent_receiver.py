@@ -8,7 +8,7 @@ import collections
 import subprocess
 
 
-supported_agent = ["xxx", "YangJun", "LiShuokai", "QianTao"]
+supported_agent = ["xxx", "YangJun", "LiShuokai", "QianTao", "CFRAgent"]
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
@@ -27,7 +27,7 @@ def callback(ch, method, properties, body):
         print(command)
         subprocess.call(command, shell=True)
 
-    if bot_name == "YangJun":
+    if bot_name == "YangJun" or bot_name == "CFRAgent":
         command = (
             'docker run -d registry.cn-beijing.aliyuncs.com/liuqh/texas2:v1.2 bash -c "cd /root/poker && export PATH=/root/miniconda3/bin:$PATH && python run_this.py {} {} {} {}"'.format(
             room_id, room_number, bot_name + bot_name_suffix, game_number)
