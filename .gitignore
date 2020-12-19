@@ -2,6 +2,10 @@
 *.xlsx
 *.json
 *.jpg
+*.docx
+*.mp4
+*.ipynb
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
