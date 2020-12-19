@@ -1,12 +1,13 @@
 from game_stat.lookup import Statistician
 import multiprocessing
 import pandas as pd 
+import numpy as np
 import json
 
-def run(name, limit):
-    Statistician().query_record_by_room_name(name, limit)
+def run(name):
+    Statistician().query_record_by_room_name(name)
     Statistician().query_result_by_room_name(name, reduce_variance=False)
-    Statistician().query_result_by_room_name(name, reduce_variance=True)
+    # Statistician().query_result_by_room_name(name, reduce_variance=True)
 
 
 def get_table():
@@ -22,9 +23,8 @@ def get_table():
             with open("../data/record/TEST_{}_{}_history.json".format(n1, n2), "r") as f:
                 record = json.load(f)
             print(len(record))
-get_table()
 
-# run("TEST_THU_ICT", 100000)
+
 # names = ["TEST_NUDT_THU", "TEST_IA_ICT", "TEST_NUDT_ICT", "TEST_NUDT_IA", "TEST_IA_THU", "TEST"]    
 # limits = [100000, 100000, 100000, 200000, 100000, 100000]
 
@@ -35,3 +35,5 @@ get_table()
 #     p.start()
 # for p in process:
 #     p.join()
+
+run("2020_11_23_Test_6p")
