@@ -5,7 +5,7 @@ import socket
 
 server_ip = "holdem.ia.ac.cn"
 server_port = 18888
-room_id = 888891
+room_id = 888893
 room_number = 2
 # bots = ["LooseAggressive","TightPassive"]
 bots = ["RandomGambler","CandidStatistician"]

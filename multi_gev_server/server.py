@@ -390,6 +390,8 @@ class Listener():
         conn.close()
 
     def get_room(self, room_id, room_number, game_number, bots, is_ai=False, save_db=True):
+        if room_id > 20000 or room_id < 5000:
+            save_db = False
         if room_id not in self.rooms:
             self.rooms[room_id] = Room(room_id, room_number, game_number, bots, self.cur_control, is_ai, save_db)
             self.cur_control += 1
