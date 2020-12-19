@@ -37,14 +37,14 @@ class GpuManager():
 		for gpu in GPUs:
 			initialing_amount = 0
 			for use_time, amount in reversed(self.last_use[gpu.id]):
-				if time.time() - use_time < 120:
+				if time.time() - use_time < 600:
 					initialing_amount += amount
 			if gpu.memoryFree - initialing_amount - 1000 > gpu_needed:
 				gpu_available = True
 				break
 		if gpu_available:
 			self.last_use[gpu.id].append([time.time(), gpu_needed])
-			while time.time() - self.last_use[gpu.id][0][0] > 120:
+			while time.time() - self.last_use[gpu.id][0][0] > 600:
 				self.last_use[gpu.id].pop(0)
 			return True, gpu.id
 		else:
@@ -78,7 +78,7 @@ def callback(ch, method, properties, body):
 			print(command)
 		if bot_name == "YuanWeilin":
 			command = (
-				'docker run -d {} registry.cn-beijing.aliyuncs.com/poker_ws/deepcard:v10 bash -c "source /root/torch/install/bin/torch-activate;cd /code/ReadyCompile/Compiled;th Player/deepcards.lua {} {} {} {}"'.format(
+				'docker run -d {} registry.cn-beijing.aliyuncs.com/poker_ws/deepcard:v13 bash -c "source /root/torch/install/bin/torch-activate;cd /code/ReadyCompile/Compiled;th Player/deepcards.lua {} {} {} {}"'.format(
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)

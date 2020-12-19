@@ -321,7 +321,7 @@ class Listener():
     @utils.catch_exception
     def recv_user(self):
         conn, addr = self.s.accept()
-        # logger.info("accept user {}:{}", addr[0], addr[1])
+        logger.debug("accept user {}:{}", addr[0], addr[1])
         gevent.spawn(self.recv_data_run, conn, addr)
 
     def recv_data_run(self, conn, addr):
@@ -332,6 +332,7 @@ class Listener():
             logger.exception(e)
 
     def recv_data(self, conn, addr):
+        logger.debug("Start Recving {} {}".format(addr[0], addr[1]))
         data = utils.recvJson(conn)
         logger.info("{}:{}, {}", addr[0], addr[1], data)
         info = itemgetter("info")(data)

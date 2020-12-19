@@ -16,17 +16,18 @@ class Statistician():
         
         # 查询game表，获取对战公共记录
         record = {}
-        sql = ('SELECT game_id, public_card, action_history, time FROM game '
+        sql = ('SELECT game_id, public_card, action_history, time, room_id FROM game '
                'WHERE room_id IN (select room_id from validate_room_mapping '
                'where batch_name like "{}%")'.format(room_name))
         result = self.db.query(sql)
 
         for row in tqdm(result):
-            game_id, public_card, action_history, battle_time = row[:5]
+            game_id, public_card, action_history, battle_time, room_id = row[:]
             record[game_id] = dict(
                 public_card=public_card, 
                 action_history=self._transpose(json.loads(action_history)),
                 battle_time=battle_time.strftime('%Y-%m-%d %H:%M:%S' ),
+                room_id=room_id,
                 players={}
             )
             # 达到限制条数, 退出循环
@@ -111,7 +112,7 @@ class Statistician():
             num, total, mean, std = len(win), np.sum(win), np.mean(win), np.std(win)
             interval = 1.96 * std / np.sqrt(num)
             table.loc[table.shape[0]] = [bot, num, total, mean, interval]
-        
+        print(table)
         # 保存excel
         if reduce_variance:
             name = "../data/record/{}_stat_reduce.xlsx".format(room_name)
