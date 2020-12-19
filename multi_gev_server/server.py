@@ -322,6 +322,10 @@ class Listener():
     def recv_user(self):
         conn, addr = self.s.accept()
         logger.debug("accept user {}:{}", addr[0], addr[1])
+        if addr[0] != "172.18.40.65":
+            self.tear_down(conn)
+            logger.warning("Strange connection!!!")
+            return
         gevent.spawn(self.recv_data_run, conn, addr)
 
     def recv_data_run(self, conn, addr):
