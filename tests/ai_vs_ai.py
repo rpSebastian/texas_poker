@@ -3,14 +3,14 @@ import json
 import struct
 import socket
 
-server_ip = "holdem.ia.ac.cn"
+server_ip = "172.18.40.65"
 server_port = 18888
 room_id = 888893
 room_number = 2
 # bots = ["LooseAggressive","TightPassive"]
-bots = ["RandomGambler","CandidStatistician"]
-game_number = 2
-# mode = "duplicate"
+bots = ["CallAgent","CallAgent"]
+game_number = 4
+# mode = "duplicate"a
 
 def sendJson(request, jsonData):
     data = json.dumps(jsonData).encode()
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     while True:
         # print("recving")
         data = recvJson(client)
-        print(data)
+        print(data["player_card"], data["public_card"])
         if data['info'] == 'result':
             num += 1
             print(num)

@@ -13,8 +13,8 @@ class Game():
         self.big_blind = 100
         self.judge = Judge()
 
-    def game_init(self):
-        self.dealer = Dealer()
+    def game_init(self, deck_id=None):
+        self.dealer = Dealer(deck_id)
         self.players = [Player(self.stack) for _ in range(self.num_players)]
         self.action_history = []
         for player in self.players:

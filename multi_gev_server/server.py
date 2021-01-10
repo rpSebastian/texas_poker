@@ -76,12 +76,20 @@ class Game():
             self.tear_down(hint.unknown_error_info(repr(e)))
     
     def work(self):
+        BUG = False
+
         error_info = None
-        random.shuffle(self.players)
+        if BUG: 
+            pass
+        else:
+            random.shuffle(self.players)
         self.record_game = holdem_game(self.room_number)
         for game_count in range(1, self.game_number + 1):
             if not self.is_ai or self.is_ai and game_count % self.room_number == 1:
-                self.record_player = self.record_game.game_init()
+                if BUG:
+                    self.record_player = self.record_game.game_init(game_count)
+                else:
+                    self.record_player = self.record_game.game_init()
             player_id = self.record_player
             self.game =  copy.deepcopy(self.record_game)
             while not self.game.is_terminal():
@@ -322,7 +330,7 @@ class Listener():
     def recv_user(self):
         conn, addr = self.s.accept()
         logger.debug("accept user {}:{}", addr[0], addr[1])
-        if addr[0] != cfg["server"]["host"]:
+        if addr[0] != cfg["ext_server"]["host"]:
             self.tear_down(conn)
             logger.warning("Strange connection!!!")
             return
