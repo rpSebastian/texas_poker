@@ -322,7 +322,7 @@ class Listener():
     def recv_user(self):
         conn, addr = self.s.accept()
         logger.debug("accept user {}:{}", addr[0], addr[1])
-        if addr[0] != "172.18.40.65":
+        if addr[0] != cfg["server"]["host"]:
             self.tear_down(conn)
             logger.warning("Strange connection!!!")
             return
