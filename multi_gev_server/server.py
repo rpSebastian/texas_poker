@@ -78,8 +78,7 @@ class Game():
     def work(self):
         BUG = False
         if len(self.players) == 2 and not self.is_ai:
-            BUG = True
-
+            BUG = False
         error_info = None
         if BUG: 
             pass
