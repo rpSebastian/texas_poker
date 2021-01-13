@@ -1671,7 +1671,7 @@ def allturnotherblindaction(inputinfo):
 
 def getsixbotaction(inputinfo):
 	pos=inputinfo['action_position']
-	if pos==2 or pos==3 or pos==4 or pos==5 or pos==0:
+	if pos==2 or pos==3 or pos==4 :
 		actionbet=allturnundergunblindaction(inputinfo)
 	else:
 		actionbet=allturnotherblindaction(inputinfo)
@@ -1704,7 +1704,6 @@ def recvJson(request):
 class RuleAgent6p(Agent):
     
     def run(self):
-        print("new")
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((self.server, self.port))
         try:
