@@ -13,59 +13,57 @@ def handsrank1(hands):
     a=1#表示起手手牌的大小
     handsrank=[]
     handssuit=[]
-    handsrank.append(int(hands[0][0]))
-    handsrank.append(int(hands[1][0]))
-    handssuit.append(int(hands[0][1]))
-    handssuit.append(int(hands[1][1]))
-
-    if kind(2,handssuit)>-1:
-
-        if max(handsrank)==14:
-            if min(handsrank)==13:
-                a=8
-            elif min(handsrank)<13 and min(handsrank)>10:
-                a=7
-            elif min(handsrank)<11  and  min(handsrank)>6:
-                a=5
-            else:
-                a=6
-        elif max(handsrank)>11 and max(handsrank)<14:
-            if min(handsrank)>9:
-                a=6
-            elif min(handsrank)<10 and min(handsrank)>6:
-                a=5
-            else:
-                a=4
+    handsrank.append(hands[0][0])
+    handsrank.append(hands[1][0])
+    handssuit.append(hands[0][1])
+    handssuit.append(hands[1][1])
+    if kind(2,handsrank):
+        if handsrank[0]>12:
+            a=9
+        elif handsrank[0]==11 or handsrank[0]==12:
+            a=8
+        elif handsrank[0]==10 or handsrank[0]==9 or handsrank[0]==8 :
+            a=7
+        elif handsrank[0]==7:
+            a=6
         else:
-            a=3
-        if max(handsrank)-min(handsrank)==1 and a<8:
+            a=5
+    elif kind(2,handssuit):
+        if max(handsrank)==14:
+            if min(handsrank)>11:
+                a=8
+            elif min(handsrank)<12 and min(handsrank)>9:
+                a=7
+            elif min(handsrank)==6  or min(handsrank)==7:
+                a=5
+            else:
+                a=6
+        elif max(handsrank)>11:
+            if min(handsrank)>9:
+                a=7
+            elif min(handsrank)<10 and min(handsrank)>6:
+                a=6
+            else:
+                a=5
+        else:
+            a=4
+        if max(handsrank)-min(handsrank)==1:
             a=a+1
     else:
-        if max(handsrank)==14:
-            if min(handsrank)>12:
-                a=7
-            if min(handsrank)>9 and min(handsrank)<13:
-                a=6
-            if min(handsrank)<10 and min(handsrank)>7:
-                a=5
-            if min(handsrank)<8 and min(handsrank)>5:
-                a=4
-            if min(handsrank)<6 and min(handsrank)>1:
-                a=5
-        elif max(handsrank)>12:
+        if max(handsrank)>12:
             if min(handsrank)>11:
-                a=6
-            elif min(handsrank)<12 and min(handsrank)>8:
-                a=5
+                a=8
+            elif min(handsrank)<12 and min(handsrank)>9:
+                a=7
             
             elif min(handsrank)==6  or min(handsrank)==7 or min(handsrank)==8:
-                a=4
+                a=5
             else:
-                a=3
+                a=4
         elif max(handsrank)<13 and max(handsrank)>10:
             if min(handsrank)>11:
                 a=6
-            elif min(handsrank)<12 and min(handsrank)>7:
+            elif min(handsrank)<12 and min(handsrank)>9:
                 a=5
             elif min(handsrank)==6  or min(handsrank)==7:
                 a=4
@@ -73,28 +71,14 @@ def handsrank1(hands):
                 a=3
         else:
             a=2
-        if max(handsrank)-min(handsrank)<4:
+        if max(handsrank)-min(handsrank)<3:
             if max(handsrank)<12:
                 a=a+1
-
-                
-    if kind(2,handsrank):
-        if handsrank[0]>12:
-            a=9
-        elif handsrank[0]==12:
-            a=8
-        elif handsrank[0]==11 or handsrank[0]==10:
-            a=6
-        elif handsrank[0]==9 or handsrank[0]==8:
-            a=5
-        elif handsrank[0]==7 or handsrank[0]==6:
-            a=5
-        elif handsrank[0]==5 or handsrank[0]==4 :
-            a=4
         else:
-            a=3
-
+            if max(handsrank)<11:
+                a=a-1
     return a
+
 def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
     a=random.random()
     b=0
@@ -102,7 +86,7 @@ def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
         b=1
     if handsrank1(hands)==9 and b==1:
         
-        if a>0.9955:
+        if a>0.985:
             action='call'
             bet=100
         else:
@@ -110,7 +94,7 @@ def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
             bet=300
     elif handsrank1(hands)==8 and b==1:
         
-        if a>0.993:
+        if a>0.933:
             action='call'
             bet=100
         else:
@@ -118,7 +102,7 @@ def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
             action='raise'
     elif handsrank1(hands)==7 and b==1:
         
-        if a>0.953:
+        if a>0.873:
             action='call'
             bet=100
         else:
@@ -126,7 +110,7 @@ def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
             action='raise'
     elif handsrank1(hands)>3 and handsrank1(hands)<7 and b==1:
         
-        if a>0.5366:
+        if a>0.896:
             action='check'
             bet=100
 
@@ -162,7 +146,7 @@ def run1_1undergunblind(hands,opobet):#2轮即可，这个是第一轮
             bet=0
     else:
         if handsrank1(hands)>7:
-            if a>0.955:
+            if a>0.055:
                 action='allin'
                 bet=20000
             else:
@@ -177,7 +161,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
     a=random.random()
     if handsrank1(hands)==9:
         
-        if a>0.99635:
+        if a>0.9735:
             action='call'
             bet=0
         else:
@@ -188,7 +172,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
                 bet=20000
     elif handsrank1(hands)==8:
         
-        if a>0.9917:
+        if a>0.9617:
             action='call'
             bet=0
         else:
@@ -199,7 +183,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
                 bet=20000
     elif handsrank1(hands)==7:
         
-        if a>0.89228:
+        if a>0.9228:
             action='call'
             bet=0
         else:
@@ -210,7 +194,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
                 bet=20000
     elif handsrank1(hands)==6:
         
-        if a<0.6330:
+        if a<0.9530:
             action='call'
             bet=0
         else:
@@ -218,7 +202,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
             bet=opobet*2
     elif handsrank1(hands)==5:
         
-        if a<0.8487:
+        if a<0.9787:
             action='call'
             bet=0
         else:
@@ -234,7 +218,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
             bet=opobet*2
     elif handsrank1(hands)==3:
         
-        if a<0.99706:
+        if a<0.9906:
             action='call'
             bet=0
         else:
@@ -242,7 +226,7 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
             bet=opobet*2
     elif handsrank1(hands)==2:
         
-        if a<0.943:
+        if a<0.9953:
             action='call'
             bet=0
         else:
@@ -254,8 +238,6 @@ def run1_1otherblind(hands,opobet):#2轮即可，这个是第一轮
         action='call'
         bet=0
     return action,bet
-
-
 
 def run1_2undergunblind(hands,optbet,selfbet):#2轮即可，这个是第一轮
     a=random.random()
