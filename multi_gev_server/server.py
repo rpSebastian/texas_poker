@@ -79,16 +79,17 @@ class Game():
         BUG = False
         if len(self.players) == 2 and not self.is_ai:
             BUG = False
-        error_info = None
         if BUG: 
             pass
         else:
             random.shuffle(self.players)
+            
+        error_info = None
         self.record_game = holdem_game(self.room_number)
         for game_count in range(1, self.game_number + 1):
             if not self.is_ai or self.is_ai and game_count % self.room_number == 1:
                 if BUG:
-                    self.record_player = self.record_game.game_init(game_count)
+                    self.record_player = self.record_game.game_init(game_count - 1)
                 else:
                     self.record_player = self.record_game.game_init()
             player_id = self.record_player
