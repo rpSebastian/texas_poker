@@ -72,7 +72,7 @@ def callback(ch, method, properties, body):
 			print(command)
 		if bot_name == "OpenStackTwo":
 			command = (
-				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v4 bash -c "cd /root/OpenStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
+				'docker run -d {} hub.kce.ksyun.com/cxxuhang/openstack:v4.1 bash -c "cd /root/OpenStack && bash scripts/activate_agent.sh {} {} {} {}"'.format(
 					docker_gpu_command(gpu_id), room_id, room_number, bot_name + bot_name_suffix, game_number)
 			)
 			print(command)

@@ -29,6 +29,7 @@ class Agent():
         self.game_counter = 0
         self.verbose = verbose
         self.cur_id = 0
+        self.turn = 0
         if self.verbose:
             print(self.info)
 
@@ -72,13 +73,14 @@ class Agent():
                         self.output(data)
                     if data['position'] == data['action_position']:
                         action = self.get_action(data)
-                        print(action)
+                        self.turn += 1
                         sendJson(client, {'action': action, 'info': 'action'})
                 elif data['info'] == 'result':
                     if self.verbose:
                         self.output_result(data)
                     sendJson(client, {'info': 'ready', 'status': 'start'})
                     self.game_counter += 1
+                    self.turn = 0
                 else:
                     break
         except Exception as e:

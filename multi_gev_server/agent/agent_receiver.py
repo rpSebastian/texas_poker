@@ -15,13 +15,13 @@ import gevent
 import gevent.monkey
 gevent.monkey.patch_all()
 
-from simple_agent import CallAgent, AllinAgent, RandomAgent
+from simple_agent import CallAgent, AllinAgent, RandomAgent, SpecialAgent
 from multitype_agent import CandidStatistician, HotheadManiac, LooseAggressive, LoosePassive
 from multitype_agent import TightAggressive, ScaredLimper, RandomGambler, TightPassive
-from ruleagent_6p import RuleAgent6p
+from ruleagent_6p_v1 import RuleAgent6p
 
 
-supported_agent = ["CallAgent", "AllinAgent", "RandomAgent",
+supported_agent = ["CallAgent", "AllinAgent", "RandomAgent", "SpecialAgent",
                    "CandidStatistician", "HotheadManiac", "LooseAggressive", "LoosePassive",
                    "TightAggressive", "ScaredLimper", "RandomGambler", "TightPassive", "RuleAgent6p"]
 
