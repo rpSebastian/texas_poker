@@ -8,7 +8,7 @@ import collections
 import subprocess
 
 
-supported_agent = ["xxx", "YangJun", "LiShuokai", "QianTao", "CFRAgent"]
+supported_agent = ["xxx", "YangJun", "LiShuokai", "QianTao", "CFRAgent", "MappingAgent", "NFSPAgent"]
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
@@ -28,8 +28,8 @@ def callback(ch, method, properties, body):
         subprocess.call(command, shell=True)
 
     if bot_name == "YangJun" or bot_name == "CFRAgent":
-        repo_name = "hub.kce.ksyun.com/cxxuhang/agent:thu_v1.2"
-        # repo_name = "registry.cn-beijing.aliyuncs.com/liuqh/texas2:v1.2"
+        # repo_name = "hub.kce.ksyun.com/cxxuhang/agent:thu_v1.2"
+        repo_name = "registry.cn-beijing.aliyuncs.com/liuqh/texas2:v1.2"
         command = (
             'docker run -d {} bash -c "cd /root/poker && export PATH=/root/miniconda3/bin:$PATH && python run_this.py {} {} {} {}"'.format(
             repo_name, room_id, room_number, bot_name + bot_name_suffix, game_number)
@@ -53,6 +53,22 @@ def callback(ch, method, properties, body):
         print(command)
         subprocess.call(command, shell=True)
     
+    if bot_name == "MappingAgent":
+        command = (
+            'docker run -d hub.kce.ksyun.com/cxxuhang/agent:MappingAgent-v0 bash -c "cd /root/MappingAgent && python MappingAgent.py {} {} {} {}"'.format(
+            room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+        print(command)
+        subprocess.call(command, shell=True)
+    
+    if bot_name == "NFSPAgent":
+        command = (
+            'docker run -d hub.kce.ksyun.com/cxxuhang/agent:nfsp_agent_v0 bash -c "cd /root/code; python play_with_openholdem.py {} {} {} {} "'.format(
+            room_id, room_number, bot_name + bot_name_suffix, game_number)
+        )
+        print(command)
+        subprocess.call(command, shell=True)
+        
     ch.basic_ack(method.delivery_tag)
 
 

@@ -7,6 +7,7 @@ import json
 def run(name):
     Statistician().query_record_by_room_name(name)
     Statistician().query_result_by_room_name(name, reduce_variance=False)
+    # Statistician().query_result_by_room_name(name, reduce_variance=False)
     # Statistician().query_result_by_room_name(name, reduce_variance=True)
 
 
@@ -36,4 +37,5 @@ def get_table():
 # for p in process:
 #     p.join()
 
-run("2020_11_23_Test_6p")
+# run("2020_11_23_Test_6p")
+run("2021_03_01_nfsp_vs_Candid")

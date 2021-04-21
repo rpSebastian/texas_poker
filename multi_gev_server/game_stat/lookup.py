@@ -13,7 +13,6 @@ class Statistician():
 
     def query_record_by_room_name(self, room_name, game_limit=None):
         bot_names = self._query_bot_names_by_room_name(room_name)
-        
         # 查询game表，获取对战公共记录
         record = {}
         sql = ('SELECT game_id, public_card, action_history, time, room_id FROM game '

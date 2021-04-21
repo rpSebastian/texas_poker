@@ -18,7 +18,7 @@ gevent.monkey.patch_all()
 from simple_agent import CallAgent, AllinAgent, RandomAgent, SpecialAgent
 from multitype_agent import CandidStatistician, HotheadManiac, LooseAggressive, LoosePassive
 from multitype_agent import TightAggressive, ScaredLimper, RandomGambler, TightPassive
-from ruleagent_6p_v2 import RuleAgent6p
+from ruleagent_6p_v0 import RuleAgent6p
 
 
 supported_agent = ["CallAgent", "AllinAgent", "RandomAgent", "SpecialAgent",
